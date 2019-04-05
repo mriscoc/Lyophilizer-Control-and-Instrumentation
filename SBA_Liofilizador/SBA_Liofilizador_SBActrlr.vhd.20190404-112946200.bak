@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 17;
+  subtype STP_type is integer range 0 to 16;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
   signal D_Oi : unsigned(DAT_O'range);       -- Internal Data Out signal (unsigned)
@@ -166,15 +166,15 @@ begin
    constant ms         : positive:= positive(real(sysfreq)/real(1000)+0.499)-1;
    variable DlyReg_1ms : natural;   -- Constant Delay of 1ms
    variable Dlytmp_ms  : positive;  -- Delay register in ms
-   variable counter    : natural range 0 to 65535;  -- Simple counter
-   variable capture    : natural range 0 to 65535;  -- Capture data at timer interrupt
+   variable counter    : natural range 0 to x"FFFF";  -- Simple counter
+   variable capture    : natural range 0 to x"FFFF";  -- Capture data at timer interrupt
 -- /SBA: End User Registers and Constants --------------------------------------
 
 -- /SBA: Label constants =======================================================
   constant Delay_ms: integer := 003;
   constant INT: integer := 006;
   constant Init: integer := 008;
-  constant LoopMain: integer := 014;
+  constant LoopMain: integer := 013;
 -- /SBA: End Label constants ---------------------------------------------------
 
 begin
@@ -235,28 +235,23 @@ begin
 ------------------------------ INTERRUPT ---------------------------------------
 -- /L:INT
         When 006=> capture:=counter;
-                   SBARead(TMRCFG);
+                
         When 007=> SBAreti;
 ------------------------------ MAIN PROGRAM ------------------------------------
                 
 -- /L:Init
-        When 008=> counter:=1; capture:=0;
-        When 009=> SBAwrite(TMRCHS,0);          -- Select timer 0
-        When 010=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
-        When 011=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
-        When 012=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
-        When 013=> SBAinte(true);               -- Enable interrupts
+        When 008=> counter:=0; capture:=0;
+        When 009=> SBAwrite(TMRCHS,0);         -- Select timer 0
+        When 010=> SBAwrite(TMRDATL,x"E100";   -- Write to LSW, (100'000,000 = 5F5E100)
+        When 011=> SBAwrite(TMRDATH,x"05F5";   -- Write to MSW
+        When 012=> SBAwrite(TMRCFG,"0X11";     -- Disable output, Enable timer interrupt
                 
 -- /L:LoopMain
-        When 014=> if (capture=0) then
-                     SBAjump(LoopMain);
-                   else
-                     capture:=0;
-                   end if;
-                
-        When 015=> SBAwrite(GPIO,counter);
+        When 013=> SBAwrite(GPIO,counter);
                    inc(counter);
-        When 016=> SBAjump(LoopMain);
+        When 014=> Dlytmp_ms:=1000;
+                   SBAcall(Delay_ms);
+        When 015=> SBAjump(LoopMain);
                 
 -- /SBA: End User Program ------------------------------------------------------
 

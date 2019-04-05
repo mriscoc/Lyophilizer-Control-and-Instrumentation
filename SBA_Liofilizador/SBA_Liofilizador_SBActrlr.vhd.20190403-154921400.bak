@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 17;
+  subtype STP_type is integer range 0 to 63;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
   signal D_Oi : unsigned(DAT_O'range);       -- Internal Data Out signal (unsigned)
@@ -69,6 +69,9 @@ architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroll
   signal IFi  : std_logic;                   -- Interrupt Flag
   signal IEi  : std_logic;                   -- Interrupt Enable
 
+-- /SBA: User Signals and Type definitions =====================================
+
+-- /SBA: End User Signals and Type definitions ---------------------------------
 
 begin
 
@@ -160,21 +163,17 @@ begin
 
 -- /SBA: End Procedures --------------------------------------------------------
 
+-- /SBA: User Procedures and Functions =========================================
+
+-- /SBA: End User Procedures and Functions -------------------------------------
   
 -- /SBA: User Registers and Constants ==========================================
 
-   constant ms         : positive:= positive(real(sysfreq)/real(1000)+0.499)-1;
-   variable DlyReg_1ms : natural;   -- Constant Delay of 1ms
-   variable Dlytmp_ms  : positive;  -- Delay register in ms
-   variable counter    : natural range 0 to 65535;  -- Simple counter
-   variable capture    : natural range 0 to 65535;  -- Capture data at timer interrupt
 -- /SBA: End User Registers and Constants --------------------------------------
 
 -- /SBA: Label constants =======================================================
-  constant Delay_ms: integer := 003;
-  constant INT: integer := 006;
-  constant Init: integer := 008;
-  constant LoopMain: integer := 014;
+  constant INT: integer := 003;
+  constant Init: integer := 004;
 -- /SBA: End Label constants ---------------------------------------------------
 
 begin
@@ -217,46 +216,18 @@ begin
                 
         When 001=> SBAjump(Init);            -- Reset Vector (001)
         When 002=> SBAjump(INT);             -- Interrupt Vector (002)
-                
+
 ------------------------------ ROUTINES ----------------------------------------
--- /L:Delay_ms
-        When 003=> DlyReg_1ms:=ms;
-        When 004=> if DlyReg_1ms/=0 then
-                     dec(DlyReg_1ms);
-                     SBAjump(Delay_ms+1);
-                   end if;
-        When 005=> if Dlytmp_ms/=0 then
-                     dec(Dlytmp_ms);
-                     SBAjump(Delay_ms);
-                   else
-                     SBARet;
-                   end if;
-                
+
 ------------------------------ INTERRUPT ---------------------------------------
 -- /L:INT
-        When 006=> capture:=counter;
-                   SBARead(TMRCFG);
-        When 007=> SBAreti;
+        When 003=> SBAWait;                  -- Start your interrupt routine here
+        When 004=> SBAreti;
 ------------------------------ MAIN PROGRAM ------------------------------------
                 
 -- /L:Init
-        When 008=> counter:=1; capture:=0;
-        When 009=> SBAwrite(TMRCHS,0);          -- Select timer 0
-        When 010=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
-        When 011=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
-        When 012=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
-        When 013=> SBAinte(true);               -- Enable interrupts
-                
--- /L:LoopMain
-        When 014=> if (capture=0) then
-                     SBAjump(LoopMain);
-                   else
-                     capture:=0;
-                   end if;
-                
-        When 015=> SBAwrite(GPIO,counter);
-                   inc(counter);
-        When 016=> SBAjump(LoopMain);
+        When 005=> SBAWait;                  -- Start your program here
+        When 006=> SBAjump(Init);
                 
 -- /SBA: End User Program ------------------------------------------------------
 
@@ -287,6 +258,9 @@ begin
   end if;
 end process IntProcess;
 
+-- /SBA: User Statements =======================================================
+
+-- /SBA: End User Statements ---------------------------------------------------
 
 NSTPi <= STPi + 1;      -- Step plus one (Next STeP)
 STB_O <= S_Oi;

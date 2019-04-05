@@ -38,12 +38,13 @@ port (
   RSTn      : in  std_logic;
   RXRS      : in  std_logic;
   TXRS      : out std_logic;
-  SWTS      : in  std_logic_vector(7 downto 0);
+  SWTS      : in  std_logic_vector(0 downto 0);
   LEDS      : out std_logic_vector(7 downto 0);
   AD1_nCS   : out std_logic;
   AD1_D0    : in  std_logic;
   AD1_D1    : in  std_logic;
-  AD1_SCK   : out std_logic
+  AD1_SCK   : out std_logic;
+  TOUT      : out std_logic_vector(3 downto 0)
 );
 end SBA_Liofilizador_Top;
 
@@ -76,9 +77,6 @@ architecture SBA_Liofilizador_structural of SBA_Liofilizador_Top is
 begin
 
   SBA_Liofilizador_SysCon: entity work.SysCon
-  generic map(
-    PLL   => true
-  )
   port Map(
     CLK_I => CLKe,
     CLK_O => CLKi,
@@ -149,7 +147,7 @@ begin
 
   TIMER: entity work.TIMER
   generic map(
-    chans   => 1
+    chans   => 4
   )
   port map(
     -------------
@@ -162,7 +160,7 @@ begin
     DAT_O => ADATi(STB_TIMER),
     INT_O => INT_TIMER,
     -------------
-    TOUT  => open
+    TOUT  => TOUT
   );
 
   UART: entity work.UART
@@ -196,7 +194,7 @@ begin
 -- Internal Signals Assignments
 -------------------------------
  ACKi  <= '1';                  -- If None Slave IPCore use ACK then ACKi must be '1'
- INTi  <= INT_TIMER;            -- Interrupts;
+ INTi  <= '0';                  -- No interrupts support;
 
 end SBA_Liofilizador_structural;
 

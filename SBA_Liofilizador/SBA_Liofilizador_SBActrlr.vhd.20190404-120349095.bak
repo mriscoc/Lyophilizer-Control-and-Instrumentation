@@ -241,6 +241,7 @@ begin
                 
 -- /L:Init
         When 008=> counter:=1; capture:=0;
+                   SBAwrite(GPIO,x"FF");
         When 009=> SBAwrite(TMRCHS,0);          -- Select timer 0
         When 010=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
         When 011=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW

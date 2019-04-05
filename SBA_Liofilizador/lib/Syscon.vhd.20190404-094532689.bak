@@ -63,7 +63,7 @@ begin
 
   PLL_CLK : PLLCLK                -- Configure PLL accord to Base Main Clocked frequency
   Port Map( 
-    areset => '0',
+    areset => '1',
     locked => PLLlockedi,
     inclk0 => CLK_I,
     c0     => CLKi

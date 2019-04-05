@@ -36,8 +36,8 @@ use ieee.numeric_std.all;
 entity  SysCon  is
 generic(PLL:boolean:=false);
 port(
-   CLK_I: in  std_logic;          -- External Clocked input
-   CLK_O: out std_logic;          -- System Clocked output 
+   CLK_I: in  std_logic;          -- External Clock input
+   CLK_O: out std_logic;          -- System Clock output 
    RST_I: in  std_logic;          -- Asynchronous Reset Input
    RST_O: out std_logic           -- Synchronous Reset Output
 );
@@ -45,10 +45,10 @@ end SysCon;
 
 architecture SysCon_arch of SysCon is
 
-   component PLLCLK               -- Configure PLL accord to Base Main Clocked frequency
+   component PLLCLK               -- Configure PLL accord to Base Main Clock frequency
    port(
-     areset,inclk0  : in  std_logic;
-     locked,c0 : out std_logic
+     POWERDOWN, CLKA  : in  std_logic;
+     LOCK,GLA : out std_logic
    );
    end component PLLCLK;
 
@@ -58,20 +58,20 @@ architecture SysCon_arch of SysCon is
 begin
 
 IfPLL: If PLL Generate
-Signal PLLlockedi : std_logic;
+Signal PLLLOCKi : std_logic;
 begin
 
-  PLL_CLK : PLLCLK                -- Configure PLL accord to Base Main Clocked frequency
+  PLL_CLK : PLLCLK                -- Configure PLL accord to Base Main Clock frequency
   Port Map( 
-    areset => '0',
-    locked => PLLlockedi,
-    inclk0 => CLK_I,
-    c0     => CLKi
+    POWERDOWN => '1',
+    LOCK      => PLLLOCKi,
+    CLKA      => CLK_I,
+    GLA       => CLKi
   );
 
-  process(RST_I, PLLlockedi, CLKi)
+  process(RST_I, PLLLOCKi, CLKi)
   begin
-    if RST_I='1' or PLLlockedi='0' then
+    if RST_I='1' or PLLLOCKi='0' then
       RSTi<='1';
     elsif rising_edge(CLKi) then
       RSTi<='0';

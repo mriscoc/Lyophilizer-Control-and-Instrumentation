@@ -43,7 +43,8 @@ port (
   AD1_nCS   : out std_logic;
   AD1_D0    : in  std_logic;
   AD1_D1    : in  std_logic;
-  AD1_SCK   : out std_logic
+  AD1_SCK   : out std_logic;
+  TOUT      : out std_logic_vector(3 downto 0)
 );
 end SBA_Liofilizador_Top;
 
@@ -162,7 +163,7 @@ begin
     DAT_O => ADATi(STB_TIMER),
     INT_O => INT_TIMER,
     -------------
-    TOUT  => open
+    TOUT  => TOUT
   );
 
   UART: entity work.UART
