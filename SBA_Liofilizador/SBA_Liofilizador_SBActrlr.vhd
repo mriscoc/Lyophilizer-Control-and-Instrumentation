@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 17;
+  subtype STP_type is integer range 0 to 22;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
   signal D_Oi : unsigned(DAT_O'range);       -- Internal Data Out signal (unsigned)
@@ -163,18 +163,22 @@ begin
   
 -- /SBA: User Registers and Constants ==========================================
 
-   constant ms         : positive:= positive(real(sysfreq)/real(1000)+0.499)-1;
-   variable DlyReg_1ms : natural;   -- Constant Delay of 1ms
-   variable Dlytmp_ms  : positive;  -- Delay register in ms
-   variable counter    : natural range 0 to 65535;  -- Simple counter
-   variable capture    : natural range 0 to 65535;  -- Capture data at timer interrupt
+  variable counter : natural range 0 to 65535;  -- Simple counter
+  variable capture : natural range 0 to 65535;  -- Capture data at timer interrupt
+
+  constant TXRDY   : integer:=14;                -- TXRDY Flag is bit 14
+  constant RXRDY   : integer:=15;                -- RXRDY Flag is bit 15
+  variable UARTFlg : std_logic;                  -- aux bit for UART flags
+  variable RSTmp   : unsigned(7 downto 0);       -- Temporal register for UART
+
 -- /SBA: End User Registers and Constants --------------------------------------
 
 -- /SBA: Label constants =======================================================
-  constant Delay_ms: integer := 003;
-  constant INT: integer := 006;
-  constant Init: integer := 008;
-  constant LoopMain: integer := 014;
+  constant UARTSendChar: integer := 003;
+  constant UARTGetChar: integer := 006;
+  constant INT: integer := 009;
+  constant Init: integer := 011;
+  constant LoopMain: integer := 018;
 -- /SBA: End Label constants ---------------------------------------------------
 
 begin
@@ -219,44 +223,58 @@ begin
         When 002=> SBAjump(INT);             -- Interrupt Vector (002)
                 
 ------------------------------ ROUTINES ----------------------------------------
--- /L:Delay_ms
-        When 003=> DlyReg_1ms:=ms;
-        When 004=> if DlyReg_1ms/=0 then
-                     dec(DlyReg_1ms);
-                     SBAjump(Delay_ms+1);
+-- /L:UARTSendChar
+        When 003=> SBARead(UART1);               -- Read UART Status
+        When 004=> UARTFlg := dati(TXRDY);       -- Read TXRDY flag
+        When 005=> if UARTFlg ='0' then          -- Test TXRDY
+                     SBARead(UART1);             -- if not continue read UART Status
+                     SBAjump(UARTSendChar+1);
+                   else
+                     SBAWrite(UART0,RSTmp);      -- Write UART Tx
+                     SBARet;                     -- Return
                    end if;
-        When 005=> if Dlytmp_ms/=0 then
-                     dec(Dlytmp_ms);
-                     SBAjump(Delay_ms);
+                
+-- /L:UARTGetChar
+        When 006=> SBARead(UART0);               -- Read UART Status
+        When 007=> UARTFlg := dati(RXRDY);       -- Read RXRDY flag
+                   RSTmp:= dati(7 downto 0);     -- Read possible char in to RSTmp
+        When 008=> if UARTFlg ='0' then          -- Test RXRDY
+                     SBARead(UART0);             -- Continue read UART Status
+                     SBAjump(UARTGetChar+1);
                    else
                      SBARet;
                    end if;
                 
 ------------------------------ INTERRUPT ---------------------------------------
 -- /L:INT
-        When 006=> capture:=counter;
+        When 009=> capture:=counter;
                    SBARead(TMRCFG);
-        When 007=> SBAreti;
+        When 010=> SBAreti;
 ------------------------------ MAIN PROGRAM ------------------------------------
                 
 -- /L:Init
-        When 008=> counter:=1; capture:=0;
-        When 009=> SBAwrite(TMRCHS,0);          -- Select timer 0
-        When 010=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
-        When 011=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
-        When 012=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
-        When 013=> SBAinte(true);               -- Enable interrupts
+        When 011=> counter:=1; capture:=0;
+        When 012=> SBAwrite(TMRCHS,0);          -- Select timer 0
+        When 013=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
+        When 014=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
+        When 015=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
+        When 016=> SBAinte(true);               -- Enable interrupts
+        When 017=> RSTmp:=chr2uns('L');
+                   SBACall(UARTSendChar);
                 
 -- /L:LoopMain
-        When 014=> if (capture=0) then
+        When 018=> if (capture=0) then
                      SBAjump(LoopMain);
                    else
                      capture:=0;
                    end if;
-                
-        When 015=> SBAwrite(GPIO,counter);
                    inc(counter);
-        When 016=> SBAjump(LoopMain);
+                
+        When 019=> SBAwrite(GPIO,counter);
+        When 020=> RSTmp:=chr2uns('L');
+                   SBACall(UARTSendChar);
+                
+        When 021=> SBAjump(LoopMain);
                 
 -- /SBA: End User Program ------------------------------------------------------
 
