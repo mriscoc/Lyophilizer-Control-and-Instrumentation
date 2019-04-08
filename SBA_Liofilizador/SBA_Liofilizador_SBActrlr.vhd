@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 22;
+  subtype STP_type is integer range 0 to 36;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
   signal D_Oi : unsigned(DAT_O'range);       -- Internal Data Out signal (unsigned)
@@ -165,20 +165,29 @@ begin
 
   variable counter : natural range 0 to 65535;  -- Simple counter
   variable capture : natural range 0 to 65535;  -- Capture data at timer interrupt
+  variable Idx     : natural;                   -- General purpose index
 
-  constant TXRDY   : integer:=14;                -- TXRDY Flag is bit 14
-  constant RXRDY   : integer:=15;                -- RXRDY Flag is bit 15
-  variable UARTFlg : std_logic;                  -- aux bit for UART flags
-  variable RSTmp   : unsigned(7 downto 0);       -- Temporal register for UART
+  constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
+  constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
+  variable UARTFlg : std_logic;                 -- aux bit for UART flags
+  variable RSTmp   : unsigned(7 downto 0);      -- Temporal register for UART
+
+  type tarrchar is array (natural range <>) of character;
+  constant vMsg    : tarrchar (0 to 18):="Liofilizador v0.1.1";
+
+  variable bin_in  : unsigned(15 downto 0);    -- 16 bit input register
+  variable bcd_out : unsigned(19 downto 0);    -- 20 bit output register
 
 -- /SBA: End User Registers and Constants --------------------------------------
 
 -- /SBA: Label constants =======================================================
   constant UARTSendChar: integer := 003;
   constant UARTGetChar: integer := 006;
-  constant INT: integer := 009;
-  constant Init: integer := 011;
-  constant LoopMain: integer := 018;
+  constant Bin2BCD: integer := 009;
+  constant INT: integer := 012;
+  constant Init: integer := 014;
+  constant SendMsg: integer := 020;
+  constant LoopMain: integer := 025;
 -- /SBA: End Label constants ---------------------------------------------------
 
 begin
@@ -224,57 +233,84 @@ begin
                 
 ------------------------------ ROUTINES ----------------------------------------
 -- /L:UARTSendChar
-        When 003=> SBARead(UART1);               -- Read UART Status
+        When 003=> SBAread(UART1);               -- Read UART Status
         When 004=> UARTFlg := dati(TXRDY);       -- Read TXRDY flag
         When 005=> if UARTFlg ='0' then          -- Test TXRDY
-                     SBARead(UART1);             -- if not continue read UART Status
+                     SBAread(UART1);             -- if not continue read UART Status
                      SBAjump(UARTSendChar+1);
                    else
-                     SBAWrite(UART0,RSTmp);      -- Write UART Tx
-                     SBARet;                     -- Return
+                     SBAwrite(UART0,RSTmp);      -- Write UART Tx
+                     SBAret;                     -- Return
                    end if;
                 
 -- /L:UARTGetChar
-        When 006=> SBARead(UART0);               -- Read UART Status
+        When 006=> SBAread(UART0);               -- Read UART Status
         When 007=> UARTFlg := dati(RXRDY);       -- Read RXRDY flag
                    RSTmp:= dati(7 downto 0);     -- Read possible char in to RSTmp
         When 008=> if UARTFlg ='0' then          -- Test RXRDY
-                     SBARead(UART0);             -- Continue read UART Status
+                     SBAread(UART0);             -- Continue read UART Status
                      SBAjump(UARTGetChar+1);
                    else
                      SBARet;
                    end if;
                 
+-- /L:Bin2BCD
+        When 009=> bcd_out := (others=>'0');
+                   if bin_in=0 then SBAret; end if;
+        When 010=> bcd_out(2 downto 0) := bin_in(15 downto 13); -- shl 3
+                   bin_in := bin_in(12 downto 0) & "000";
+        When 011=> for j in 0 to 12 loop
+                     for i in 0 to 3 loop -- for nibble 0 to 3
+                       if bcd_out(3+4*i downto 4*i)>4 then -- is nibble > 4?
+                         bcd_out(3+4*i downto 4*i):=bcd_out(3+4*i downto 4*i)+3; -- add 3 to nibble
+                       end if;
+                     end loop; -- last nibble do not need adjust (65535)
+                     bcd_out := bcd_out(18 downto 0) & bin_in(15); --shl
+                     bin_in := bin_in(14 downto 0) & '0';
+                   end loop;
+                   SBAret;
+                
 ------------------------------ INTERRUPT ---------------------------------------
 -- /L:INT
-        When 009=> capture:=counter;
-                   SBARead(TMRCFG);
-        When 010=> SBAreti;
+        When 012=> capture:=counter;
+                   SBAread(TMRCFG);
+        When 013=> SBAreti;
 ------------------------------ MAIN PROGRAM ------------------------------------
                 
 -- /L:Init
-        When 011=> counter:=1; capture:=0;
-        When 012=> SBAwrite(TMRCHS,0);          -- Select timer 0
-        When 013=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
-        When 014=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
-        When 015=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
-        When 016=> SBAinte(true);               -- Enable interrupts
-        When 017=> RSTmp:=chr2uns('L');
-                   SBACall(UARTSendChar);
+        When 014=> counter:=1; capture:=0;
+        When 015=> SBAwrite(TMRCHS,0);          -- Select timer 0
+        When 016=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
+        When 017=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
+        When 018=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
+        When 019=> SBAinte(true);               -- Enable interrupts
+                
+-- /L:SendMsg
+        When 020=> Idx:=0;
+        When 021=> RSTmp:=chr2uns(vMsg(Idx)); SBAcall(UARTSendChar);
+        When 022=> if Idx<vMsg'length-1 then inc(Idx); SBAjump(SendMsg+1); end if;
+        When 023=> RSTmp:=x"0D"; SBAcall(UARTSendChar);
+        When 024=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
                 
 -- /L:LoopMain
-        When 018=> if (capture=0) then
+        When 025=> if (capture=0) then
                      SBAjump(LoopMain);
                    else
                      capture:=0;
                    end if;
                    inc(counter);
                 
-        When 019=> SBAwrite(GPIO,counter);
-        When 020=> RSTmp:=chr2uns('L');
-                   SBACall(UARTSendChar);
+        When 026=> SBAwrite(GPIO,counter);
+        When 027=> bin_in:=to_unsigned(counter,bin_in'length); SBAcall(Bin2BCD);
+        When 028=> RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
+        When 029=> RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
+        When 030=> RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
+        When 031=> RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
+        When 032=> RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
+        When 033=> RSTmp:=x"0D"; SBAcall(UARTSendChar);
+        When 034=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
                 
-        When 021=> SBAjump(LoopMain);
+        When 035=> SBAjump(LoopMain);
                 
 -- /SBA: End User Program ------------------------------------------------------
 
