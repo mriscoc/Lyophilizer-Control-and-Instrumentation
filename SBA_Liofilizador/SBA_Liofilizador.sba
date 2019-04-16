@@ -14,13 +14,11 @@
 	{"portname": "RST_I", "dir": "in", "bus": 0},
 	{"portname": "RXRS", "dir": "in", "bus": 0},
 	{"portname": "TXRS", "dir": "out", "bus": 0},
-	{"portname": "SWTS", "dir": "in", "bus": 1, "msb": 1, "lsb": 0},
+	{"portname": "BTN", "dir": "in", "bus": 0},
 	{"portname": "LEDS", "dir": "out", "bus": 1, "msb": 7, "lsb": 0},
-	{"portname": "AD1_nCS", "dir": "out", "bus": 0},
-	{"portname": "AD1_D0", "dir": "in", "bus": 0},
-	{"portname": "AD1_D1", "dir": "in", "bus": 0},
-	{"portname": "AD1_SCK", "dir": "out", "bus": 0},
-	{"portname": "TOUT", "dir": "out", "bus": 1, "msb": 3, "lsb": 0}
+	{"portname": "TC1_nCS", "dir": "out", "bus": 0},
+	{"portname": "TC1_MISO", "dir": "in", "bus": 0},
+	{"portname": "TC1_SCK", "dir": "out", "bus": 0}
 ],
 "ipcores": [
 	"GPIO",
