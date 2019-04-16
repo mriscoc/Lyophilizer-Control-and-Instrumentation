@@ -1,29 +1,26 @@
 --------------------------------------------------------------------------------
--- PMODAD1
+-- PMODTC1
 --
 -- Title: SBA Slave IP Core adapter for Digilent Pmod AD1 module
 --
--- Versión 0.2
--- Date 2018/03/16
+-- Versión 0.1
+-- Date 2019/04/14
 -- Author: Miguel A. Risco-Castillo
 --
 -- sba webpage: http://sba.accesus.com
--- core webpage: https://github.com/mriscoc/SBA-Library/tree/master/PMODAD1
+-- core webpage: https://github.com/mriscoc/SBA-Library/tree/master/PMODTC1
 --
--- Description: SBA Slave Adapter for Digilent Pmod AD1 module, the AD1 (2xAD7476A)
--- converts an analog input signal ranging from 0-3.3 volts to a 12-bit digital
--- value in the range 0 to 4095. Has 2 register: AD0 and AD1 (12 bits extended
--- to DAT_O width), ADR_I Selects the registers AD0 (ADR_I(0)=0) or AD1 (ADR_I(0)=1).
+-- Description: The PMODTC1 is an SBA IPCore designed to driver the Digilent PmodTC1 module,
+-- a cold-juntion K-Type thermocouple to digital converter. It integrates the MAX31855,
+-- this reports the measured temperature in 14 bits with 0.25°C resolution.
+-- The SBA core has 2 register, selectec by  ADR_I to access the 32 bits of the
+-- MAX31855, thermocuple ADR_I(0)=1 and reference junction temperatures ADR_I(0)=0.
 --
 -- Follow SBA v1.1 guidelines
 --
 -- Release Notes:
 --
--- v0.2 2018/03/16
--- Adapt to SBA v1.1
--- Pin CS changed to nCS (Active low)
---
--- v0.1 2012/06/14
+-- v0.1 2019/04/14
 -- Initial release
 --
 --------------------------------------------------------------------------------
@@ -55,7 +52,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity PMODAD1 is
+entity PMODTC1 is
 generic(
   debug:positive:=1;
   sysfreq:positive:=50E6
@@ -68,34 +65,31 @@ port(
    WE_I  : in  std_logic;        -- Bus write, active high
    ADR_I : in  std_logic_vector; -- Register AD0/AD1 selector
    DAT_O : out std_logic_vector; -- Data output Bus
--- Interface for PMODAD1
+-- Interface for PMODTC1
    nCS   : out std_logic;        -- chipselect active low
-   D0    : in  std_logic;        -- AD1 Input data 0
-   D1    : in  std_logic;        -- AD1 Input data 1
+   MISO  : in  std_logic;        -- Master In Slave Out
    SCK   : out std_logic         -- SPI Clock
 );
-end PMODAD1;
+end PMODTC1;
 
-architecture  PMODAD1_Arch of  PMODAD1 is
+architecture  PMODTC1_Arch of  PMODTC1 is
 type tstate is (IniSt, GetD, EndSt); -- SPI Communication States
 
 signal state    : tstate;
-signal streamD0 : std_logic_vector (15 downto 0);
-signal streamD1 : std_logic_vector (15 downto 0);
-signal AD0REG   : std_logic_vector (11 downto 0);
-signal AD1REG   : std_logic_vector (11 downto 0);
-signal SCKN     : unsigned (3 downto 0);           -- SCK Counter
+signal stream   : std_logic_vector (31 downto 0);  -- Serial input register
+signal DREG     : std_logic_vector (31 downto 0);  -- Data register
+signal SCKN     : unsigned (4 downto 0);           -- SCK Counter
 signal SCKi     : std_logic;                       -- SCK Generated SPI Clock
 
 begin
 
 -- SPI Clock generator:
 
-SCK1: if (sysfreq>20E6) generate
+SCK1: if (sysfreq>5E6) generate
   CLK_Div : entity work.ClkDiv
   Generic map (
-    infrec=>sysfreq,
-    outfrec=>20E6
+    infreq=>sysfreq,
+    outfreq=>5E6
     )
   Port Map(
     RST_I => RST_I,
@@ -104,7 +98,7 @@ SCK1: if (sysfreq>20E6) generate
   );
 end generate;
 
-SCK2: if (sysfreq<=20E6) generate
+SCK2: if (sysfreq<=5E6) generate
   SCKi <= CLK_I;
 end generate;
 
@@ -116,13 +110,13 @@ SPIState:process (SCKi, RST_I)
       state   <= IniSt;
       nCS      <= '1';
       SCKN    <= (others => '0');
-    elsif rising_edge(SCKi) then
+    elsif falling_edge(SCKi) then
       case State is
-        when IniSt => nCS    <='0';
+        when IniSt => nCS   <='0';
                       state <= GetD;
                       SCKN  <= (others => '0');
 
-        when GetD  => if (SCKN = 15) then
+        when GetD  => if (SCKN = 31) then
                         state<= EndSt;
                       else
                         SCKN <= SCKN+1;
@@ -137,28 +131,23 @@ SPIState:process (SCKi, RST_I)
 SPIData:process(SCKi, RST_I, state)
   begin
     if (RST_I='1') then
-      streamD0<= (OTHERS =>'0');
-      streamD1<= (OTHERS =>'0');
-      AD0REG  <= (others => '0');
-      AD1REG  <= (others => '0');
-    elsif falling_edge(SCKi) then
+      stream<= (OTHERS =>'0');
+      DREG  <= (others => '0');
+    elsif rising_edge(SCKi) then
       case State is
-        when GetD  => streamD0 <= streamD0(streamD0'high-1 downto 0) & D0;
-                      streamD1 <= streamD1(streamD1'high-1 downto 0) & D1;
+        when GetD  => stream <= stream(stream'high-1 downto 0) & MISO;
 
-        when EndSt => AD0REG   <= StreamD0(11 downto 0);
-                      AD1REG   <= StreamD1(11 downto 0);
+        when EndSt => DREG   <= Stream;
 
-        when others=> streamD0 <= streamD0;
-                      streamD1 <= streamD1;
-                      AD0REG   <= AD0REG;
-                      AD1REG   <= AD1REG;
+        when others=> stream <= stream;
+                      DREG   <= DREG;
       end case;
     end if;
   end process;
 
 -- Interface signals
-  SCK   <= SCKi When state=GetD else '1';
-  DAT_O <= "0000" & AD0REG when ADR_I(0)='0' else "0000" & AD1REG;
+  SCK   <= SCKi When state=GetD else '0';
+  DAT_O <= std_logic_vector(resize(signed(DREG(15 downto 0)),DAT_O'length)) when ADR_I(0)='0' else
+           std_logic_vector(resize(signed(DREG(31 downto 16)),DAT_O'length));
 
-end  PMODAD1_Arch;
+end  PMODTC1_Arch;

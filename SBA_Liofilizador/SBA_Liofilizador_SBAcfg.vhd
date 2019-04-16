@@ -47,12 +47,12 @@ package SBA_Liofilizador_SBAconfig is
   Constant Adr_width : integer := 16;   -- Width of address bus
   Constant Dat_width : integer := 16;   -- Width of data bus
   Constant Stb_width : integer := 8;    -- number of strobe signals (chip select)
-  Constant sysfreq   : integer := 100e6; -- Main system clock frequency
+  Constant sysfreq   : integer := 10e6; -- Main system clock frequency
 
 -- Address Map
   Constant GPIO       : integer := 0;
-  Constant AD1_0      : integer := 2;
-  Constant AD1_1      : integer := 3;
+  Constant TC1R0      : integer := 2;
+  Constant TC1R1      : integer := 3;
   Constant TMRDATL    : integer := 4;
   Constant TMRDATH    : integer := 5;
   Constant TMRCFG     : integer := 6;
@@ -63,7 +63,7 @@ package SBA_Liofilizador_SBAconfig is
 
 --Strobe Lines
   Constant STB_GPIO   : integer := 0;
-  Constant STB_PMODAD1: integer := 1;
+  Constant STB_PMODTC1: integer := 1;
   Constant STB_TIMER  : integer := 2;
   Constant STB_UART   : integer := 3;
 

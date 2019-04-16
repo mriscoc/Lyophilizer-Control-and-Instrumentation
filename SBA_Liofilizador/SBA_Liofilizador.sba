@@ -24,7 +24,7 @@
 ],
 "ipcores": [
 	"GPIO",
-	"PMODAD1",
+	"PMODTC1",
 	"TIMER",
 	"UART"
 ],
