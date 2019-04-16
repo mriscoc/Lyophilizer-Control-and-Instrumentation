@@ -38,7 +38,7 @@ port (
   RSTn      : in  std_logic;
   RXRS      : in  std_logic;
   TXRS      : out std_logic;
-  SWTS      : in  std_logic_vector(7 downto 0);
+  BTN      :  in  std_logic;
   LEDS      : out std_logic_vector(7 downto 0);
   TC1_nCS   : out std_logic;
   TC1_MISO  : in  std_logic;
@@ -66,6 +66,7 @@ architecture SBA_Liofilizador_structural of SBA_Liofilizador_Top is
 -- Auxiliary external to internal signals
   Signal CLKe  : std_logic;
   Signal RSTe  : std_logic;
+  Signal SWTe  : std_logic_vector(7 downto 0);
 
 -- Auxiliary IPCores signals
   Signal INT_TIMER  : std_logic;
@@ -122,7 +123,7 @@ begin
     DAT_I => DATOi,
     DAT_O => ADATi(STB_GPIO),
     -------------
-    P_I   => SWTS,
+    P_I   => SWTe,
     P_O   => LEDS
   );
 
@@ -185,11 +186,11 @@ begin
   );
 
 
-
 -- External Signals Assignments
 -------------------------------
  RSTe  <= not RSTn;             -- SBA reset is active high, negate if it is necessary
  CLKe  <= CLK_I;
+ SWTe  <= (0=>BTN,others=>'1');
 
 -- Internal Signals Assignments
 -------------------------------

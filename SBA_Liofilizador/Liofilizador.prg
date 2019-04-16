@@ -12,7 +12,10 @@
   variable counter : natural range 0 to 65535;  -- Simple counter
   variable capture : natural range 0 to 65535;  -- Capture data at timer interrupt
   variable Idx     : natural;                   -- General purpose index
-
+  variable T       : unsigned(12 downto 0);     -- Temperature register 13 bits
+  variable Sign    : std_logic;                 -- Sign bit
+  variable TCR0    : unsigned(15 downto 0);     -- PMODTC1 register 0
+  variable TCR1    : unsigned(15 downto 0);     -- PMODTC1 register 1
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
@@ -80,8 +83,8 @@
 -- /L:Init
 => counter:=1; capture:=0;
 => SBAwrite(TMRCHS,0);          -- Select timer 0
-=> SBAwrite(TMRDATL,x"E100");   -- Write to LSW, (100'000,000 = 5F5E100)
-=> SBAwrite(TMRDATH,x"05F5");   -- Write to MSW
+=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (100'000,000 = 5F5E100)
+=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
 => SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
 => SBAinte(true);               -- Enable interrupts
 
@@ -97,14 +100,20 @@
      SBAjump(LoopMain);
    else
      capture:=0;
+     inc(counter);
    end if;
-   inc(counter);
 
-=> SBAwrite(GPIO,counter);
-=> bin_in:=to_unsigned(counter,bin_in'length); SBAcall(Bin2BCD);
+=> SBAread(TC1R0);
+=> TCR0:=dati;
+=> SBAread(TC1R1);
+=> TCR1:=dati;
+=> SBAwrite(GPIO,TCR0);
+=> T:=TCR1(14 downto 2); Sign:=TCR1(15);
+=> bin_in:=T&"00"; SBAcall(Bin2BCD);
 => RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
+=> RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
 => RSTmp:=x"0D"; SBAcall(UARTSendChar);

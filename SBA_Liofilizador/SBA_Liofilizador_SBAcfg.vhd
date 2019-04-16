@@ -47,7 +47,7 @@ package SBA_Liofilizador_SBAconfig is
   Constant Adr_width : integer := 16;   -- Width of address bus
   Constant Dat_width : integer := 16;   -- Width of data bus
   Constant Stb_width : integer := 8;    -- number of strobe signals (chip select)
-  Constant sysfreq   : integer := 100e6; -- Main system clock frequency
+  Constant sysfreq   : integer := 10e6; -- Main system clock frequency
 
 -- Address Map
   Constant GPIO       : integer := 0;

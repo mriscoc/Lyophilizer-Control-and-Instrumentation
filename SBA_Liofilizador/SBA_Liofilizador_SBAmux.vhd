@@ -73,8 +73,8 @@ begin
   case ADRi is
   ------------------------------------------------------------------------------
      When GPIO                => STBi <= stb(STB_GPIO);     -- GPIO       = 0
-     When AD1_0               => STBi <= stb(STB_PMODAD1);  -- AD1_0      = 2
-     When AD1_1               => STBi <= stb(STB_PMODAD1);  -- AD1_1      = 3
+     When TC1R0               => STBi <= stb(STB_PMODTC1);  -- TC1R0      = 2
+     When TC1R1               => STBi <= stb(STB_PMODTC1);  -- TC1R1      = 3
      When TMRDATL             => STBi <= stb(STB_TIMER);    -- TMRDATL    = 4
      When TMRDATH             => STBi <= stb(STB_TIMER);    -- TMRDATH    = 5
      When TMRCFG              => STBi <= stb(STB_TIMER);    -- TMRCFG     = 6
@@ -93,8 +93,8 @@ begin
   case ADRi is
   ------------------------------------------------------------------------------
      When GPIO                => DAT_O <= ADAT_I(STB_GPIO);     -- GPIO       = 0
-     When AD1_0               => DAT_O <= ADAT_I(STB_PMODAD1);  -- AD1_0      = 2
-     When AD1_1               => DAT_O <= ADAT_I(STB_PMODAD1);  -- AD1_1      = 3
+     When TC1R0               => DAT_O <= ADAT_I(STB_PMODTC1);  -- TC1R0      = 2
+     When TC1R1               => DAT_O <= ADAT_I(STB_PMODTC1);  -- TC1R1      = 3
      When TMRDATL             => DAT_O <= ADAT_I(STB_TIMER);    -- TMRDATL    = 4
      When TMRDATH             => DAT_O <= ADAT_I(STB_TIMER);    -- TMRDATH    = 5
      When TMRCFG              => DAT_O <= ADAT_I(STB_TIMER);    -- TMRCFG     = 6
