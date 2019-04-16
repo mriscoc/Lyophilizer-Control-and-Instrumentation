@@ -40,10 +40,9 @@ port (
   TXRS      : out std_logic;
   SWTS      : in  std_logic_vector(7 downto 0);
   LEDS      : out std_logic_vector(7 downto 0);
-  AD1_nCS   : out std_logic;
-  AD1_D0    : in  std_logic;
-  AD1_D1    : in  std_logic;
-  AD1_SCK   : out std_logic
+  TC1_nCS   : out std_logic;
+  TC1_MISO  : in  std_logic;
+  TC1_SCK   : out std_logic
 );
 end SBA_Liofilizador_Top;
 
@@ -127,7 +126,7 @@ begin
     P_O   => LEDS
   );
 
-  PMODAD1: entity work.PMODAD1
+  PMODTC1: entity work.PMODTC1
   generic map(
     debug   => debug,
     sysfreq => sysfreq
@@ -136,15 +135,14 @@ begin
     -------------
     RST_I => RSTi,
     CLK_I => CLKi,
-    STB_I => STBi(STB_PMODAD1),
+    STB_I => STBi(STB_PMODTC1),
     ADR_I => ADRi,
     WE_I  => WEi,
-    DAT_O => ADATi(STB_PMODAD1),
+    DAT_O => ADATi(STB_PMODTC1),
     -------------
-    nCS   => AD1_nCS,
-    D0    => AD1_D0,
-    D1    => AD1_D1,
-    SCK   => AD1_SCK
+    nCS   => TC1_nCS,
+    MISO  => TC1_MISO,
+    SCK   => TC1_SCK
   );
 
   TIMER: entity work.TIMER
