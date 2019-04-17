@@ -108,12 +108,16 @@
 => SBAread(TC1R1);
 => TCR1:=dati;
 => SBAwrite(GPIO,TCR0);
-=> T:=TCR1(14 downto 2); Sign:=TCR1(15);
-=> bin_in:=T&"00"; SBAcall(Bin2BCD);
+--
+-- T:=TCR1(14 downto 2); Sign:=TCR1(15);
+-- bin_in:=T&"00"; SBAcall(Bin2BCD);
+=> T:=Resize(5*TCR0(14 downto 7),T'length); Sign:=TCR0(15);
+=> bin_in:="000"&T; SBAcall(Bin2BCD);
+--
 => RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
-=> RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
+-- RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
 => RSTmp:=x"0D"; SBAcall(UARTSendChar);
