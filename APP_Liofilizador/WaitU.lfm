@@ -1,0 +1,33 @@
+object WaitF: TWaitF
+  Left = 1234
+  Height = 77
+  Top = 459
+  Width = 284
+  BorderIcons = []
+  BorderStyle = bsToolWindow
+  Caption = 'WaitF'
+  ClientHeight = 77
+  ClientWidth = 284
+  Position = poScreenCenter
+  LCLVersion = '1.6.0.4'
+  object WaitLabel: TLabel
+    Left = 5
+    Height = 15
+    Top = 5
+    Width = 274
+    Align = alTop
+    BorderSpacing.Around = 5
+    Caption = 'Procesando...'
+    ParentColor = False
+    WordWrap = True
+  end
+  object ProgressBar: TProgressBar
+    Left = 8
+    Height = 20
+    Top = 48
+    Width = 268
+    Anchors = [akLeft, akRight, akBottom]
+    Smooth = True
+    TabOrder = 0
+  end
+end

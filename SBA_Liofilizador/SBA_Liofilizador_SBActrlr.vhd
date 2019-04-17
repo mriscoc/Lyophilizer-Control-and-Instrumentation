@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 41;
+  subtype STP_type is integer range 0 to 42;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
   signal D_Oi : unsigned(DAT_O'range);       -- Internal Data Out signal (unsigned)
@@ -166,7 +166,7 @@ begin
   variable counter : natural range 0 to 65535;  -- Simple counter
   variable capture : natural range 0 to 65535;  -- Capture data at timer interrupt
   variable Idx     : natural;                   -- General purpose index
-  variable T       : unsigned(12 downto 0);     -- Temperature register 13 bits
+  variable T       : unsigned(15 downto 0);     -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
   variable TCR0    : unsigned(15 downto 0);     -- PMODTC1 register 0
   variable TCR1    : unsigned(15 downto 0);     -- PMODTC1 register 1
@@ -309,21 +309,24 @@ begin
         When 029=> TCR1:=dati;
         When 030=> SBAwrite(GPIO,TCR0);
 --
--- T:=TCR1(14 downto 2); Sign:=TCR1(15);
--- bin_in:=T&"00"; SBAcall(Bin2BCD);
-        When 031=> T:=Resize(5*TCR0(14 downto 7),T'length); Sign:=TCR0(15);
-        When 032=> bin_in:="000"&T; SBAcall(Bin2BCD);
+-- Thermocuple temperature
+        When 031=> T:=Resize(25*TCR1(14 downto 2),T'length); Sign:=TCR1(15);
+        When 032=> bin_in:=T; SBAcall(Bin2BCD);
+--
+-- Reference Juntion Temperature
+-- T:=Resize(25*TCR0(14 downto 4),T'length); Sign:=TCR0(15);
+-- bin_in:="00"&T(15 downto 2); SBAcall(Bin2BCD);
 --
         When 033=> RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
         When 034=> RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
         When 035=> RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
--- RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
-        When 036=> RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
-        When 037=> RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
-        When 038=> RSTmp:=x"0D"; SBAcall(UARTSendChar);
-        When 039=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
+        When 036=> RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
+        When 037=> RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
+        When 038=> RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
+        When 039=> RSTmp:=x"0D"; SBAcall(UARTSendChar);
+        When 040=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
                 
-        When 040=> SBAjump(LoopMain);
+        When 041=> SBAjump(LoopMain);
                 
 -- /SBA: End User Program ------------------------------------------------------
 

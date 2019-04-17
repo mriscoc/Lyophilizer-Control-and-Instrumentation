@@ -12,7 +12,7 @@
   variable counter : natural range 0 to 65535;  -- Simple counter
   variable capture : natural range 0 to 65535;  -- Capture data at timer interrupt
   variable Idx     : natural;                   -- General purpose index
-  variable T       : unsigned(12 downto 0);     -- Temperature register 13 bits
+  variable T       : unsigned(15 downto 0);     -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
   variable TCR0    : unsigned(15 downto 0);     -- PMODTC1 register 0
   variable TCR1    : unsigned(15 downto 0);     -- PMODTC1 register 1
@@ -109,15 +109,18 @@
 => TCR1:=dati;
 => SBAwrite(GPIO,TCR0);
 --
--- T:=TCR1(14 downto 2); Sign:=TCR1(15);
--- bin_in:=T&"00"; SBAcall(Bin2BCD);
-=> T:=Resize(5*TCR0(14 downto 7),T'length); Sign:=TCR0(15);
-=> bin_in:="000"&T; SBAcall(Bin2BCD);
+-- Thermocuple temperature
+=> T:=Resize(25*TCR1(14 downto 2),T'length); Sign:=TCR1(15);
+=> bin_in:=T; SBAcall(Bin2BCD);
+--
+-- Reference Juntion Temperature
+-- T:=Resize(25*TCR0(14 downto 4),T'length); Sign:=TCR0(15);
+-- bin_in:="00"&T(15 downto 2); SBAcall(Bin2BCD);
 --
 => RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
--- RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
+=> RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
 => RSTmp:=x"0D"; SBAcall(UARTSendChar);
