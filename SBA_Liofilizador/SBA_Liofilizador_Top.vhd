@@ -168,7 +168,7 @@ begin
   generic map(
     debug   => debug,
     sysfreq => sysfreq,
-    baud    => 115200,
+    baud    => 230400,
     rxbuff  => 8
   )
   port map(

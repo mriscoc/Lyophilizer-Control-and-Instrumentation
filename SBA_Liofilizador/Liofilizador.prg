@@ -57,6 +57,26 @@
      SBARet;
    end if;
 
+-- /L:UARTSendBCD
+=> if Sign='1' then
+     RSTmp:=chr2uns('-');
+   else
+     RSTmp:=chr2uns(' ');
+   end if;
+   SBAcall(UARTSendChar);
+=> RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
+=> RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
+=> RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
+=> RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
+=> RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
+=> RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
+=> SBARet;
+
+-- /L:UARTSendNewLine
+=> RSTmp:=x"0D"; SBAcall(UARTSendChar);
+=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
+=> SBARet;
+
 -- /L:Bin2BCD
 => bcd_out := (others=>'0');
    if bin_in=0 then SBAret; end if;
@@ -109,23 +129,19 @@
 => TCR1:=dati;
 => SBAwrite(GPIO,TCR0);
 --
+-- Reference Juntion Temperature
+=> T:=Resize(25*TCR0(14 downto 4),T'length); Sign:=TCR0(15);
+=> bin_in:="00"&T(15 downto 2); SBAcall(Bin2BCD);
+=> SBACall(UARTSendBCD);
+--
+=> RSTmp:=chr2uns(','); SBAcall(UARTSendChar);
+--
 -- Thermocuple temperature
 => T:=Resize(25*TCR1(14 downto 2),T'length); Sign:=TCR1(15);
 => bin_in:=T; SBAcall(Bin2BCD);
+=> SBACall(UARTSendBCD);
 --
--- Reference Juntion Temperature
--- T:=Resize(25*TCR0(14 downto 4),T'length); Sign:=TCR0(15);
--- bin_in:="00"&T(15 downto 2); SBAcall(Bin2BCD);
---
-=> RSTmp:=hex(x"0" & bcd_out(19 downto 16)); SBAcall(UARTSendChar);
-=> RSTmp:=hex(x"0" & bcd_out(15 downto 12)); SBAcall(UARTSendChar);
-=> RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
-=> RSTmp:=chr2uns('.'); SBAcall(UARTSendChar);
-=> RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
-=> RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
-=> RSTmp:=x"0D"; SBAcall(UARTSendChar);
-=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
-
+=> SBACall(UARTSendNewLine);
 => SBAjump(LoopMain);
 
 -- /SBA: End User Program ------------------------------------------------------
