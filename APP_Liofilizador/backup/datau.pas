@@ -23,15 +23,15 @@ type
 
 var
   DBPath,DBName:String;
-  nChannels:integer=4;
+  nChannels:integer=2;
   AData: TAData;
   AOffset: TAOffset;       //  Compensación para la calibración
   StartTime: TDateTime;    //  Timestamp de Inicio de la toma de datos
   LoLimit,UpLimit:integer; //  Límites al valor de un dato
   Simulate:Boolean=false;  //  Modo simulación
   versionst:string='';     //  Version del programa
-  Precision:integer=1;     //  Número de lugares decimales en los datos de entrada
-  COMPORT:integer=3;       //  # Puerto de Comunicacion
+  Precision:integer=2;     //  Número de lugares decimales en los datos de entrada
+  COMPORT:integer=4;       //  # Puerto de Comunicacion
   COMLimit:integer=20;     //  Número Maximo de puertos COM en autobusqueda
   AutoCOM:boolean=true;    //  Autosearch device in COM ports
 

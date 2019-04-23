@@ -54,7 +54,7 @@
      SBAread(UART0);             -- Continue read UART Status
      SBAjump(UARTGetChar+1);
    else
-     SBAret;
+     SBARet;
    end if;
 
 -- /L:UARTSendBCD
@@ -69,7 +69,7 @@
 => RSTmp:=hex(x"0" & bcd_out(11 downto 08)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(07 downto 04)); SBAcall(UARTSendChar);
 => RSTmp:=hex(x"0" & bcd_out(03 downto 00)); SBAcall(UARTSendChar);
-=> SBAret;
+=> SBARet;
 
 -- /L:Bin2BCD
 => bcd_out := (others=>'0');
@@ -95,7 +95,7 @@
 ------------------------------ MAIN PROGRAM ------------------------------------
 
 -- /L:Init
-=> counter:=0; timerf:='0';
+=> counter:=1; timerf:='0';
 => SBAwrite(TMRCHS,0);          -- Select timer 0
 => SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (100'000,000 = 5F5E100)
 => SBAwrite(TMRDATH,x"004C");   -- Write to MSW
@@ -110,9 +110,9 @@
 
 -- /L:LoopMain
 => if (timerf='1') then
-     SBAjump(GetTemperatureData);
      timerf:='0';
      inc(counter);
+     SBAjump(GetTemperatureData);
    end if;
 
 
@@ -129,9 +129,8 @@
    SBAread(TC1R1);
 => TCR1:=dati;
 --
--- /L:SendTemperatureData
+-- /L:SendStartOfFrame
 => RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);             -- Start of frame
-=> RSTmp:=x"15"; SBAcall(UARTSendChar);                    -- Frame Size
 => RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);             -- Data Frame
 --
 -- Send counter
@@ -141,6 +140,7 @@
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 --
+-- /L:SendTemperatureData
 -- Reference Juntion Temperature
 => T:=Resize(25*TCR0(14 downto 4),T'length); Sign:=TCR0(15);
    bin_in:="00"&T(15 downto 2); SBAcall(Bin2BCD);

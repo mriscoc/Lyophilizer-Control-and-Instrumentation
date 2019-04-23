@@ -169,10 +169,6 @@ var
   I:byte;
   chk:word;
 begin
-  //
-  result:=true;
-  exit;
-  //
   chk:=0;
   for I := FHSize+2 to FHSize+DataFrameSize do chk:=chk+ord(RDataBuf[I]);
   result := (Lo(chk) = ord(RDataBuf[FHSize+DataFrameSize+1]));

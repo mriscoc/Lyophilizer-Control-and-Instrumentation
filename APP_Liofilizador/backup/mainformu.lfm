@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1203
+  Left = 1094
   Height = 430
-  Top = 415
+  Top = 427
   Width = 646
   Caption = 'Data Logger'
   ClientHeight = 430
@@ -137,12 +137,12 @@ object MainForm: TMainForm
       object TabSheet1: TTabSheet
         Caption = 'Data Table'
         ClientHeight = 282
-        ClientWidth = 505
+        ClientWidth = 511
         object DBGrid1: TDBGrid
           Left = 0
           Height = 282
           Top = 0
-          Width = 505
+          Width = 511
           Align = alClient
           AlternateColor = clCream
           AutoAdvance = aaNone
@@ -159,12 +159,12 @@ object MainForm: TMainForm
       object TabSheet3: TTabSheet
         Caption = 'Config'
         ClientHeight = 282
-        ClientWidth = 505
+        ClientWidth = 511
         object ConfigPanel: TPanel
           Left = 0
           Height = 140
           Top = 0
-          Width = 505
+          Width = 511
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -183,11 +183,11 @@ object MainForm: TMainForm
           Left = 0
           Height = 142
           Top = 140
-          Width = 504
+          Width = 510
           Align = alClient
           BorderSpacing.Right = 1
           ClientHeight = 142
-          ClientWidth = 504
+          ClientWidth = 510
           Color = clBtnFace
           ParentColor = False
           TabOrder = 1
@@ -282,7 +282,7 @@ object MainForm: TMainForm
             Left = 192
             Height = 46
             Top = 64
-            Width = 304
+            Width = 310
             Anchors = [akTop, akLeft, akRight, akBottom]
             DataField = 'Description'
             DataSource = PrjDataS
@@ -292,7 +292,7 @@ object MainForm: TMainForm
             Left = 192
             Height = 23
             Top = 24
-            Width = 304
+            Width = 310
             DataField = 'Name'
             DataSource = PrjDataS
             Anchors = [akTop, akLeft, akRight]
@@ -339,7 +339,7 @@ object MainForm: TMainForm
             ParentColor = False
           end
           object B_SavePrj: TButton
-            Left = 421
+            Left = 427
             Height = 25
             Top = 114
             Width = 75
@@ -353,13 +353,13 @@ object MainForm: TMainForm
       object TabSheet2: TTabSheet
         Caption = 'Data Frames'
         ClientHeight = 282
-        ClientWidth = 505
+        ClientWidth = 511
         TabVisible = False
         object LogMemo: TMemo
           Left = 0
           Height = 282
           Top = 0
-          Width = 505
+          Width = 511
           Align = alClient
           Font.CharSet = ANSI_CHARSET
           Font.Height = -12

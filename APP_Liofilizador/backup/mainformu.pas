@@ -507,7 +507,7 @@ begin
   end else
   begin
     v:=Lo(HW.IDEq)/10;
-    S:='versión firmware: '+floattostrF(v,ffFixed,2,1);
+    S:='versión firmware: '+HW.hardwareID; //floattostrF(v,ffFixed,2,1);
     WaitF.WaitLabel.Caption:='Hardware encontrado en COM'+inttostr(COMPort)+#$0d+S;
     WaitF.EndStep;
     MainForm.Caption:=MainTitle+' versión: '+versionst+' - Hardware en COM'+inttostr(COMPort)+' '+S;

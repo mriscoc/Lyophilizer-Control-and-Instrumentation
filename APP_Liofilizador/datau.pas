@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Dialogs, Graphics;
 
 const
-  HWchannels=16;     // Hardware max capacity, define the length of the com frame
+  HWchannels=4;     // Hardware max capacity, define the length of the com frame
   DefColor: Array [0..15] of TColor = ($00A1A55D, clBlue, clRed, $003153C4, clMaroon, $000996E7, clBlack, $0084A7C9, clDkGray, $00536508, $00846401, clTeal, clBlue, clFuchsia, clOlive, clPurple);
   MainTitle='Data Logger -';
   {$IFDEF WINDOWS}

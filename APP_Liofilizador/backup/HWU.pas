@@ -93,6 +93,7 @@ begin
       Move(StrBuf[1], DataBuf[0], 91);
 
       ShowMessage(StrBuf);
+      ShowMessage(DataBuf);
 
       if DataBuf[0]=ord('C') then
       begin
