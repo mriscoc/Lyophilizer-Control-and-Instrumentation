@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1094
+  Left = 1046
   Height = 430
-  Top = 427
+  Top = 363
   Width = 646
   Caption = 'Data Logger'
   ClientHeight = 430
@@ -52,10 +52,10 @@ object MainForm: TMainForm
       Height = 310
       Top = 120
       Width = 519
-      ActivePage = GraphSheet
+      ActivePage = TabSheet1
       Align = alClient
       Images = ImageList1
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 1
       TabPosition = tpBottom
       object GraphSheet: TTabSheet
@@ -229,18 +229,20 @@ object MainForm: TMainForm
             Height = 23
             Top = 44
             Width = 66
+            MaxValue = 500
             OnChange = Ed_UplimitChange
             TabOrder = 1
-            Value = 50
+            Value = 500
           end
           object Ed_Lolimit: TSpinEdit
             Left = 88
             Height = 23
             Top = 78
             Width = 66
+            MinValue = -40
             OnChange = Ed_LolimitChange
             TabOrder = 2
-            Value = 5
+            Value = -40
           end
           object SpeedButton1: TSpeedButton
             Left = 133
@@ -348,27 +350,6 @@ object MainForm: TMainForm
             OnClick = B_SavePrjClick
             TabOrder = 6
           end
-        end
-      end
-      object TabSheet2: TTabSheet
-        Caption = 'Data Frames'
-        ClientHeight = 282
-        ClientWidth = 511
-        TabVisible = False
-        object LogMemo: TMemo
-          Left = 0
-          Height = 282
-          Top = 0
-          Width = 511
-          Align = alClient
-          Font.CharSet = ANSI_CHARSET
-          Font.Height = -12
-          Font.Name = 'Consolas'
-          Font.Pitch = fpFixed
-          Font.Quality = fqDraft
-          ParentFont = False
-          ScrollBars = ssAutoVertical
-          TabOrder = 0
         end
       end
     end
@@ -531,18 +512,19 @@ object MainForm: TMainForm
     end
     object L_Time: TStaticText
       Left = 5
-      Height = 48
-      Top = 67
+      Height = 32
+      Top = 77
       Width = 112
       Align = alTop
       Alignment = taCenter
+      BorderSpacing.Top = 10
       BorderSpacing.Around = 5
       BorderStyle = sbsSunken
-      Caption = '00:00'
+      Caption = '00:00:00'
       Color = clBlack
       Font.CharSet = ANSI_CHARSET
       Font.Color = clCream
-      Font.Height = -37
+      Font.Height = -25
       Font.Name = 'Tahoma'
       Font.Pitch = fpVariable
       Font.Quality = fqDraft
@@ -613,10 +595,10 @@ object MainForm: TMainForm
     left = 544
     top = 144
   end
-  object Regdata: TTimer
+  object RegdataTimer: TTimer
     Enabled = False
     Interval = 3000
-    OnTimer = RegdataTimer
+    OnTimer = RegdataTimerTimer
     left = 480
     top = 144
   end

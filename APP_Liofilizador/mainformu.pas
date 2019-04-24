@@ -49,7 +49,6 @@ type
     Label8: TLabel;
     LED_Con: TuELED;
     LED_DB: TuELED;
-    LogMemo: TMemo;
     MainChart: TChart;
     OpenDB: TOpenDialog;
     PageControl1: TPageControl;
@@ -61,7 +60,6 @@ type
     SpeedButton1: TSpeedButton;
     Ed_Sampletime: TSpinEdit;
     TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     VDataSource: TDataSource;
     TimeSource: TDateTimeIntervalChartSource;
@@ -69,7 +67,7 @@ type
     MainTic: TTimer;
     ChPanel: TPanel;
     Control_Panel: TPanel;
-    Regdata: TTimer;
+    RegdataTimer: TTimer;
     procedure ACreateDBExecute(Sender: TObject);
     procedure AReconectHWExecute(Sender: TObject);
     procedure B_ConnectClick(Sender: TObject);
@@ -88,7 +86,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure RegdataTimer(Sender: TObject);
+    procedure RegdataTimerTimer(Sender: TObject);
   private
     { private declarations }
     procedure Connect;
@@ -166,7 +164,7 @@ end;
 
 procedure TMainForm.B_EnableDBClick(Sender: TObject);
 begin
-  If RegData.Enabled then DisableDB else EnableDB;
+  If RegdataTimer.Enabled then DisableDB else EnableDB;
 end;
 
 procedure TMainForm.B_OpenDBClick(Sender: TObject);
@@ -209,7 +207,7 @@ end;
 
 procedure TMainForm.Ed_SampletimeChange(Sender: TObject);
 begin
-  RegData.Interval:=Ed_Sampletime.Value*1000;
+  RegdataTimer.Interval:=Ed_Sampletime.Value*1000;
 end;
 
 procedure TMainForm.FormActivate(Sender: TObject);
@@ -219,19 +217,12 @@ begin
   ComPort:=Ed_ComPort.Value;
 end;
 
-//procedure TMainForm.MainTicTimer(Sender: TObject);
-//begin
-//  If not simulate then SendData else GenSimData;
-//  UpdateDsply;
-//end;
-
 //// Compatibilidad con MDA
 procedure TMainForm.MainTicTimer(Sender: TObject);
 begin
-  GetData;
   if (HW<>nil) then
   begin
-    HW.Actualizar;
+    if HW.Actualizar then GetData;
     if (not simulate) and HW.error then
     begin
       Disconnect;
@@ -291,7 +282,7 @@ begin
   If WaitF<>nil then WaitF.Free;
 end;
 
-procedure TMainForm.RegdataTimer(Sender: TObject);
+procedure TMainForm.RegdataTimerTimer(Sender: TObject);
 begin
   If DataM.DataSet.Active then
   begin
@@ -371,7 +362,7 @@ procedure TMainForm.UpdateDsply;
 var i:integer;
 begin
   for i:=0 to nChannels-1 do AChannels[i].PutValue(AData[i]);
-  if RegData.Enabled then L_Time.Caption:=FormatDateTime('nn:ss',Now-StartTime);
+  if RegdataTimer.Enabled then L_Time.Caption:=FormatDateTime('hh:nn:ss',Now-StartTime);
 end;
 
 procedure TMainForm.ResetData;
@@ -385,18 +376,19 @@ begin
   if not DataM.DataSet.Active then ACreateDBExecute(nil);
   if DataM.DataSet.Active then
   begin
-    RegData.Enabled:=true;
+    RegdataTimer.Enabled:=true;
     LED_DB.Color := clLime;
     B_EnableDB.Caption:='Stop Acq.';
     B_EnableDB.Glyph:=nil;
     ImageList1.GetBitmap(3,B_EnableDB.Glyph);
     If StartTime=0 then StartTime:=Now;
+    DBGrid1.Columns[0].Width:=500;
   end;
 end;
 
 procedure TMainForm.DisableDB;
 begin
-  RegData.Enabled:=False;
+  RegdataTimer.Enabled:=False;
   LED_DB.Color := clRed;
   B_EnableDB.Caption:='Acquire';
   B_EnableDB.Glyph:=nil;
@@ -450,7 +442,6 @@ end;
 
 procedure TMainForm.InitHardware;
 var S:String;
-    v:single;
     timeOut:integer;
     Conectado:boolean;
 begin
@@ -506,8 +497,7 @@ begin
     Simulate:=true;
   end else
   begin
-    //v:=Lo(HW.IDEq)/10;
-    S:='versión firmware: '+HW.hardwareID; //floattostrF(v,ffFixed,2,1);
+    S:='';//'versión firmware: '+HW.hardwareID;
     WaitF.WaitLabel.Caption:='Hardware encontrado en COM'+inttostr(COMPort)+#$0d+S;
     WaitF.EndStep;
     MainForm.Caption:=MainTitle+' versión: '+versionst+' - Hardware en COM'+inttostr(COMPort)+' '+S;
