@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 49;
+  subtype STP_type is integer range 0 to 53;
   type STPS_type is array (0 to 7) of STP_type;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
@@ -172,10 +172,10 @@ begin
   variable counter : natural range 0 to 65535;  -- Simple counter
   variable timerf  : std_logic;                 -- timer interrupt flag
   variable Idx     : natural;                   -- General purpose index
-  variable T       : unsigned(15 downto 0);     -- Temperature register
+  variable T       : signed(15 downto 0);       -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
-  variable TCR0    : unsigned(15 downto 0);     -- PMODTC1 register 0
-  variable TCR1    : unsigned(15 downto 0);     -- PMODTC1 register 1
+  variable T0      : signed(21 downto 0);       -- Temperature Ch0
+  variable T1      : signed(21 downto 0);       -- Temperature Ch1
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
@@ -199,8 +199,7 @@ begin
   constant SendMsg: integer := 027;
   constant LoopMain: integer := 031;
   constant EndLoopMain: integer := 032;
-  constant GetTemperatureData: integer := 033;
-  constant SendTemperatureData: integer := 036;
+  constant SendTemperatureData: integer := 033;
 -- /SBA: End Label constants ---------------------------------------------------
 
 begin
@@ -307,7 +306,7 @@ begin
 ------------------------------ MAIN PROGRAM ------------------------------------
                 
 -- /L:Init
-        When 021=> counter:=0; timerf:='0';
+        When 021=> counter:=0; timerf:='0';T0:=(others=>'0');T1:=(others=>'0');
         When 022=> SBAwrite(TMRCHS,0);          -- Select timer 0
         When 023=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (100'000,000 = 5F5E100)
         When 024=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
@@ -322,51 +321,56 @@ begin
                 
 -- /L:LoopMain
         When 031=> if (timerf='1') then
-                     SBAjump(GetTemperatureData);
+                     SBAjump(SendTemperatureData);
                      timerf:='0';
                      inc(counter);
                    end if;
                 
                 
                 
-                
-                
-                
 -- /L:EndLoopMain
         When 032=> SBAjump(LoopMain);
---
--- /L:GetTemperatureData
-        When 033=> SBAread(TC1R0);
-        When 034=> TCR0:=dati;
-                   SBAread(TC1R1);
-        When 035=> TCR1:=dati;
---
+                
+                
 -- /L:SendTemperatureData
-        When 036=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);             -- Start of frame
-        When 037=> RSTmp:=x"16"; SBAcall(UARTSendChar);                    -- Frame Size
-        When 038=> RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);             -- Data Frame
---
+        When 033=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame
+        When 034=> RSTmp:=x"16"; SBAcall(UARTSendChar);              -- Frame Size
+        When 035=> RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);       -- Data Frame
+                
 -- Send counter
-        When 039=> bin_in:=to_unsigned(counter,T'length); Sign:='0';
+        When 036=> bin_in:=to_unsigned(counter,T'length); Sign:='0';
                    SBAcall(Bin2BCD);
                    SBAwrite(GPIO,counter);
-        When 040=> SBACall(UARTSendBCD);
-        When 041=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+        When 037=> SBACall(UARTSendBCD);
+        When 038=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+                
+        When 039=> SBAread(TC1R0);                                   -- Reference Juntion Temperature
+        When 040=> T:=Resize(25*signed(dati(15 downto 4)),T'length);
+                   Sign:=dati(15);
+        When 041=> T0:=("000" & T0(15 downto 0) & "000") - T0;
+        When 042=> T0:= T0 + ("000" & T & "000");
+                   T0:= "000" & T0(21 downto 3);
+--   bin_in:="00"&T0(15 downto 2); SBAcall(Bin2BCD);
+-->  SBACall(UARTSendBCD);
 --
--- Reference Juntion Temperature
-        When 042=> T:=Resize(25*TCR0(14 downto 4),T'length); Sign:=TCR0(15);
-                   bin_in:="00"&T(15 downto 2); SBAcall(Bin2BCD);
-        When 043=> SBACall(UARTSendBCD);
---
-        When 044=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
---
--- Thermocuple temperature
-        When 045=> T:=Resize(25*TCR1(14 downto 2),T'length); Sign:=TCR1(15);
-                   bin_in:=T; SBAcall(Bin2BCD);
+--> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+                
+        When 043=> SBAread(TC1R1);                                   -- Thermocuple temperature
+        When 044=> T:=Resize(25*signed(dati(15 downto 2)),T'length);
+                   Sign:=dati(15);
+                
+        When 045=> bin_in:=unsigned(T); SBAcall(Bin2BCD);
         When 046=> SBACall(UARTSendBCD);
---
-        When 047=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
-        When 048=> SBAjump(LoopMain);
+        When 047=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+                
+        When 048=> T1:=("000" & T1(15 downto 0) & "000") - T1;
+        When 049=> T1:= T1 + ("000" & T & "000");
+                   T1:= resize(T0(21 downto 3),T1'length);
+                   bin_in:=unsigned(T1); SBAcall(Bin2BCD);
+        When 050=> SBACall(UARTSendBCD);
+                
+        When 051=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
+        When 052=> SBAjump(LoopMain);
                 
 -- /SBA: End User Program ------------------------------------------------------
 
