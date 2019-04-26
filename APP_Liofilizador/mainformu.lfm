@@ -1,11 +1,11 @@
 object MainForm: TMainForm
-  Left = 1046
-  Height = 430
-  Top = 363
-  Width = 646
+  Left = 414
+  Height = 516
+  Top = 279
+  Width = 829
   Caption = 'Data Logger'
-  ClientHeight = 430
-  ClientWidth = 646
+  ClientHeight = 516
+  ClientWidth = 829
   Color = clBtnFace
   Constraints.MinHeight = 430
   Constraints.MinWidth = 640
@@ -18,20 +18,20 @@ object MainForm: TMainForm
   LCLVersion = '2.0.3.0'
   object Data_Panel: TPanel
     Left = 122
-    Height = 430
+    Height = 516
     Top = 0
-    Width = 519
+    Width = 702
     Align = alClient
     BorderSpacing.Right = 5
     BevelOuter = bvNone
-    ClientHeight = 430
-    ClientWidth = 519
+    ClientHeight = 516
+    ClientWidth = 702
     TabOrder = 0
     object ChPanel: TPanel
       Left = 0
       Height = 120
       Top = 0
-      Width = 518
+      Width = 701
       Align = alTop
       AutoSize = True
       BorderSpacing.Right = 1
@@ -49,24 +49,24 @@ object MainForm: TMainForm
     end
     object PageControl1: TPageControl
       Left = 0
-      Height = 310
+      Height = 396
       Top = 120
-      Width = 519
-      ActivePage = TabSheet1
+      Width = 702
+      ActivePage = GraphSheet
       Align = alClient
       Images = ImageList1
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 1
       TabPosition = tpBottom
       object GraphSheet: TTabSheet
         Caption = 'Plot'
-        ClientHeight = 282
-        ClientWidth = 511
+        ClientHeight = 368
+        ClientWidth = 694
         object MainChart: TChart
           Left = 0
-          Height = 282
+          Height = 368
           Top = 0
-          Width = 511
+          Width = 694
           AntialiasingMode = amOn
           AxisList = <          
             item
@@ -115,6 +115,7 @@ object MainForm: TMainForm
           BackColor = clWhite
           Foot.Brush.Color = clBtnFace
           Foot.Font.Color = clBlue
+          GUIConnector = ChartGUIConnectorBGRA1
           Legend.Alignment = laTopCenter
           Legend.ColumnCount = 8
           Legend.Font.Height = -11
@@ -357,12 +358,12 @@ object MainForm: TMainForm
   end
   object Control_Panel: TPanel
     Left = 0
-    Height = 430
+    Height = 516
     Top = 0
     Width = 122
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 430
+    ClientHeight = 516
     ClientWidth = 122
     Color = clGray
     Font.Color = clCream
@@ -591,7 +592,7 @@ object MainForm: TMainForm
   end
   object MainTic: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 100
     OnTimer = MainTicTimer
     left = 544
     top = 144
@@ -817,5 +818,9 @@ object MainForm: TMainForm
     DataSet = DataM.PrjDataset
     left = 544
     top = 208
+  end
+  object ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA
+    left = 392
+    top = 48
   end
 end

@@ -12,10 +12,10 @@
   variable counter : natural range 0 to 65535;  -- Simple counter
   variable timerf  : std_logic;                 -- timer interrupt flag
   variable Idx     : natural;                   -- General purpose index
-  variable T       : unsigned(15 downto 0);     -- Temperature register
+  variable T       : signed(15 downto 0);       -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
-  variable T0      : unsigned(21 downto 0);     -- Temperature Ch0
-  variable T1      : unsigned(21 downto 0);     -- Temperature Ch1
+  variable T0      : signed(21 downto 0);       -- Temperature Ch0
+  variable T1      : signed(21 downto 0);       -- Temperature Ch1
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
@@ -97,8 +97,8 @@
 -- /L:Init
 => counter:=0; timerf:='0';T0:=(others=>'0');T1:=(others=>'0');
 => SBAwrite(TMRCHS,0);          -- Select timer 0
-=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (100'000,000 = 5F5E100)
-=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
+=> SBAwrite(TMRDATL,x"25A0");   -- Write to LSW, (100'000,000 = 5F5E100)
+=> SBAwrite(TMRDATH,x"0026");   -- Write to MSW
 => SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
 => SBAinte(true);               -- Enable interrupts
 
@@ -123,7 +123,7 @@
 
 -- /L:SendTemperatureData
 => RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame
-=> RSTmp:=x"16"; SBAcall(UARTSendChar);              -- Frame Size
+=> RSTmp:=x"24"; SBAcall(UARTSendChar);              -- Frame Size 36
 => RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);       -- Data Frame
 
 -- Send counter
@@ -134,28 +134,33 @@
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => SBAread(TC1R0);                                   -- Reference Juntion Temperature
-=> T:=Resize(25*dati(14 downto 4),T'length);
-   Sign:=dati(15);
-=> T0:=("000" & T0(15 downto 0) & "000") - T0;
-=> T0:= T0 + ("000" & T & "000");
-   T0:= "000" & T0(21 downto 3);
---   bin_in:="00"&T0(15 downto 2); SBAcall(Bin2BCD);
--->  SBACall(UARTSendBCD);
---
---> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
-
-=> SBAread(TC1R1);                                   -- Thermocuple temperature
-=> T:=Resize(25*dati(14 downto 2),T'length);
+=> T:=Resize(25*signed(dati(15 downto 4)),T'length); -- 400xT
+   T:=Resize(T(15 downto 2),T'length);               -- T/4
    Sign:=dati(15);
 
-=> bin_in:=T; SBAcall(Bin2BCD);
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
-=> T1:=("000" & T1(15 downto 0) & "000") - T1;
+=> T0:=("0000" & T0(15 downto 0) & "00") - T0;       -- Filtered
+=> T0:= T0 + ("000" & T & "000");
+   T0:= resize(T0(21 downto 2),T1'length);
+   bin_in:=unsigned(T0(18 downto 3)); SBAcall(Bin2BCD);
+=> SBACall(UARTSendBCD);
+=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+
+=> SBAread(TC1R1);                                   -- Thermocuple temperature
+=> T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 100xT
+   Sign:=dati(15);
+
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
+=> SBACall(UARTSendBCD);
+=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+
+=> T1:=("0000" & T1(15 downto 0) & "00") - T1;       -- Filtered
 => T1:= T1 + ("000" & T & "000");
-   T1:= "000" & T0(21 downto 3);
-   bin_in:=T1; SBAcall(Bin2BCD);
+   T1:= resize(T1(21 downto 2),T1'length);
+   bin_in:=unsigned(T1(18 downto 3)); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
 
 => RSTmp:=x"0A"; SBAcall(UARTSendChar);
