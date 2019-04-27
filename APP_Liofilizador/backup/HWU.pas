@@ -19,14 +19,18 @@ Type
 
 THW = Class(TIOInterface)
 private
-    vTempx : TAData;
-    vState  : TAByte;
+  FYmax: real;
+  FYmin: real;
+  vTempx : TAData;
+  vState  : TAByte;
 public
-    function Actualizar:Boolean;
-    constructor Create;
-    destructor Destroy; override;
-    procedure GenSimData;
-    property Temperatura: TAData read vTempx;
+  function Actualizar:Boolean;
+  constructor Create;
+  destructor Destroy; override;
+  procedure GenSimData;
+  property Temperatura: TAData read vTempx;
+  property Ymax:real read FYmax;
+  property Ymin:real read FYmin;
 End;
 
 Var
@@ -39,7 +43,7 @@ begin
   Result := StrToInt('$'+Valor);
 end;
 
-function THW.Actualizar:boolean;
+function THW.Actualizar: Boolean;
 var
   i:integer;
   Buf:ansistring;
@@ -59,12 +63,17 @@ begin
       StrBuf.DelimitedText:=Copy(Buf,2,MaxInt);
       case FrameTyp of
         'C': begin
-//          IDEq:=;
+//;
         end;
         'D': for i := 0 to nChannels - 1 do
           begin
-            vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i+1],0)/100;
+            if i+1<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i+1],0)/100;
+
             vTempx[i]:=Max(LoLimit,Min(UpLimit,vTempx[i]));
+            //Cuando es llamado al conectar, UpLimit y LoLimit tienen el valor de 0;
+
+            FYMax:=Max(FYMax,vTempx[i]);
+            FYMin:=Min(FYMin,vTempx[i]);
           end;
       end;
       if assigned(StrBuf) then FreeAndNil(StrBuf);
@@ -72,9 +81,11 @@ begin
   end;
 end;
 
-constructor THW.Create();
+constructor THW.Create;
 begin
   SetLength(vState,nChannels);
+  FYmax:=MinFloat;
+  FYmin:=MaxFloat;
   inherited Create();
 end;
 
@@ -96,6 +107,8 @@ begin
   for i:=0 to nChannels-1 do
   begin
     vTempx[i]:=AOffset[i] + offset + (range)*(1/2-Cos(I/3+Time*500)/2);
+    FYMax:=Max(FYMax,vTempx[i]);
+    FYMin:=Min(FYMin,vTempx[i]);
   end;
 end;
 

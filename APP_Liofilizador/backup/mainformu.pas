@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, TAIntervalSources, TAGraph, TASeries, TATransformations,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Spin, Buttons,
   ComCtrls, DBGrids, ActnList, IniPropStorage, DbCtrls, sqlite3conn, sqldb, db,
-  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types, TACustomSource;
+  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types, TACustomSource,
+  TAGUIConnectorBGRA;
 
 type
 
@@ -24,6 +25,7 @@ type
     B_EnableDB: TBitBtn;
     B_OpenDB: TBitBtn;
     AxisTime: TChartAxisTransformations;
+    ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointCrosshairTool1: TDataPointCrosshairTool;
     ChartToolset1DataPointHintTool1: TDataPointHintTool;
@@ -222,14 +224,17 @@ procedure TMainForm.MainTicTimer(Sender: TObject);
 begin
   if (HW<>nil) then
   begin
-    if HW.Actualizar then GetData;
+    if HW.Actualizar then
+    begin
+      GetData;
+      UpdateDsply;
+    end;
     if (not simulate) and HW.error then
     begin
       Disconnect;
       MessageDlg('No se puede establecer comunicación con el dispositivo', mtError, [mbOK], 0);
     end;
   end;
-  UpdateDsply;
 end;
 
 procedure TMainForm.GetData;
@@ -249,6 +254,7 @@ end;
 procedure TMainForm.Ed_LolimitChange(Sender: TObject);
 begin
   LoLimit:=Ed_Lolimit.Value;
+ShowMessage(inttostr(lolimit));
 end;
 
 procedure TMainForm.Ed_UplimitChange(Sender: TObject);
@@ -288,6 +294,8 @@ begin
   begin
     DataM.InsertData(AData);
     DataM.VDataSet.Refresh;
+    MainChart.LeftAxis.Range.Max := HW.YMax + 2;
+    MainChart.LeftAxis.Range.Min := HW.YMin - 2;
   end;
 end;
 
@@ -324,6 +332,8 @@ var
   i:integer;
   dbs:TDbChartSource;
 begin
+  MainChart.LeftAxis.Range.UseMax:=true;
+  MainChart.LeftAxis.Range.UseMin:=true;
   for i:=0 to nChannels-1 do
   begin
     dbs:=TDbChartSource.Create(MainChart);
@@ -338,6 +348,8 @@ begin
     MainChart.AddSeries(ASeries[i]);
     ASeries[i].ZPosition:=0;
   end;
+  ASeries[1].LinePen.Width:=2;
+  ASeries[3].LinePen.Width:=2;
 end;
 
 

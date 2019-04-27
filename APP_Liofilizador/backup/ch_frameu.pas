@@ -83,8 +83,8 @@ begin
   YMax:=Ch_Serie.MaxYValue;  //Max(YMax,val);
   YMin:=Ch_Serie.MinYValue;  //Min(YMin,val);
   Ch_Val.Caption:=Format('%5.1f',[val]);
-  Ch_Chart.LeftAxis.Range.Max := YMax + 1;
-  Ch_Chart.LeftAxis.Range.Min := YMin - 1;
+  Ch_Chart.LeftAxis.Range.Max := YMax + 2;
+  Ch_Chart.LeftAxis.Range.Min := YMin - 2;
   l_maxmin.caption:=Format('%5.1f'#$0d#$0a'%5.1f',[YMax,YMin]);
 end;
 

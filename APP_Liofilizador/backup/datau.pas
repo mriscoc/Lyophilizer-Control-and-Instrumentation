@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Dialogs, Graphics;
 
 const
-  HWchannels=16;     // Hardware max capacity, define the length of the com frame
+  HWchannels=4;     // Hardware max capacity, define the length of the com frame
   DefColor: Array [0..15] of TColor = ($00A1A55D, clBlue, clRed, $003153C4, clMaroon, $000996E7, clBlack, $0084A7C9, clDkGray, $00536508, $00846401, clTeal, clBlue, clFuchsia, clOlive, clPurple);
   MainTitle='Data Logger -';
   {$IFDEF WINDOWS}
@@ -23,14 +23,13 @@ type
 
 var
   DBPath,DBName:String;
-  nChannels:integer=2;
+  nChannels:integer=4;
   AData: TAData;
   AOffset: TAOffset;       //  Compensación para la calibración
   StartTime: TDateTime;    //  Timestamp de Inicio de la toma de datos
   LoLimit,UpLimit:integer; //  Límites al valor de un dato
   Simulate:Boolean=false;  //  Modo simulación
   versionst:string='';     //  Version del programa
-  Precision:integer=2;     //  Número de lugares decimales en los datos de entrada
   COMPORT:integer=4;       //  # Puerto de Comunicacion
   COMLimit:integer=20;     //  Número Maximo de puertos COM en autobusqueda
   AutoCOM:boolean=true;    //  Autosearch device in COM ports
@@ -39,6 +38,10 @@ var
 //  function ScY(const dat,ch: integer): real;
 
 implementation
+
+Begin
+  UpLimit:=MaxInt;
+  LoLimit:=MinInt;
 
 end.
 
