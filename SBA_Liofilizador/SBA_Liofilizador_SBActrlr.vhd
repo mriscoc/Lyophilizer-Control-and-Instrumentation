@@ -347,7 +347,7 @@ begin
         When 038=> RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);             -- Data Frame
 --
 -- Send counter
-        When 039=> bin_in:=to_unsigned(counter,T'length); Sign:='0';
+        When 039=> bin_in:=to_unsigned(counter,bin_in'length); Sign:='0';
                    SBAcall(Bin2BCD);
                    SBAwrite(GPIO,counter);
         When 040=> SBACall(UARTSendBCD);

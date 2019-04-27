@@ -131,7 +131,7 @@
 --
 -- /L:SendTemperatureData
 => RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);             -- Start of frame
-=> RSTmp:=x"15"; SBAcall(UARTSendChar);                    -- Frame Size
+=> RSTmp:=x"16"; SBAcall(UARTSendChar);                    -- Frame Size
 => RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);             -- Data Frame
 --
 -- Send counter
