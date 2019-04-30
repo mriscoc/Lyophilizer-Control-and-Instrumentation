@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 414
+  Left = 753
   Height = 516
-  Top = 279
+  Top = 250
   Width = 829
   Caption = 'Data Logger'
   ClientHeight = 516

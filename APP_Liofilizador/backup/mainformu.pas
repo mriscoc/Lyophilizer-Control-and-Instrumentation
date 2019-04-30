@@ -254,7 +254,6 @@ end;
 procedure TMainForm.Ed_LolimitChange(Sender: TObject);
 begin
   LoLimit:=Ed_Lolimit.Value;
-ShowMessage(inttostr(lolimit));
 end;
 
 procedure TMainForm.Ed_UplimitChange(Sender: TObject);
