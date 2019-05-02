@@ -42,7 +42,7 @@
 # SEN_SPC,Output,PIN_J6,3,B3_N0,PIN_J6,3.3-V LVTTL,,,,,
   BTN,Input,PIN_E6,8,B8_N0,PIN_E6,3.3 V Schmitt Trigger,,,,,
 # CLK_X,Unknown,PIN_G5,2,B2_N0,,3.3-V LVTTL,,,,,
-  RSTn,Unknown,PIN_E7,8,B8_N0,,3.3 V Schmitt Trigger,,,,,
+  nRST,Unknown,PIN_E7,8,B8_N0,,3.3 V Schmitt Trigger,,,,,
 # SEN_INT1,Unknown,PIN_J5,3,B3_N0,,3.3-V LVTTL,,,,,
 # SEN_INT2,Unknown,PIN_L4,3,B3_N0,,3.3-V LVTTL,,,,,
   RXRS,Unknown,PIN_A4,8,B8_N0,,3.3-V LVTTL,,,,,
