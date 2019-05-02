@@ -355,7 +355,7 @@ begin
                 
         When 044=> T0:=("0000" & T0(15 downto 0) & "00") - T0;       -- Filtered
         When 045=> T0:= T0 + ("000" & T & "000");
-                   T0:= resize(T0(21 downto 2),T1'length);
+                   T0:= resize(T0(21 downto 2),T0'length);
                    bin_in:=unsigned(T0(18 downto 3)); SBAcall(Bin2BCD);
         When 046=> SBACall(UARTSendBCD);
         When 047=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
@@ -369,9 +369,9 @@ begin
         When 052=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
                 
         When 053=> T1:=("0000" & T1(15 downto 0) & "00") - T1;       -- Filtered
-        When 054=> T1:= T1 + ("000" & T & "000");
+        When 054=> T1:= T1 + ("0000" & T & "00");
                    T1:= resize(T1(21 downto 2),T1'length);
-                   bin_in:=unsigned(T1(18 downto 3)); SBAcall(Bin2BCD);
+                   bin_in:=unsigned(T1(17 downto 2)); SBAcall(Bin2BCD);
         When 055=> SBACall(UARTSendBCD);
                 
         When 056=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
