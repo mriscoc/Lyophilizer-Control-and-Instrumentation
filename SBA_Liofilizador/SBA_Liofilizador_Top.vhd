@@ -38,7 +38,7 @@ port (
   nRST      : in  std_logic;
   RXRS      : in  std_logic;
   TXRS      : out std_logic;
-  BTN       :  in  std_logic;
+  BTN       : in  std_logic;
   LEDS      : out std_logic_vector(7 downto 0);
   TC1_nCS   : out std_logic;
   TC1_MISO  : in  std_logic;

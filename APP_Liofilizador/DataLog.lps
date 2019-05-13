@@ -19,7 +19,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainFormU"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="240"/>
         <CursorPos X="3" Y="256"/>
         <UsageCount Value="200"/>
@@ -46,8 +45,9 @@
         <Filename Value="datau.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="DataU"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="15"/>
+        <TopLine Value="14"/>
         <CursorPos X="17" Y="46"/>
         <UsageCount Value="190"/>
         <Bookmarks Count="1">
