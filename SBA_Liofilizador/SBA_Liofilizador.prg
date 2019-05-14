@@ -97,8 +97,8 @@
 -- /L:Init
 => counter:=0; timerf:='0';T0:=(others=>'0');T1:=(others=>'0');
 => SBAwrite(TMRCHS,0);          -- Select timer 0
-=> SBAwrite(TMRDATL,x"25A0");   -- Write to LSW, (100'000,000 = 5F5E100)
-=> SBAwrite(TMRDATH,x"0026");   -- Write to MSW
+=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (5'000,000 = 4C4B40)
+=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
 => SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
 => SBAinte(true);               -- Enable interrupts
 
@@ -144,9 +144,10 @@
 
 => T0:=("0000" & T0(15 downto 0) & "00") - T0;       -- Filtered
 => T0:= T0 + ("000" & T & "000");
-   T0:= resize(T0(21 downto 2),T1'length);
+   T0:= resize(T0(21 downto 2),T0'length);
    bin_in:=unsigned(T0(18 downto 3)); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
+
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => SBAread(TC1R1);                                   -- Thermocuple temperature
@@ -158,9 +159,9 @@
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => T1:=("0000" & T1(15 downto 0) & "00") - T1;       -- Filtered
-=> T1:= T1 + ("000" & T & "000");
+=> T1:= T1 + ("0000" & T & "00");
    T1:= resize(T1(21 downto 2),T1'length);
-   bin_in:=unsigned(T1(18 downto 3)); SBAcall(Bin2BCD);
+   bin_in:=unsigned(T1(17 downto 2)); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
 
 => RSTmp:=x"0A"; SBAcall(UARTSendChar);

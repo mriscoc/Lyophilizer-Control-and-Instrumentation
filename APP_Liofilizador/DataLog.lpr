@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, tachartlazaruspkg, tachartbgra, MainFormU, uecontrols, sdposeriallaz,
-  Ch_FrameU, DataU, datamu, CHConfig_FrameU, WaitU
+  Forms, tachartlazaruspkg, anchordockpkg, tachartbgra, MainFormU, uecontrols,
+  etpackage, sdposeriallaz, Ch_FrameU, DataU, datamu, CHConfig_FrameU, WaitU
   { you can add units after this };
 
 {$R *.res}

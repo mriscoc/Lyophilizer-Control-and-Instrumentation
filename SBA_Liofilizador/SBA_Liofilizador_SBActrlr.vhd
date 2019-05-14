@@ -308,8 +308,8 @@ begin
 -- /L:Init
         When 021=> counter:=0; timerf:='0';T0:=(others=>'0');T1:=(others=>'0');
         When 022=> SBAwrite(TMRCHS,0);          -- Select timer 0
-        When 023=> SBAwrite(TMRDATL,x"25A0");   -- Write to LSW, (100'000,000 = 5F5E100)
-        When 024=> SBAwrite(TMRDATH,x"0026");   -- Write to MSW
+        When 023=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (5'000,000 = 4C4B40)
+        When 024=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
         When 025=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
         When 026=> SBAinte(true);               -- Enable interrupts
                 
@@ -358,6 +358,7 @@ begin
                    T0:= resize(T0(21 downto 2),T0'length);
                    bin_in:=unsigned(T0(18 downto 3)); SBAcall(Bin2BCD);
         When 046=> SBACall(UARTSendBCD);
+                
         When 047=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
                 
         When 048=> SBAread(TC1R1);                                   -- Thermocuple temperature

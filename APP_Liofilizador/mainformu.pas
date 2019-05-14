@@ -8,22 +8,24 @@ uses
   Classes, SysUtils, TAIntervalSources, TAGraph, TASeries, TATransformations,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Spin, Buttons,
   ComCtrls, DBGrids, ActnList, IniPropStorage, DbCtrls, sqlite3conn, sqldb, db,
-  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types, TACustomSource,
-  TAGUIConnectorBGRA;
+  ueled, EpikTimer, TATools, TADataTools, TADbSource, LazFileUtils, Types,
+  TACustomSource, TAGUIConnectorBGRA, fptimer;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    MainTic: TFPTimer;
     ACreateDB: TAction;
     AReconectHW: TAction;
     ActionL: TActionList;
     AxisTimeUserDefinedAxisTransform1: TUserDefinedAxisTransform;
-    B_SavePrj: TButton;
+    BClearAll: TBitBtn;
     B_Connect: TBitBtn;
     B_EnableDB: TBitBtn;
     B_OpenDB: TBitBtn;
+    B_SavePrj: TButton;
     AxisTime: TChartAxisTransformations;
     ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA;
     ChartToolset1: TChartToolset;
@@ -33,6 +35,7 @@ type
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     ConfigPanel: TPanel;
     DataSource: TDataSource;
+    Panel3: TPanel;
     PrjDataS: TDataSource;
     Ed_PrjName: TDBEdit;
     DBGrid1: TDBGrid;
@@ -66,12 +69,12 @@ type
     VDataSource: TDataSource;
     TimeSource: TDateTimeIntervalChartSource;
     Data_Panel: TPanel;
-    MainTic: TTimer;
     ChPanel: TPanel;
     Control_Panel: TPanel;
     RegdataTimer: TTimer;
     procedure ACreateDBExecute(Sender: TObject);
     procedure AReconectHWExecute(Sender: TObject);
+    procedure BClearAllClick(Sender: TObject);
     procedure B_ConnectClick(Sender: TObject);
     procedure B_EnableDBClick(Sender: TObject);
     procedure B_OpenDBClick(Sender: TObject);
@@ -137,6 +140,8 @@ begin
   ImageList1.GetBitmap(1,B_Connect.Glyph);
   B_EnableDB.Enabled:=true;
   MainTic.Enabled:=true;
+  ChartToolset1DataPointCrosshairTool1.Enabled:=false;
+  ChartToolset1DataPointHintTool1.Enabled:=false;
 end;
 
 
@@ -149,6 +154,8 @@ begin
   ImageList1.GetBitmap(0,B_Connect.Glyph);
   DisableDB;
   B_EnableDB.Enabled:=false;
+  ChartToolset1DataPointCrosshairTool1.Enabled:=true;
+  ChartToolset1DataPointHintTool1.Enabled:=true;
 end;
 
 procedure TMainForm.ACreateDBExecute(Sender: TObject);
@@ -162,6 +169,12 @@ begin
   Disconnect;
   If Assigned(HW) then freeandnil(HW);
   InitHardware;
+end;
+
+procedure TMainForm.BClearAllClick(Sender: TObject);
+begin
+  DataM.ClearAll;
+  MainChart.Invalidate;
 end;
 
 procedure TMainForm.B_EnableDBClick(Sender: TObject);
@@ -273,16 +286,23 @@ begin
   caption:='Data Logger v'+versionst;
   GetConfigValues;
   ResetData;
+  MainTic := TFPTimer.create(self);
+  MainTic.enabled := false;  // if you want to start it later
+  MainTic.UseTimerThread := true;
+  MainTic.interval := 100;  // optional here, could be set later
+  MainTic.OnTimer := @MainTicTimer;
   CreateChFrames;
   CreateChSeries;
   DisableDB;
-//Compatibilidad con MDA
+  //Compatibilidad con MDA
   InitHardware;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  MainTic.Enabled:=false;
   SaveConfigValues;
+  MainTic.Free;
   if HW<>nil then FreeAndNil(HW);
   If WaitF<>nil then WaitF.Free;
 end;

@@ -2,8 +2,8 @@ object DataM: TDataM
   OnCreate = DataModuleCreate
   OldCreateOrder = False
   Height = 150
-  HorizontalOffset = 1578
-  VerticalOffset = 198
+  HorizontalOffset = 1348
+  VerticalOffset = 293
   Width = 263
   PPI = 96
   object DBConn: TSQLite3Connection

@@ -32,6 +32,7 @@ type
     function InsertData(var data: TAData): boolean;
     procedure ReOpenDataSets;
     procedure CloseDataBase;
+    procedure ClearAll;
     property AutoSave:Boolean read FAutoSave write SetAutoSave;
     property AutoSaveCounts:integer read FAutoSaveCounts write SetAutoSaveCounts;
   end;
@@ -55,11 +56,14 @@ begin
     Fields[0].Visible:=false; // This is the ID
     for i:=2 to FieldCount-1 do TNumericField(Fields[i]).DisplayFormat:='#0.0';
   end;
-  DataSet.EnableControls;
-  VDataSet.Open;
-  VDataSet.Refresh;
-  PrjDataSet.Open;
-  PrjDataSet.Refresh;
+  if (DataSet.FieldCount-2)=nChannels then
+  begin
+    DataSet.EnableControls;
+    VDataSet.Open;
+    VDataSet.Refresh;
+    PrjDataSet.Open;
+    PrjDataSet.Refresh;
+  end else ShowMessage('The database file has a different number of channels: '+IntToStr(DataSet.FieldCount-2));
 end;
 
 procedure TDataM.CloseDataBase;
@@ -193,7 +197,14 @@ begin
   end;
 end;
 
-
+procedure TDataM.ClearAll;
+begin
+  DataSet.DisableControls;
+  CloseDataBase;
+  DataSet.EnableControls;
+  VDataSet.Refresh;
+  PrjDataSet.Refresh;
+end;
 
 end.
 
