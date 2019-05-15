@@ -128,6 +128,13 @@ command_channel <= "00000";
 command_valid <= '1';
 command_startofpacket <= '1';
 
+	reset_reset_n <= '1';
+	command_valid <= '1';
+	command_startofpacket <= '1';
+	command_ready <= '1';
+
+
+
 process(CLK_I,RST_I)
   variable adcflg : STD_LOGIC := '0';
 begin

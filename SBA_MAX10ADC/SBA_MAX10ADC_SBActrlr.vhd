@@ -167,7 +167,8 @@ begin
    constant ms         : positive:= positive(real(sysfreq)/real(1000)+0.499)-1;
    variable DlyReg_1ms : positive; -- Constant Delay of 1ms
    variable Dlytmp_ms  : positive; -- Delay register in ms
-   variable ADREG      : std_logic_vector(15 downto 0);
+   variable ADREG      : unsigned(15 downto 0);
+   variable piloto     : std_logic;
 
 -- /SBA: End User Registers and Constants --------------------------------------
 
@@ -240,13 +241,15 @@ begin
 ------------------------------ MAIN PROGRAM ------------------------------------
                 
 -- /L:Init
-        When 008=> Dlytmp_ms:=200;
+        When 008=> piloto:='0';
+                   Dlytmp_ms:=200;
                    SBAcall(Delay_ms);
                 
 -- /L:MainLoop
         When 009=> SBAread(ADR0);
-        When 010=> ADREG:=dati;
+        When 010=> ADREG:=dati(15 downto 1) & piloto;
         When 011=> SBAwrite(GPIO,ADREG);
+                   piloto:=not piloto;
         When 012=> Dlytmp_ms:=500;
                    SBAcall(Delay_ms);
         When 013=> SBAjump(MainLoop);
