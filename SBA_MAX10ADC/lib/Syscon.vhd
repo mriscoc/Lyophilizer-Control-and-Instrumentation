@@ -2,8 +2,8 @@
 -- SBA SysCon
 -- System CLK & Reset Generator
 --
--- Version: 0.2
--- Date: 2015-06-03
+-- Version: 0.3
+-- Date: 2019/05/21
 -- SBA v1.2 compliant
 
 -- SBA Author: Miguel A. Risco-Castillo
@@ -34,7 +34,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity  SysCon  is
-generic(PLL:boolean:=false);
 port(
    CLK_I: in  std_logic;          -- External Clock input
    CLK_O: out std_logic;          -- System Clock output 
@@ -45,67 +44,28 @@ end SysCon;
 
 architecture SysCon_arch of SysCon is
 
-   component PLLCLK               -- Configure PLL accord to Base Main Clocked frequency
-   port(
-     areset,inclk0  : in  std_logic;
-     locked,c0 : out std_logic
-   );
-   end component PLLCLK;
-
-   Signal CLKi : std_logic;
-   Signal RSTi : std_logic;
+Signal RSTi : std_logic;
 
 begin
 
-IfPLL: If PLL Generate
-Signal PLLlockedi : std_logic;
-begin
-
-  PLL_CLK : PLLCLK                -- Configure PLL accord to Base Main Clocked frequency
-  Port Map(
-    areset => '0',
-    locked => PLLlockedi,
-    inclk0 => CLK_I,
-    c0     => CLKi
-  );
-
-  process(RST_I, PLLlockedi, CLKi)
-  begin
-    if RST_I='1' or PLLlockedi='0' then
-      RSTi<='1';
-    elsif rising_edge(CLKi) then
-      RSTi<='0';
-    end if;
-  end process;
-
-end Generate IfPLL;
-
-
-IfNoPLL: If not PLL Generate
-begin
-
-  process(RST_I, CLKi)
+  process(RST_I, CLK_I)            -- Sync reset
   begin
     if RST_I='1' then
       RSTi<='1';
-    elsif rising_edge(CLKi) then
+    elsif rising_edge(CLK_I) then
       RSTi<='0';
     end if;
   end process;
 
-CLKi  <= CLK_I;                   -- Insert a divider if is needed
-
-end Generate IfNoPLL;
-
-  process(RSTi,CLKi)
+  process(RSTi,CLK_I)
   begin
     if RSTi='1' then
       RST_O<='1';
-    elsif rising_edge(CLKi) then
+    elsif rising_edge(CLK_I) then
       RST_O<='0';
     end if;
   end process; 
 
-CLK_O <= CLKi;
+CLK_O <= CLK_I;
   
 end SysCon_arch;

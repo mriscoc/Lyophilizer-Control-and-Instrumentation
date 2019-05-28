@@ -4,7 +4,7 @@
 -- Title: SBA Slave IP Core adapter for MAX10 Single ADC
 --
 -- Versión 0.1
--- Date 2019/04/27
+-- Date 2019/05/21
 -- Author: Miguel A. Risco-Castillo
 --
 -- sba webpage: http://sba.accesus.com
@@ -56,7 +56,10 @@ port(
    STB_I : in  std_logic;        -- Strobe
    WE_I  : in  std_logic;        -- Bus write, active high
    ADR_I : in  std_logic_vector; -- AD Register selector
-   DAT_O : out std_logic_vector  -- Data output Bus
+   DAT_O : out std_logic_vector; -- Data output Bus
+-- PLL Interface
+   PLLCLK_I: in std_logic;       -- PLL Clock input
+   PLLLCK_I: in std_logic        -- PLL Lock input
 );
 end MAX10AD1;
 

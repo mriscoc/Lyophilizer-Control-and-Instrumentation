@@ -77,6 +77,14 @@ begin
     RST_O => RSTi
   );
 
+  PLL : entity work.PLLCLK      -- Altera PLL
+  Port Map(
+    areset => '1',
+    locked => PLLLOCKi,
+    c0     => CLKe,
+    inclk0 => CLK_I
+  );
+
   SBA_MAX10ADC_Master: entity work.SBA_MAX10ADC_SBAcontroller
   port Map(
     RST_I => RSTi, 
@@ -134,7 +142,6 @@ begin
 -- External Signals Assignments
 -------------------------------
  RSTe  <= not nRST;             -- SBA reset is active high, negate if it is necessary
- CLKe  <= CLK_I;
 
 -- Internal Signals Assignments
 -------------------------------
