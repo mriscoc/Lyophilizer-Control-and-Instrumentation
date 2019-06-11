@@ -40,6 +40,7 @@ port (
   TXRS      : out std_logic;
   BTN       : in  std_logic;
   LEDS      : out std_logic_vector(7 downto 0);
+  TCTRL     : out std_logic;
   TC1_nCS   : out std_logic;
   TC1_MISO  : in  std_logic;
   TC1_SCK   : out std_logic
@@ -66,8 +67,8 @@ architecture SBA_Liofilizador_structural of SBA_Liofilizador_Top is
 -- Auxiliary external to internal signals
   Signal CLKe  : std_logic;
   Signal RSTe  : std_logic;
-  Signal SWTe  : std_logic_vector(7 downto 0);
-
+  Signal SWTe  : std_logic_vector(8 downto 0);
+  Signal GPOe  : std_logic_vector(8 downto 0);
 -- Auxiliary IPCores signals
   Signal INT_TIMER  : std_logic;
 
@@ -112,7 +113,7 @@ begin
 
   GPIO: entity work.GPIO
   generic map(
-    SIZE    => 8
+    SIZE    => 9
   )
   port map(
     -------------
@@ -124,7 +125,7 @@ begin
     DAT_O => ADATi(STB_GPIO),
     -------------
     P_I   => SWTe,
-    P_O   => LEDS
+    P_O   => GPOe
   );
 
   PMODTC1: entity work.PMODTC1
@@ -191,6 +192,8 @@ begin
  RSTe  <= not nRST;             -- SBA reset is active high, negate if it is necessary
  CLKe  <= CLK_I;
  SWTe  <= (0=>BTN,others=>'1');
+ LEDS  <= GPOe(7 downto 0);
+ TCTRL <= GPOe(8);
 
 -- Internal Signals Assignments
 -------------------------------

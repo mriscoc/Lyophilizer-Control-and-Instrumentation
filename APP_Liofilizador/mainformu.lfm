@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 960
+  Left = 876
   Height = 516
-  Top = 307
+  Top = 241
   Width = 706
   Caption = 'Liofilizador'
   ClientHeight = 516
@@ -133,6 +133,20 @@ object MainForm: TMainForm
           DoubleBuffered = True
           ParentShowHint = False
           ShowHint = True
+          object LineSetTH: TConstantLine
+            Legend.Visible = False
+            Pen.Color = clPurple
+            Pen.Style = psDash
+            Pen.Width = 2
+            Position = 25
+          end
+          object LineSetTL: TConstantLine
+            Legend.Visible = False
+            Pen.Color = clPurple
+            Pen.Style = psDash
+            Pen.Width = 2
+            Position = 23
+          end
         end
       end
       object TabSheet1: TTabSheet
@@ -648,45 +662,47 @@ object MainForm: TMainForm
         ParentFont = False
         TabOrder = 3
       end
-      object ed_SetPoint: TFloatSpinEdit
+      object ed_SetPointH: TFloatSpinEdit
         Left = 11
         Height = 23
         Top = 216
         Width = 100
         Alignment = taRightJustify
         DecimalPlaces = 1
-        MaxValue = 500
+        Increment = 0.5
         MinValue = -40
+        OnChange = ed_SetPointHChange
         TabOrder = 4
-        Value = 0
+        Value = 1
       end
       object Label9: TLabel
         Left = 11
         Height = 15
         Top = 200
-        Width = 50
-        Caption = 'Set point:'
+        Width = 77
+        Caption = 'Set point high:'
         ParentColor = False
       end
       object Label10: TLabel
         Left = 11
         Height = 15
         Top = 248
-        Width = 53
-        Caption = 'Histeresis:'
+        Width = 72
+        Caption = 'Set point low:'
         ParentColor = False
       end
-      object ed_Histeresis: TFloatSpinEdit
+      object ed_SetPointL: TFloatSpinEdit
         Left = 11
         Height = 23
         Top = 264
         Width = 100
         Alignment = taRightJustify
         DecimalPlaces = 1
-        MaxValue = 10
-        MinValue = 0.5
+        Increment = 0.5
+        MinValue = -40
+        OnChange = ed_SetPointLChange
         TabOrder = 5
-        Value = 0.5
+        Value = -1
       end
       object BSendSetP: TBitBtn
         Left = 11

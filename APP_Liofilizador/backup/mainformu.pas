@@ -17,10 +17,12 @@ type
 
   TMainForm = class(TForm)
     BSendSetP: TBitBtn;
-    ed_SetPoint: TFloatSpinEdit;
-    ed_Histeresis: TFloatSpinEdit;
+    ed_SetPointH: TFloatSpinEdit;
+    ed_SetPointL: TFloatSpinEdit;
     Label10: TLabel;
     Label9: TLabel;
+    LineSetTH: TConstantLine;
+    LineSetTL: TConstantLine;
     MainTic: TFPTimer;
     ACreateDB: TAction;
     AReconectHW: TAction;
@@ -89,6 +91,8 @@ type
       const APoint: TPoint; var AHint: String);
     procedure DbChartGetItem(ASender: TDbChartSource; var AItem: TChartDataItem);
     procedure Ed_SampletimeChange(Sender: TObject);
+    procedure ed_SetPointHChange(Sender: TObject);
+    procedure ed_SetPointLChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure MainTicTimer(Sender: TObject);
     procedure Ed_COMPortChange(Sender: TObject);
@@ -186,12 +190,12 @@ end;
 
 procedure TMainForm.BSendSetPClick(Sender: TObject);
 var
- sp,h:string;
+ sph,spl:string;
 begin
   if simulate then exit;
-  sp:=inttohex(round(ed_SetPoint.Value*10),4);
-  h:=inttohex(round(ed_Histeresis.Value*10),2);
-  HW.senddata('C'+sp+h);
+  sph:=rightstr(inttohex(round((ed_SetPointH.Value)*100),4),4);
+  spl:=rightstr(inttohex(round((ed_SetPointL.Value)*100),4),4);
+  HW.senddata('C'+sph+spl);
 end;
 
 procedure TMainForm.B_EnableDBClick(Sender: TObject);
@@ -240,6 +244,16 @@ end;
 procedure TMainForm.Ed_SampletimeChange(Sender: TObject);
 begin
   RegdataTimer.Interval:=Ed_Sampletime.Value*1000;
+end;
+
+procedure TMainForm.ed_SetPointHChange(Sender: TObject);
+begin
+  LineSetTH.Position:=ed_SetPointH.Value;
+end;
+
+procedure TMainForm.ed_SetPointLChange(Sender: TObject);
+begin
+  LineSetTL.Position:=ed_SetPointL.Value;
 end;
 
 procedure TMainForm.FormActivate(Sender: TObject);

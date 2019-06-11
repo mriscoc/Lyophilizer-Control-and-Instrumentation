@@ -59,7 +59,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="$Env(PRJOUT)\DataLog\DataLog"/>
+            <Filename Value="$Env(PRJOUT)\$NameOnly($(ProjFile))\$NameOnly($(ProjFile))"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -103,7 +103,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="$Env(PRJOUT)\DataLog\DataLog"/>
+            <Filename Value="$Env(PRJOUT)\$NameOnly($(ProjFile))\$NameOnly($(ProjFile))"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -283,7 +283,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="$Env(PRJOUT)\DataLog\DataLog"/>
+      <Filename Value="$Env(PRJOUT)\$NameOnly($(ProjFile))\$NameOnly($(ProjFile))"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
