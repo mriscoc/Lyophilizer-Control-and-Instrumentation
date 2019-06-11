@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- PMODTC1
 --
--- Title: SBA Slave IP Core adapter for Digilent Pmod AD1 module
+-- Title: SBA Slave IP Core adapter for Digilent PMODTC1 module
 --
 -- Versión 0.1
 -- Date 2019/04/14
@@ -107,9 +107,9 @@ end generate;
 SPIState:process (SCKi, RST_I)
   begin
     if (RST_I='1') then
-      state   <= IniSt;
-      nCS      <= '1';
-      SCKN    <= (others => '0');
+      state <= IniSt;
+      nCS   <= '1';
+      SCKN  <= (others => '0');
     elsif falling_edge(SCKi) then
       case State is
         when IniSt => nCS   <='0';

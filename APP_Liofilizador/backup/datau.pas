@@ -40,8 +40,8 @@ var
 implementation
 
 Begin
-  UpLimit:=MaxInt;
-  LoLimit:=MinInt;
+  UpLimit:=5000;
+  LoLimit:=-5000;
 
 end.
 

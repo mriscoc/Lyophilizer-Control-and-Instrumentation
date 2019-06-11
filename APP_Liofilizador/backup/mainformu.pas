@@ -8,14 +8,19 @@ uses
   Classes, SysUtils, TAIntervalSources, TAGraph, TASeries, TATransformations,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Spin, Buttons,
   ComCtrls, DBGrids, ActnList, IniPropStorage, DbCtrls, sqlite3conn, sqldb, db,
-  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types, TACustomSource,
-  TAGUIConnectorBGRA, fptimer;
+  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types,
+  TACustomSource, TAGUIConnectorBGRA, fptimer;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    BSendSetP: TBitBtn;
+    ed_SetPoint: TFloatSpinEdit;
+    ed_Histeresis: TFloatSpinEdit;
+    Label10: TLabel;
+    Label9: TLabel;
     MainTic: TFPTimer;
     ACreateDB: TAction;
     AReconectHW: TAction;
@@ -75,6 +80,7 @@ type
     procedure ACreateDBExecute(Sender: TObject);
     procedure AReconectHWExecute(Sender: TObject);
     procedure BClearAllClick(Sender: TObject);
+    procedure BSendSetPClick(Sender: TObject);
     procedure B_ConnectClick(Sender: TObject);
     procedure B_EnableDBClick(Sender: TObject);
     procedure B_OpenDBClick(Sender: TObject);
@@ -140,6 +146,8 @@ begin
   ImageList1.GetBitmap(1,B_Connect.Glyph);
   B_EnableDB.Enabled:=true;
   MainTic.Enabled:=true;
+  ChartToolset1DataPointCrosshairTool1.Enabled:=false;
+  ChartToolset1DataPointHintTool1.Enabled:=false;
 end;
 
 
@@ -152,6 +160,8 @@ begin
   ImageList1.GetBitmap(0,B_Connect.Glyph);
   DisableDB;
   B_EnableDB.Enabled:=false;
+  ChartToolset1DataPointCrosshairTool1.Enabled:=true;
+  ChartToolset1DataPointHintTool1.Enabled:=true;
 end;
 
 procedure TMainForm.ACreateDBExecute(Sender: TObject);
@@ -169,8 +179,19 @@ end;
 
 procedure TMainForm.BClearAllClick(Sender: TObject);
 begin
+  DisableDB;
   DataM.ClearAll;
   MainChart.Invalidate;
+end;
+
+procedure TMainForm.BSendSetPClick(Sender: TObject);
+var
+ sp,h:string;
+begin
+  if simulate then exit;
+  sp:=inttohex(round(ed_SetPoint.Value*10),4);
+  h:=inttohex(round(ed_Histeresis.Value*10),2);
+  HW.senddata('C'+sp+h);
 end;
 
 procedure TMainForm.B_EnableDBClick(Sender: TObject);
@@ -279,7 +300,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   WaitF:=TWaitF.Create(Self);
   versionst:=GetFileVersion;
-  caption:='Data Logger v'+versionst;
+  caption:=MainTitle+' v'+versionst;
   GetConfigValues;
   ResetData;
   MainTic := TFPTimer.create(self);
@@ -410,8 +431,6 @@ begin
     ImageList1.GetBitmap(3,B_EnableDB.Glyph);
     If StartTime=0 then StartTime:=Now;
     DBGrid1.Columns[0].Width:=500;
-    ChartToolset1DataPointCrosshairTool1.Enabled:=false;
-    ChartToolset1DataPointHintTool1.Enabled:=false;
   end;
 end;
 
@@ -422,8 +441,6 @@ begin
   B_EnableDB.Caption:='Acquire';
   B_EnableDB.Glyph:=nil;
   ImageList1.GetBitmap(2,B_EnableDB.Glyph);
-  ChartToolset1DataPointCrosshairTool1.Enabled:=true;
-  ChartToolset1DataPointHintTool1.Enabled:=true;
 end;
 
 function TMainForm.GetConfigValues:boolean;
@@ -501,7 +518,7 @@ begin
   end;
   WaitF.Step;
 
-  // Test if connected device is the Multichannel
+  // Test if connected device
   if Conectado then
   begin
     ComPort:=HW.COM_Port;
@@ -518,7 +535,7 @@ begin
     if timeOut=0 then Conectado:=false;
   end;
 
-  // Config Simulation mode if was not possible to recognize a Multichannel device
+  // Config Simulation mode if was not possible to recognize a hardware device
   if not Conectado then
   begin
     WaitF.WaitLabel.Caption:='No se ha encontrado Hardware compatible, el sistema se iniciará en modo simulación';
@@ -528,7 +545,7 @@ begin
     Simulate:=true;
   end else
   begin
-    S:='';//'versión firmware: '+HW.hardwareID;
+    S:='versión firmware: '+HW.hardwareID;
     WaitF.WaitLabel.Caption:='Hardware encontrado en COM'+inttostr(COMPort)+#$0d+S;
     WaitF.EndStep;
     MainForm.Caption:=MainTitle+' versión: '+versionst+' - Hardware en COM'+inttostr(COMPort)+' '+S;

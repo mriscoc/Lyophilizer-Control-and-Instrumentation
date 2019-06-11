@@ -1,4 +1,4 @@
-program DataLog;
+program Liofilizador;
 
 {$mode objfpc}{$H+}
 

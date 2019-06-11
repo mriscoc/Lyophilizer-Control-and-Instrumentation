@@ -202,8 +202,6 @@ begin
   DataSet.DisableControls;
   CloseDataBase;
   DataSet.EnableControls;
-  VDataSet.Refresh;
-  PrjDataSet.Refresh;
 end;
 
 end.

@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, TAIntervalSources, TAGraph, TASeries, TATransformations,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Spin, Buttons,
   ComCtrls, DBGrids, ActnList, IniPropStorage, DbCtrls, sqlite3conn, sqldb, db,
-  ueled, EpikTimer, TATools, TADataTools, TADbSource, LazFileUtils, Types,
+  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types,
   TACustomSource, TAGUIConnectorBGRA, fptimer;
 
 type
@@ -16,6 +16,11 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    BSendSetP: TBitBtn;
+    ed_SetPoint: TFloatSpinEdit;
+    ed_Histeresis: TFloatSpinEdit;
+    Label10: TLabel;
+    Label9: TLabel;
     MainTic: TFPTimer;
     ACreateDB: TAction;
     AReconectHW: TAction;
@@ -75,6 +80,7 @@ type
     procedure ACreateDBExecute(Sender: TObject);
     procedure AReconectHWExecute(Sender: TObject);
     procedure BClearAllClick(Sender: TObject);
+    procedure BSendSetPClick(Sender: TObject);
     procedure B_ConnectClick(Sender: TObject);
     procedure B_EnableDBClick(Sender: TObject);
     procedure B_OpenDBClick(Sender: TObject);
@@ -173,8 +179,19 @@ end;
 
 procedure TMainForm.BClearAllClick(Sender: TObject);
 begin
+  DisableDB;
   DataM.ClearAll;
   MainChart.Invalidate;
+end;
+
+procedure TMainForm.BSendSetPClick(Sender: TObject);
+var
+ sp,h:string;
+begin
+  if simulate then exit;
+  sp:=rightstr(inttohex(round(ed_SetPoint.Value*10),4),4);
+  h:=inttohex(round(ed_Histeresis.Value*10),2);
+  HW.senddata('C'+sp+h);
 end;
 
 procedure TMainForm.B_EnableDBClick(Sender: TObject);
@@ -283,7 +300,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   WaitF:=TWaitF.Create(Self);
   versionst:=GetFileVersion;
-  caption:='Data Logger v'+versionst;
+  caption:=MainTitle+' v'+versionst;
   GetConfigValues;
   ResetData;
   MainTic := TFPTimer.create(self);
@@ -501,7 +518,7 @@ begin
   end;
   WaitF.Step;
 
-  // Test if connected device is the Multichannel
+  // Test if connected device
   if Conectado then
   begin
     ComPort:=HW.COM_Port;
@@ -518,7 +535,7 @@ begin
     if timeOut=0 then Conectado:=false;
   end;
 
-  // Config Simulation mode if was not possible to recognize a Multichannel device
+  // Config Simulation mode if was not possible to recognize a hardware device
   if not Conectado then
   begin
     WaitF.WaitLabel.Caption:='No se ha encontrado Hardware compatible, el sistema se iniciará en modo simulación';
@@ -528,7 +545,7 @@ begin
     Simulate:=true;
   end else
   begin
-    S:='';//'versión firmware: '+HW.hardwareID;
+    S:='versión firmware: '+HW.hardwareID;
     WaitF.WaitLabel.Caption:='Hardware encontrado en COM'+inttostr(COMPort)+#$0d+S;
     WaitF.EndStep;
     MainForm.Caption:=MainTitle+' versión: '+versionst+' - Hardware en COM'+inttostr(COMPort)+' '+S;

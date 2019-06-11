@@ -54,10 +54,10 @@ Var
 implementation
 
 Const
-  FrameHeader = '@';
+  FrameHeader = '@#';
   FHSize = Length(FrameHeader);
-  MinFrameSize = 19; // Minimum expected size for data frame
-  MaxFrameSize = 32; // Maximun expected size for data frame
+  MinFrameSize = 5;  // Minimum expected size for data frame
+  MaxFrameSize = 36; // Maximun expected size for data frame
 
 var
   RDataBuf, SDataBuf : AnsiString;
@@ -70,7 +70,7 @@ begin
   SComm := TGREIC_Comm.Create;
   COM_Port := 1;
   SComm.Port := COM_Port;
-  SComm.BaudRate := CBR_256000; //CBR_38400; //
+  SComm.BaudRate := CBR_115200; //CBR_38400; //
   TimerAct := TTimer.Create(nil);
   TimerAct.Enabled := False;
   TimerAct.Interval := 250;
@@ -121,6 +121,7 @@ begin
   while (not Buffull) and  (errorCount > 0) do
   begin
     ResetTimeOut;
+    S:=SComm.Read;    // Dummy read
     Enviar;
     sleep(10);
     Recibir;
@@ -169,6 +170,10 @@ var
   I:byte;
   chk:word;
 begin
+  //
+  result:=true;
+  exit;
+  //
   chk:=0;
   for I := FHSize+2 to FHSize+DataFrameSize do chk:=chk+ord(RDataBuf[I]);
   result := (Lo(chk) = ord(RDataBuf[FHSize+DataFrameSize+1]));
@@ -229,8 +234,10 @@ procedure TIOInterface.senddata(s: ansistring);
 var I,chk:byte;
 begin
   chk:=0;
-  for I := 1 to Length(s) do chk:=chk+ord(s[I]);
-  SDataBuf:=SDataBuf+FrameHeader+AnsiChar(chr(length(s)+1))+s+AnsiChar(chr(chk))+AnsiChar(chr(13));
+  for I := 1 to Length(s) do
+    chk:=chk+ord(s[I]);
+//  SDataBuf:=SDataBuf+FrameHeader+AnsiChar(chr(length(s)+1))+s+AnsiChar(chr(chk))+AnsiChar(chr(13));
+  SDataBuf:=SDataBuf+FrameHeader+s+AnsiChar(chr(13));
 end;
 
 function TIOInterface.rawsend(s: ansistring):integer;

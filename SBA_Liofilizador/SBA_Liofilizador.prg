@@ -14,12 +14,17 @@
   variable Idx     : natural;                   -- General purpose index
   variable T       : signed(15 downto 0);       -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
-  variable T0      : signed(21 downto 0);       -- Temperature Ch0
-  variable T1      : signed(21 downto 0);       -- Temperature Ch1
+  variable T0      : unsigned(21 downto 0);     -- Temperature Ch0
+  variable T1      : unsigned(21 downto 0);     -- Temperature Ch1
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
   variable RSTmp   : unsigned(7 downto 0);      -- Temporal register for UART
+  variable R0      : unsigned(15 downto 0);     -- General purpose register
+  variable SetT    : signed(15 downto 0);       -- Temperature set point
+  variable HisT    : unsigned(7 downto 0);      -- Temperature histeresis
+  variable DOUT    : unsigned(7 downto 0);      -- Data out (LEDS)
+  alias    LB      : std_logic is DOUT(0);      -- Breath LED
 
   type tarrchar is array (natural range <>) of character;
   constant vMsg    : tarrchar (0 to 18):="Liofilizador v0.1.1";
@@ -87,26 +92,31 @@
    end loop;
    SBAret;
 
------------------------------- INTERRUPT ---------------------------------------
--- /L:INT
-=> timerf:='1';
-   SBAread(TMRCFG);
-=> SBAreti;
------------------------------- MAIN PROGRAM ------------------------------------
-
--- /L:Init
-=> counter:=0; timerf:='0';T0:=(others=>'0');T1:=(others=>'0');
-=> SBAwrite(TMRCHS,0);          -- Select timer 0
-=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (5'000,000 = 4C4B40)
-=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
-=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
-=> SBAinte(true);               -- Enable interrupts
-
 -- /L:SendMsg
 => Idx:=0;
 => RSTmp:=chr2uns(vMsg(Idx)); SBAcall(UARTSendChar);
 => if Idx<vMsg'length-1 then inc(Idx); SBAjump(SendMsg+1); end if;
 => RSTmp:=x"0A"; SBAcall(UARTSendChar);
+=> SBAret;
+
+------------------------------ INTERRUPT ---------------------------------------
+-- /L:INT
+=> timerf:='1';
+   LB:= not LB;
+   SBAread(TMRCFG);
+=> SBAreti;
+------------------------------ MAIN PROGRAM ------------------------------------
+
+-- /L:Init
+=> counter:=0; timerf:='0';
+   T0:=(others=>'0');T1:=(others=>'0');
+   DOUT:=(others=>'0');
+=> SBAwrite(TMRCHS,0);          -- Select timer 0
+=> SBAwrite(TMRDATL,x"4B40");   -- Write to LSW, (5'000,000 = 4C4B40)
+=> SBAwrite(TMRDATH,x"004C");   -- Write to MSW
+=> SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
+=> SBAinte(true);               -- Enable interrupts
+=> SBAcall(SendMsg);
 
 -- /L:LoopMain
 => if (timerf='1') then
@@ -114,58 +124,110 @@
      timerf:='0';
      inc(counter);
    end if;
+   SBAwrite(GPIO,DOUT);
 
-
+=> SBARead(UART0);               -- Read UART Status
+=> UARTFlg := dati(15);          -- Read RxRdy flag
+   RSTmp  := dati(7 downto 0);   -- Read Char in to RSTmp
+=> if ((UARTFlg ='1') and (RSTmp = chr2uns('@'))) then
+     SBAjump(GetData);           -- If is Start of header goto GetData
+   end if;
 
 -- /L:EndLoopMain
 => SBAjump(LoopMain);
 
-
 -- /L:SendTemperatureData
-=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame
-=> RSTmp:=x"24"; SBAcall(UARTSendChar);              -- Frame Size 36
+=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame "@#"
+=> RSTmp:=chr2uns('#'); SBAcall(UARTSendChar);
+=> RSTmp:=x"24"; SBAcall(UARTSendChar);              -- Frame Size = 36
 => RSTmp:=chr2uns('D'); SBAcall(UARTSendChar);       -- Data Frame
 
 -- Send counter
 => bin_in:=to_unsigned(counter,bin_in'length); Sign:='0';
    SBAcall(Bin2BCD);
-   SBAwrite(GPIO,counter);
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => SBAread(TC1R0);                                   -- Reference Juntion Temperature
 => T:=Resize(25*signed(dati(15 downto 4)),T'length); -- 400xT
-   T:=Resize(T(15 downto 2),T'length);               -- T/4
    Sign:=dati(15);
+   T:=Resize(T(15 downto 2),T'length);               -- T/4
+   DOUT(7):=Sign;
+=> if (Sign='1') then
+     T:=(not T) + 1;
+   end if;
 
 => bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => T0:=("0000" & T0(15 downto 0) & "00") - T0;       -- Filtered
-=> T0:= T0 + ("000" & T & "000");
+=> T0:= T0 + ("000" & unsigned(T) & "000");
    T0:= resize(T0(21 downto 2),T0'length);
-   bin_in:=unsigned(T0(18 downto 3)); SBAcall(Bin2BCD);
+   bin_in:=T0(18 downto 3); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
 
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => SBAread(TC1R1);                                   -- Thermocuple temperature
-=> T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 100xT
-   Sign:=dati(15);
+--=> T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
+--   Sign:=dati(15);
+=> T:=Resize(10*SetT,T'length);
+   Sign:=SetT(15);
+=> if (Sign='1') then
+     T:=(not T) + 1;
+   end if;
 
 => bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
 => T1:=("0000" & T1(15 downto 0) & "00") - T1;       -- Filtered
-=> T1:= T1 + ("0000" & T & "00");
+=> T1:= T1 + ("0000" & unsigned(T) & "00");
    T1:= resize(T1(21 downto 2),T1'length);
-   bin_in:=unsigned(T1(17 downto 2)); SBAcall(Bin2BCD);
+   bin_in:=T1(17 downto 2); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
 
-=> RSTmp:=x"0A"; SBAcall(UARTSendChar);
+=> RSTmp:=x"0A"; SBAcall(UARTSendChar);              -- End of Frame
 => SBAjump(LoopMain);
+
+-- Process data frame
+-- /L:GetData
+=> SBACall(UARTGetChar);
+=> if (RsTmp/=chr2uns('#')) then SBAjump(LoopMain); end if;
+=> SBACall(UARTGetChar);
+=> Case RsTmp is
+     when x"56"  => SBAjump(SendVersion);            -- 'V'  Request Version
+     when x"43"  => SBAjump(SetConfig);              -- 'C'  Set Configuration
+     when OTHERS => SBAjump(LoopMain);
+   end case;
+
+-- /L:SetConfig
+=> SBACall(UARTGetChar);                             -- Get Temperature Set point x10
+=> R0(15 downto 12):=hex2uns(RSTmp)(3 downto 0);
+   SBACall(UARTGetChar);
+=> R0(11 downto  8):=hex2uns(RSTmp)(3 downto 0);
+   SBACall(UARTGetChar);
+=> R0( 7 downto  4):=hex2uns(RSTmp)(3 downto 0);
+   SBACall(UARTGetChar);
+=> R0( 3 downto  0):=hex2uns(RSTmp)(3 downto 0);
+   SetT:=signed(R0(15 downto 0));
+   SBACall(UARTGetChar);                             -- Get Temperature histeresis x10
+=> HisT(7 downto  4):=hex2uns(RSTmp)(3 downto 0);
+   SBACall(UARTGetChar);
+=> HisT(3 downto  0):=hex2uns(RSTmp)(3 downto 0);
+   SBAjump(LoopMain);
+
+-- /L:SendVersion
+=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame "@#"
+=> RSTmp:=chr2uns('#'); SBAcall(UARTSendChar);
+=> RSTmp:=to_unsigned(1+vMsg'length,RSTmp'length);   -- Frame Size
+   SBAcall(UARTSendChar);
+=> SBAcall(SendMsg);
+=> RSTmp:=x"0A"; SBAcall(UARTSendChar);              -- End of frame
+
+=> SBAjump(LoopMain);
+
 
 -- /SBA: End User Program ------------------------------------------------------
 

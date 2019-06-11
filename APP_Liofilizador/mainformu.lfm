@@ -1,11 +1,11 @@
 object MainForm: TMainForm
-  Left = 853
+  Left = 960
   Height = 516
-  Top = 316
-  Width = 829
-  Caption = 'Data Logger'
+  Top = 307
+  Width = 706
+  Caption = 'Liofilizador'
   ClientHeight = 516
-  ClientWidth = 829
+  ClientWidth = 706
   Color = clBtnFace
   Constraints.MinHeight = 430
   Constraints.MinWidth = 640
@@ -20,18 +20,18 @@ object MainForm: TMainForm
     Left = 122
     Height = 516
     Top = 0
-    Width = 702
+    Width = 579
     Align = alClient
     BorderSpacing.Right = 5
     BevelOuter = bvNone
     ClientHeight = 516
-    ClientWidth = 702
+    ClientWidth = 579
     TabOrder = 0
     object ChPanel: TPanel
       Left = 0
       Height = 120
       Top = 0
-      Width = 701
+      Width = 578
       Align = alTop
       AutoSize = True
       BorderSpacing.Right = 1
@@ -51,7 +51,7 @@ object MainForm: TMainForm
       Left = 0
       Height = 396
       Top = 120
-      Width = 702
+      Width = 579
       ActivePage = GraphSheet
       Align = alClient
       Images = ImageList1
@@ -61,12 +61,12 @@ object MainForm: TMainForm
       object GraphSheet: TTabSheet
         Caption = 'Plot'
         ClientHeight = 368
-        ClientWidth = 694
+        ClientWidth = 571
         object MainChart: TChart
           Left = 0
           Height = 368
           Top = 0
-          Width = 694
+          Width = 571
           AntialiasingMode = amOn
           AxisList = <          
             item
@@ -137,13 +137,13 @@ object MainForm: TMainForm
       end
       object TabSheet1: TTabSheet
         Caption = 'Data Table'
-        ClientHeight = 282
-        ClientWidth = 511
+        ClientHeight = 368
+        ClientWidth = 571
         object DBGrid1: TDBGrid
           Left = 0
-          Height = 282
+          Height = 368
           Top = 0
-          Width = 511
+          Width = 571
           Align = alClient
           AlternateColor = clCream
           AutoAdvance = aaNone
@@ -160,13 +160,13 @@ object MainForm: TMainForm
       end
       object TabSheet3: TTabSheet
         Caption = 'Config'
-        ClientHeight = 282
-        ClientWidth = 511
+        ClientHeight = 368
+        ClientWidth = 571
         object ConfigPanel: TPanel
           Left = 0
           Height = 140
           Top = 0
-          Width = 511
+          Width = 571
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -183,13 +183,13 @@ object MainForm: TMainForm
         end
         object Panel1: TPanel
           Left = 0
-          Height = 142
+          Height = 228
           Top = 140
-          Width = 510
+          Width = 570
           Align = alClient
           BorderSpacing.Right = 1
-          ClientHeight = 142
-          ClientWidth = 510
+          ClientHeight = 228
+          ClientWidth = 570
           Color = clBtnFace
           ParentColor = False
           TabOrder = 1
@@ -284,9 +284,9 @@ object MainForm: TMainForm
           end
           object Ed_PrjDescrip: TDBMemo
             Left = 192
-            Height = 46
+            Height = 132
             Top = 64
-            Width = 310
+            Width = 370
             Anchors = [akTop, akLeft, akRight, akBottom]
             DataField = 'Description'
             DataSource = PrjDataS
@@ -296,7 +296,7 @@ object MainForm: TMainForm
             Left = 192
             Height = 23
             Top = 24
-            Width = 310
+            Width = 370
             DataField = 'Name'
             DataSource = PrjDataS
             Anchors = [akTop, akLeft, akRight]
@@ -343,9 +343,9 @@ object MainForm: TMainForm
             ParentColor = False
           end
           object B_SavePrj: TButton
-            Left = 427
+            Left = 487
             Height = 25
-            Top = 114
+            Top = 200
             Width = 75
             Anchors = [akRight, akBottom]
             Caption = 'Save'
@@ -607,8 +607,133 @@ object MainForm: TMainForm
         Top = 144
         Width = 100
         Caption = 'Clear All'
+        Font.Color = clNavy
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          000000000000000000009191912092929270959595BF979797BF9A9A9ABF9C9C
+          9CBF9F9F9F70A1A1A12000000000000000000000000000000000000000000000
+          0000000000008E8E8E80939393FFA4A4A4FFB2B2B2FFBCBCBCFFC5C5C5FFCECE
+          CEFFBFBFBFFFA7A7A7FFA4A4A480000000000000000000000000000000000000
+          00008B8B8B9F9E9E9EFFC2C2C2FFB0B0BBFF7B7BBEFF6F6FC8FF7878D2FF9A9A
+          DEFFDFDFEAFFEFEFEFFFBBBBBBFFA7A7A79F0000000000000000000000008888
+          88809E9E9EFFD1D1D1FF7F7FC1FF1414BAFF0E0EC0FF1515C7FF1D1DD0FF2727
+          DBFF3D3DE8FFB1B1F5FFFCFCFCFFBBBBBBFFA4A4A48000000000878787208D8D
+          8DFFD7D7D7FF8585C7FF0505B6FF7575D8FF3C3CCCFF1515C7FF1D1DD0FF4F4F
+          E1FF8C8CF3FF3D3DF4FFB1B1F5FFEFEFEFFFA7A7A7FFA1A1A12087878770B1B1
+          B1FFD1D1DCFF0F0FB5FF7272D5FFFFFFFFFFF0F0FBFF4040D1FF4545D7FFF1F1
+          FCFFFFFFFFFF8C8CF3FF3D3DE8FFE0E0EBFFBFBFBFFF9F9F9F70878787BFD2D2
+          D2FF8F8FD1FF0202B2FF3333C2FFEFEFFAFFFFFFFFFFF0F0FBFFF0F0FCFFFFFF
+          FFFFF1F1FCFF4F4FE1FF2727DBFF9A9ADEFFCECECEFF9C9C9CBF878787BFD5D5
+          D5FF8686D2FF0606B3FF0303B3FF3434C3FFF0F0FBFFFFFFFFFFFFFFFFFFF0F0
+          FCFF4545D7FF1D1DD0FF1D1DD0FF7979D2FFC5C5C5FF9A9A9ABF878787BFD8D8
+          D8FF9C9CDAFF4242C5FF1A1AB9FF3333C2FFEFEFFBFFFFFFFFFFFFFFFFFFF0F0
+          FBFF4040D1FF1515C7FF1515C7FF6F6FC8FFBCBCBCFF979797BF878787BFDCDC
+          DCFFB5B5E2FF4949C7FF6767D0FFF3F3FBFFFFFFFFFFEFEFFBFFF0F0FBFFFFFF
+          FFFFF0F0FBFF3C3CCCFF0E0EC0FF7C7CBEFFB3B3B3FF959595BF87878770BBBB
+          BBFFECECF4FF5858CBFF9999DFFFFFFFFFFFF3F3FBFF5F5FCFFF5D5DCFFFF3F3
+          FBFFFFFFFFFF8383DCFF2D2DC1FFAFAFBAFFA4A4A4FF92929270878787208F8F
+          8FFFF5F5F5FFB8B8E5FF4E4EC8FF9999DFFF6767D0FF3F3FC5FF3C3CC4FF5F5F
+          CFFF9090DEFF3838C5FF9191C6FFC2C2C2FF939393FF91919120000000008787
+          8780A5A5A5FFFCFCFCFFB8B8E5FF5858CBFF4949C7FF4646C6FF4343C5FF4040
+          C5FF4848C6FF9A9ACDFFD0D0D0FF9D9D9DFF8E8E8E8000000000000000000000
+          00008787879FA5A5A5FFF5F5F5FFECECF4FFB5B5E2FF9C9CDAFF9898D7FFA8A8
+          D8FFD5D5DDFFD7D7D7FF9E9E9EFF8B8B8B9F0000000000000000000000000000
+          000000000000878787808F8F8FFFBABABAFFDCDCDCFFD8D8D8FFD5D5D5FFD2D2
+          D2FFB1B1B1FF8D8D8DFF88888880000000000000000000000000000000000000
+          000000000000000000008787872087878770878787BF878787BF878787BF8787
+          87BF878787708787872000000000000000000000000000000000
+        }
         OnClick = BClearAllClick
+        ParentFont = False
         TabOrder = 3
+      end
+      object ed_SetPoint: TFloatSpinEdit
+        Left = 11
+        Height = 23
+        Top = 216
+        Width = 100
+        Alignment = taRightJustify
+        DecimalPlaces = 1
+        MaxValue = 500
+        MinValue = -40
+        TabOrder = 4
+        Value = 0
+      end
+      object Label9: TLabel
+        Left = 11
+        Height = 15
+        Top = 200
+        Width = 50
+        Caption = 'Set point:'
+        ParentColor = False
+      end
+      object Label10: TLabel
+        Left = 11
+        Height = 15
+        Top = 248
+        Width = 53
+        Caption = 'Histeresis:'
+        ParentColor = False
+      end
+      object ed_Histeresis: TFloatSpinEdit
+        Left = 11
+        Height = 23
+        Top = 264
+        Width = 100
+        Alignment = taRightJustify
+        DecimalPlaces = 1
+        MaxValue = 10
+        MinValue = 0.5
+        TabOrder = 5
+        Value = 0.5
+      end
+      object BSendSetP: TBitBtn
+        Left = 11
+        Height = 30
+        Top = 304
+        Width = 100
+        Caption = 'Send'
+        Font.Color = clNavy
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF000000000100000009000000200000003C0000004600000038000000300000
+          00400000004F00000042000000230000000900000001FFFFFF00FFFFFF000000
+          000100000003000000170000004200000068000000720000006A000000650000
+          006E000000770000006A00000042000000170000000400000001000000020000
+          0009000000160000003400000079170000CA3F1500E8050000BA0000008B1900
+          00D0582100F5260500D8000000840000003A0000001D0000000B000000080000
+          00230000004200000064280A00D7F28100FFFF8E00FFB45500FD7B3500F8D063
+          00FFFF8C00FFE97500FF170000CE0000006A0000004A00000025000000130000
+          004400000073000000905A2700F0FF9000FFFF9100FFFF8C00FFFF8B00FFFF86
+          00FFFF8B00FFFF7B00FF5C2700F0000000A10000007C00000043000000160000
+          00722D0F00D4582C00EBEF8100FFFF9300FFFFD57AFFFADAAEFFEFDABCFFFADA
+          AEFFFFD17AFFFF8E00FFFF8C00FF844100FA4D1800E6000000700000000D3A10
+          00C9FF9800FFFF9F00FFFF9F00FFFFC54FFFAF9469FB585249CD494644AC5953
+          4ACCAF936BFBFFC053FFFF9400FFFF9500FFFF8100FF351D00C000000008451E
+          00EDFF9B00FFFFA500FFFFBB1CFFC7840AFD000000A600000016FFFFFF000000
+          0016000000A5C07C0DFDFFB421FFFFA400FFEA8C00FF2B0600CD0000000E0000
+          008A905500FAFFC113FFFFB200FF844A00F3000000550000001C000000110000
+          001C000000557A4500F1FFA800FFFFB200FF714200F50000006C000000130000
+          004A5C3000EFFFC200FFFFB300FF844F00F4000000700000004C000000400000
+          004B0000006F7B4F00F1FFAA00FFFFB800FF854900F7000000750000000C2C14
+          00AED08C00FDFFCC00FFFFC300FFCC8C00FD000000BE000000730000006E0000
+          0073000000BEC68700FDFFBD00FFFFC500FFFEA400FF4D3500E6000000043A22
+          00D2FFE11AFFFFE861FFFFDB27FFFFC500FFB98700FB5A3F00DF422900CB5C3D
+          00DEBB8200FBFFC200FFFFDE2EFFFFF080FFFFD74BFF3C3100D4FFFFFF000000
+          006B7C7049FF9F9573FFFAE896FFFFDF26FFFFD700FFFDC700FFF4BC00FEFDC2
+          00FFFFD700FFFFDA00FFFFE572FF5F5536F3322C14DC0000005AFFFFFF000000
+          000D0000005C00000074453C1DE6FDDF78FFFFF573FFFFEE54FFFFF264FFFFF0
+          5FFFFFF472FFFFF776FF6B550FF70000005A0000001700000007FFFFFF00FFFF
+          FF00000000030000000D140E008ED0C282FFFFFFF4FFE3DFCBFF817F77FFA8A4
+          98FFFFFFFAFFFFFEC0FF4E4210D500000018FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00000000020000003E1C190DC857554FFA282722C8000000410100
+          007D494842F1302D22E00000006300000006FFFFFF00FFFFFF00
+        }
+        OnClick = BSendSetPClick
+        ParentFont = False
+        TabOrder = 6
       end
     end
   end
