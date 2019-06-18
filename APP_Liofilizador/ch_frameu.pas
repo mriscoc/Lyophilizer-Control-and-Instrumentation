@@ -74,7 +74,7 @@ end;
 procedure TChFrame.PutValue(val: real);
 begin
   Ch_Serie.Add(val);
-  if Ch_Serie.Count > maxpoints then
+  if Ch_Serie.Count >= maxpoints then
   begin
     Ch_Serie.ListSource.Delete(0);
     Ch_Chart.Extent.UseXMax:=false;
