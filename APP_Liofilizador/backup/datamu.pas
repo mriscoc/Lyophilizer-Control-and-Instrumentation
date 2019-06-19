@@ -5,7 +5,8 @@ unit datamu;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Dialogs, sqlite3conn, sqldb, db, DataU;
+  Classes, SysUtils, FileUtil, Dialogs, sqlite3conn, sqldb, db, DataU,
+  fpSpreadsheet, fpspreadsheetctrls, fpstypes, fpsallformats, strutils;
 
 type
 
@@ -35,6 +36,7 @@ type
     procedure ClearAll;
     property AutoSave:Boolean read FAutoSave write SetAutoSave;
     property AutoSaveCounts:integer read FAutoSaveCounts write SetAutoSaveCounts;
+    procedure DatasetToExcel(ADataset: TDataset; AFileName: String);
   end;
 
 var
@@ -51,19 +53,18 @@ var i:integer;
 begin
   DataSet.DisableControls;
   Dataset.Open;
+  if (DataSet.FieldCount-2)<>nChannels then
+    ShowMessageFmt('The database file has a different number of channels: %D',[DataSet.FieldCount-2]);
   With Dataset do
   begin
     Fields[0].Visible:=false; // This is the ID
     for i:=2 to FieldCount-1 do TNumericField(Fields[i]).DisplayFormat:='#0.0';
   end;
-  if (DataSet.FieldCount-2)=nChannels then
-  begin
-    DataSet.EnableControls;
-    VDataSet.Open;
-    VDataSet.Refresh;
-    PrjDataSet.Open;
-    PrjDataSet.Refresh;
-  end else ShowMessage('The database file has a different number of channels: '+IntToStr(DataSet.FieldCount-2));
+  VDataSet.Open;
+  VDataSet.Refresh;
+  PrjDataSet.Open;
+  PrjDataSet.Refresh;
+  DataSet.EnableControls;
 end;
 
 procedure TDataM.CloseDataBase;
@@ -121,8 +122,8 @@ begin
        sqlstr:='CREATE TABLE "Data"('+
                ' "id" Integer NOT NULL PRIMARY KEY AUTOINCREMENT,'+
                ' "DateTime" DateTime NOT NULL,';
-       if Chn>1 then for i:=0 to Chn-2 do sqlstr+=Format(' "CH%d" REAL, ',[i]);
-       sqlstr+=Format(' "CH%d" REAL);',[Chn-1]);
+       if Chn>1 then for i:=1 to Chn-1 do sqlstr+=Format(' "CH%d" REAL, ',[i]);
+       sqlstr+=Format(' "CH%d" REAL);',[Chn]);
        DBConn.ExecuteDirect(sqlstr);
        // Creating an index based upon id in the DATA Table
        DBConn.ExecuteDirect('CREATE UNIQUE INDEX "Data_id_idx" ON "Data"( "id" );');
@@ -179,7 +180,7 @@ begin
     DataSet.DisableControls;
     DataSet.Append;
     DataSet.FieldByName('DateTime').AsDateTime:=Now;
-    for i:=0 to nChannels-1 do DataSet.FieldByName('CH'+InttoStr(i)).value:=data[i];
+    for i:=1 to nChannels do DataSet.FieldByName('CH'+InttoStr(i)).value:=data[i];
     DataSet.Post;
     if FAutoSave then
     begin
@@ -203,6 +204,79 @@ begin
   CloseDataBase;
   DataSet.EnableControls;
 end;
+
+procedure TDataM.DatasetToExcel(ADataset: TDataset; AFileName: String);
+var
+  book: TsWorkbook;
+  sheet: TsWorksheet;
+  r, c: Integer;
+  cell: PCell;
+begin
+  book := TsWorkbook.Create;
+  try
+    sheet := book.AddWorksheet(ADataset.Name);
+    // Write field names to first row of worksheet
+    r := 0;
+    for c := 0 to ADataset.Fields.Count-1 do
+      sheet.WriteText(r, c, ADataset.Fields[c].FieldName);
+    // Write records
+    inc(r);
+    ADataset.First;
+    while not ADataset.EoF do begin
+      for c := 0 to ADataset.Fields.Count-1 do begin
+        case ADataset.Fields[c].DataType of
+          ftString, ftWideString, ftMemo:
+            cell := sheet.WriteText(r, c, ADataset.Fields[c].DisplayText);
+            // DisplayText is the text as it appears in the grid. Use .AsString for the raw text)
+          ftFloat:
+            begin
+              cell := sheet.WriteNumber(r, c, ADataset.Fields[c].AsFloat);
+              sheet.WriteHorAlignment(cell, haRight);  // right-align numbers
+              sheet.WriteNumberFormat(cell, nfFixed, 3);  // display 3 decimals (or whatever you want)
+           end;
+          ftInteger,ftWord, ftBytes, ftLargeint:
+            begin
+              cell := sheet.WriteNumber(r, c, ADataset.Fields[c].AsInteger);
+              sheet.WriteHorAlignment(cell, haRight);  // right-align numbers
+            end;
+          ftDateTime:
+            begin
+              cell := sheet.WriteDateTime(r, c, ADataset.Fields[c].AsDateTime, nfShortDateTime);
+              sheet.WriteHorAlignment(cell, haCenter);  // centered dates (or whatever...)
+            end;
+          ftDate:
+            begin
+              cell := sheet.WriteDateTime(r, c, ADataset.Fields[c].AsDateTime, nfShortDate);
+              sheet.WriteHorAlignment(cell, haCenter);  // centered dates (or whatever...)
+            end;
+          ftTime:
+            begin
+              cell := sheet.WriteDateTime(r, c, ADataset.Fields[c].AsDateTime, nfShortTime);
+              sheet.WriteHorAlignment(cell, haCenter);  // centered dates (or whatever...)
+            end;
+          ftBoolean:
+            begin
+              cell := sheet.WriteBoolValue(r, c, ADataset.Fields[c].AsBoolean);
+              sheet.WriteHorAlignment(cell, haCenter);  // centered TRUE/FALSE)
+            end;
+          ftCurrency:
+            begin
+              cell := sheet.WriteCurrency(r, c, ADataset.Fields[c].AsCurrency);
+              sheet.WriteHorAlignment(cell, haRight);  // right-aligned
+           end;
+        // here maybe other cases, too
+        end;
+      end;
+      inc(r);
+      ADataset.Next;
+    end;
+    book.WriteToFile(AFileName, sfOOXML, true);  // this is for .xlsx. Or use sfExcel8 for .xls.
+  finally
+    if assigned(book) then book.Free;
+  end;
+end;
+
+
 
 end.
 

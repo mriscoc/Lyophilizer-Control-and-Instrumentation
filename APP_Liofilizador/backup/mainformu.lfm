@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 939
+  Left = 723
   Height = 516
-  Top = 257
+  Top = 294
   Width = 706
   Caption = 'Liofilizador'
   ClientHeight = 516
@@ -14,7 +14,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  SessionProperties = 'Ed_COMPort.Value;Ed_Lolimit.Value;Ed_Uplimit.Value;Height;Left;Top;Width;Ed_Sampletime.Value'
+  SessionProperties = 'Ed_COMPort.Value;Ed_Lolimit.Value;Ed_Sampletime.Value;Ed_Uplimit.Value;Height;Left;Top;Width;ed_SetPointH.Value;ed_SetPointL.Value'
   LCLVersion = '2.0.3.0'
   object Data_Panel: TPanel
     Left = 122
@@ -134,12 +134,14 @@ object MainForm: TMainForm
           ParentShowHint = False
           ShowHint = True
           object LineSetTH: TConstantLine
+            Legend.Visible = False
             Pen.Color = clPurple
             Pen.Style = psDash
             Pen.Width = 2
             Position = 25
           end
           object LineSetTL: TConstantLine
+            Legend.Visible = False
             Pen.Color = clPurple
             Pen.Style = psDash
             Pen.Width = 2
@@ -153,8 +155,8 @@ object MainForm: TMainForm
         ClientWidth = 571
         object DBGrid1: TDBGrid
           Left = 0
-          Height = 368
-          Top = 0
+          Height = 336
+          Top = 32
           Width = 571
           Align = alClient
           AlternateColor = clCream
@@ -166,8 +168,64 @@ object MainForm: TMainForm
           DataSource = DataSource
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns, dgCellHints, dgDblClickAutoSize]
           ReadOnly = True
-          Scrollbars = ssAutoVertical
+          Scrollbars = ssVertical
           TabOrder = 0
+        end
+        object P_Table: TPanel
+          Left = 0
+          Height = 32
+          Top = 0
+          Width = 571
+          Align = alTop
+          BevelOuter = bvNone
+          ClientHeight = 32
+          ClientWidth = 571
+          TabOrder = 1
+          object B_Export: TBitBtn
+            Left = 0
+            Height = 30
+            Top = 1
+            Width = 112
+            Caption = 'Export to CSV'
+            Glyph.Data = {
+              36040000424D3604000000000000360000002800000010000000100000000100
+              2000000000000004000064000000640000000000000000000000FFFFFF00BB6A
+              346BBA6530BCBB6631EDBA6630F7BA6630F7BA6630F7BA6530F7BA652FF7B965
+              2EF7B9652EF7B9642EF7B9642EEFB7622CBDB7622E63FFFFFF00FFFFFF00BC69
+              33DEF8F1EAF2F7ECDFFDF6EBDEFFF6EADEFFF6EADCFFF6EADCFFFAF3EBFFFAF3
+              EBFFFAF2EAFFFCF7F3FFFCF8F4FDFEFEFDF0B7602AD5FFFFFF00FFFFFF00BF71
+              38F5F5EBDFFEFCE4D1FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4
+              D1FFFCE4D1FFFCE4D1FFFCE4D1FFFDFBF8FDB9642DF3FFFFFF00FFFFFF00C178
+              3CF7F7EDE3FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4D1FFFCE4
+              D1FFFCE4D1FFFCE4D1FFFCE4D1FFFBF7F4FFBB6731F7FFFFFF00FFFFFF00C47C
+              40F7F7F0E6FFFCE4D1FFFCE4D1FFE5D9C2FF689E70FF579665FF599766FF6CA0
+              73FFFCE4D1FFFCE4D1FFFCE4D1FFFCF9F5FFBF6F36F7FFFFFF001A7533E41A75
+              33FF197533FF197433FF448A52FF619B6BFFBBD6C3FF78BB84FF61AB6AFF5796
+              64FFFCE2CCFFFBE0C9FFFBE1C8FFFDFAF7FFC1763BF7FFFFFF001A7533661B75
+              33FF5BA06EFF49965CFF47905BFFC7DDCDFF5DB671FF67AE75FF448D58FF1B75
+              33FFFCE2CDFFFBE1CBFFFBE1C9FFFBF7F2FFC57C3FF7FFFFFF00FFFFFF007F7E
+              3FFA1F7837FF48915DFFC7DDCDFF6AC084FF71B682FF448E59FFB1C1A1FFFBE4
+              D0FFFBE3CCFFFADFC7FFFADFC6FFFAF2EAFFC68042F7FFFFFF00FFFFFF00C288
+              49F7619E71FFC5DCCCFF76C997FF73BC87FF438D58FF559360FFF5E0CCFFFBE1
+              CCFFFAE0C7FFF9DDC3FFF8DCC2FFFAF4EDFFC68245F7FFFFFF00438D58076F8B
+              53FCC0D9C8FF82D3A3FF6DC18AFF549563FF4B9660FF519764FF679A68FFF4DC
+              C3FFF8DCC2FFF6DABDFFF6D8BBFFFAF4EFFFC68346F7FFFFFF00438D58ACB5D3
+              BEFF9CDAB5FF74C895FF549563FF4A935FFF5DA474FF59A16EFF509764FF6297
+              62FFE9D1B4FFF3D4B5FFF1D2B3FFF8F4F0FFC48246F7FFFFFF00438D58DE558C
+              56FE539666FF549563FFA1B995FF8DAE83FF2E7F42FF2E7F41FF3A8448FF3682
+              45FF90B490FFF7F2ECFFFBF7F3FFF5EFE9FFC27E45FBFFFFFF00FFFFFF00C689
+              4CF6F9F5F1FFFCE3CDFFFBE3CEFFFBE3CDFFFBE2CBFFF9E0C8FFF8DCC2FFF5D6
+              BAFFFDFBF8FFFCE6CDFFFAE5C9FFE2B684FFBF7942A6FFFFFF00FFFFFF00C588
+              4BEAFAF6F2FCFAE0C7FFFBE1C9FFFBE2C9FFFBE0C8FFF9DFC5FFF8DBC1FFF4D6
+              B8FFFFFBF8FFF6D8B4FFE1B07DFFDB9264F6B46B3E07FFFFFF00FFFFFF00C485
+              49C3F7F2ECECF8F4EEFCF8F4EDFFF8F3EDFFF8F3EDFFF8F3EDFFF8F2ECFFF7F2
+              ECFFF2E6D7FFE2B27DFFDB9465F5B3683B07FFFFFF00FFFFFF00FFFFFF00C17D
+              4460C88B4DBBC88C4FEEC88C4FF6C88C4FF7C88C4FF7C88D4FF7C98C4FF7C78B
+              4FF7C5894BD4C4763B91B3683C06FFFFFF00FFFFFF00FFFFFF00
+            }
+            OnClick = B_ExportClick
+            TabOrder = 0
+          end
         end
       end
       object TabSheet3: TTabSheet
@@ -755,7 +813,7 @@ object MainForm: TMainForm
     Enabled = False
     Interval = 3000
     OnTimer = RegdataTimerTimer
-    left = 480
+    left = 248
     top = 144
   end
   object TimeSource: TDateTimeIntervalChartSource
@@ -976,5 +1034,10 @@ object MainForm: TMainForm
   object ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA
     left = 392
     top = 48
+  end
+  object SaveDialog: TSaveDialog
+    DefaultExt = '.xlsx'
+    left = 480
+    top = 144
   end
 end
