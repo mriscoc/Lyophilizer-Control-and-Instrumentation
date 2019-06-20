@@ -2,7 +2,7 @@
 -- Project Name: SBA_Liofilizador
 -- Title: Control Principal SBA
 -- Version: 0.2.3
--- Date: 2019/06/18
+-- Date: 2019/06/20
 -- Project Author: Miguel A. Risco Castillo
 -- Description: Sistema de control e instrumentación para el Liofilizador
 -- /SBA: End Program Details ---------------------------------------------------
@@ -14,8 +14,8 @@
   variable Idx     : natural;                   -- General purpose index
   variable T       : signed(15 downto 0);       -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
-  variable T0      : signed(21 downto 0);       -- Filtered Temperature Ch0
-  variable T1      : signed(21 downto 0);       -- Filtered Temperature Ch1
+  variable T0      : signed(21 downto 0);       -- Accumulator Filter Ch0
+  variable T1      : signed(21 downto 0);       -- Accumulator Filter Ch1
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
@@ -158,17 +158,17 @@
 
 => SBAread(TC1R0);                                   -- Get Reference Juntion Temperature
 => T:=Resize(25*signed(dati(15 downto 4)),T'length); -- 25x8xT = 400xT
-   T:=Resize(T(15 downto 2),T'length);               -- T/4 = 100xT
+   T:=Resize(T(15 downto 2),T'length);               -- /4 = 100xT
 
-=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Unfiltered
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
-=> T0:=Resize(T0(15 downto 0) & "00",T0'length) - T0;
-=> T0:= T0 + Resize(T & "000",T0'length);
-   T0:= resize(T0(21 downto 2),T0'length);
-=> T:=T0(18 downto 3);
-   bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Filtered
+-- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (3 bits)
+-- T0(i) = beta*T + (1-beta)*T0(i-1)
+=> T0:= T + T0 - (T0 srl 3);                         -- Note T0(i) = 8*T0(i-1)
+=> T:=T0(18 downto 3);                               -- Restore from FixedPoint
+   bin_in:=unsigned(T); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
 
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
@@ -176,15 +176,15 @@
 => SBAread(TC1R1);                                   -- Thermocuple temperature
 => T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
 
-=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Unfiltered
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
-=> T1:=Resize(T1(15 downto 0) & "00",T1'length) - T1;-- TF(n) = TF(n-1)*4
-=> T1:= T1 + Resize(T & "00",T1'length);             -- TF(n) = TF(n) + T*4
-   T1:= resize(T1(21 downto 2),T1'length);           -- TF(n) = TF(n)/4
-=> T:=T1(17 downto 2);                               -- To(n) = TF(n)/4
-   bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Filtered
+-- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (3 bits)
+-- T1(i) = beta*T + (1-beta)*T1(i-1)
+=> T1:= T + T1 - (T1 srl 3);                         -- Note T1(i) = 8*T1(i-1)
+=> T:=T1(18 downto 3);                               -- Restore from FixedPoint
+   bin_in:=unsigned(T); SBAcall(Bin2BCD);
 => SBACall(UARTSendBCD);
 
 => if T>SetTH then TCTRL:='0'; end if;               -- Calefactor Control

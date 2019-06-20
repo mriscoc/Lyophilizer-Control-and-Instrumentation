@@ -20,11 +20,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainFormU"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="219"/>
-        <CursorPos X="41" Y="257"/>
+        <TopLine Value="174"/>
+        <CursorPos X="26" Y="182"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="2">
-          <Item0 X="27" Y="313"/>
+          <Item0 X="27" Y="317"/>
           <Item1 Y="141" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
@@ -46,13 +46,14 @@
         <Filename Value="datau.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="DataU"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="6"/>
-        <CursorPos X="3" Y="31"/>
+        <CursorPos X="3" Y="19"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
           <Item0 Y="41" ID="7"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="datamu.pas"/>
@@ -60,10 +61,11 @@
         <ComponentName Value="DataM"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="175"/>
-        <CursorPos X="26" Y="182"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="18"/>
+        <CursorPos X="15" Y="34"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="chconfig_frameu.pas"/>
@@ -75,7 +77,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="42"/>
         <CursorPos X="25" Y="54"/>
-        <UsageCount Value="182"/>
+        <UsageCount Value="183"/>
       </Unit5>
       <Unit6>
         <Filename Value="WaitU.pas"/>
@@ -86,7 +88,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="46"/>
         <CursorPos X="20" Y="71"/>
-        <UsageCount Value="168"/>
+        <UsageCount Value="169"/>
       </Unit6>
       <Unit7>
         <Filename Value="GREIC_CommOBJ.pas"/>
@@ -94,24 +96,26 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="24"/>
         <CursorPos X="13" Y="39"/>
-        <UsageCount Value="167"/>
+        <UsageCount Value="168"/>
       </Unit7>
       <Unit8>
         <Filename Value="HWU.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="44"/>
-        <CursorPos X="36" Y="57"/>
-        <UsageCount Value="167"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="46"/>
+        <CursorPos X="17" Y="70"/>
+        <UsageCount Value="168"/>
+        <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="IOinterfaceU.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="IOInterfaceU"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="247"/>
-        <CursorPos X="5" Y="269"/>
-        <UsageCount Value="167"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="33"/>
+        <CursorPos X="9" Y="58"/>
+        <UsageCount Value="168"/>
+        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="versionsupportu.pas"/>
@@ -119,7 +123,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="217"/>
         <CursorPos X="5" Y="85"/>
-        <UsageCount Value="167"/>
+        <UsageCount Value="168"/>
       </Unit10>
       <Unit11>
         <Filename Value="D:\lazarus\components\tachart\tagraph.pas"/>
@@ -256,7 +260,7 @@
     <OtherDefines Count="1">
       <Define0 Value="DEBUG"/>
     </OtherDefines>
-    <JumpHistory Count="12" HistoryIndex="11">
+    <JumpHistory Count="23" HistoryIndex="22">
       <Position1>
         <Filename Value="mainformu.pas"/>
         <Caret Line="6" Column="26"/>
@@ -305,6 +309,50 @@
         <Filename Value="mainformu.pas"/>
         <Caret Line="196" Column="51" TopLine="191"/>
       </Position12>
+      <Position13>
+        <Filename Value="HWU.pas"/>
+        <Caret Line="107" Column="24" TopLine="79"/>
+      </Position13>
+      <Position14>
+        <Filename Value="HWU.pas"/>
+        <Caret Line="24" Column="3" TopLine="7"/>
+      </Position14>
+      <Position15>
+        <Filename Value="HWU.pas"/>
+        <Caret Line="63" Column="38"/>
+      </Position15>
+      <Position16>
+        <Filename Value="HWU.pas"/>
+        <Caret Line="64" Column="18" TopLine="40"/>
+      </Position16>
+      <Position17>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="257" Column="41" TopLine="204"/>
+      </Position17>
+      <Position18>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="225" TopLine="204"/>
+      </Position18>
+      <Position19>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="208" Column="3" TopLine="204"/>
+      </Position19>
+      <Position20>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="117" Column="20" TopLine="101"/>
+      </Position20>
+      <Position21>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="466" TopLine="461"/>
+      </Position21>
+      <Position22>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="85" Column="15" TopLine="69"/>
+      </Position22>
+      <Position23>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="178" Column="3" TopLine="175"/>
+      </Position23>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
