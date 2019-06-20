@@ -1,8 +1,8 @@
 -- /SBA: Program Details =======================================================
 -- Project Name: SBA_Liofilizador
 -- Title: Control Principal SBA
--- Version: 0.1.1
--- Date: 2019/04/02
+-- Version: 0.2.3
+-- Date: 2019/06/18
 -- Project Author: Miguel A. Risco Castillo
 -- Description: Sistema de control e instrumentación para el Liofilizador
 -- /SBA: End Program Details ---------------------------------------------------
@@ -28,7 +28,7 @@
   alias    L1      : std_logic is DOUT(1);      -- LED1
   alias    TCTRL   : std_logic is DOUT(8);      -- Temperature Control
   type tarrchar is array (natural range <>) of character;
-  constant vMsg    : tarrchar (0 to 18):="Liofilizador v0.1.1";
+  constant vMsg    : tarrchar (0 to 18):="Liofilizador v0.2.3";
 
   variable bin_in  : unsigned(15 downto 0);    -- 16 bit input register
   variable bcd_out : unsigned(19 downto 0);    -- 20 bit output register
@@ -158,17 +158,17 @@
 
 => SBAread(TC1R0);                                   -- Get Reference Juntion Temperature
 => T:=Resize(25*signed(dati(15 downto 4)),T'length); -- 25x8xT = 400xT
-   T:=Resize(T(15 downto 2),T'length);               -- /4 = 100xT
+   T:=Resize(T(15 downto 2),T'length);               -- T/4 = 100xT
 
-=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
-=> T0:=Resize(T0(15 downto 0) & "00",T0'length) - T0;-- Filtered
+=> T0:=Resize(T0(15 downto 0) & "00",T0'length) - T0;
 => T0:= T0 + Resize(T & "000",T0'length);
    T0:= resize(T0(21 downto 2),T0'length);
 => T:=T0(18 downto 3);
-   bin_in:=T; SBAcall(Bin2BCD);
+   bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Filtered
 => SBACall(UARTSendBCD);
 
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
@@ -176,15 +176,15 @@
 => SBAread(TC1R1);                                   -- Thermocuple temperature
 => T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
 
-=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Unfiltered
 => SBACall(UARTSendBCD);
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
 
-=> T1:=Resize(T1(15 downto 0) & "00",T1'length) - T1;-- Filtered
-=> T1:= T1 + Resize(T & "00",T1'length);
-   T1:= resize(T1(21 downto 2),T1'length);
-=> T:=T1(17 downto 2);
-   bin_in:=T; SBAcall(Bin2BCD);
+=> T1:=Resize(T1(15 downto 0) & "00",T1'length) - T1;-- TF(n) = TF(n-1)*4
+=> T1:= T1 + Resize(T & "00",T1'length);             -- TF(n) = TF(n) + T*4
+   T1:= resize(T1(21 downto 2),T1'length);           -- TF(n) = TF(n)/4
+=> T:=T1(17 downto 2);                               -- To(n) = TF(n)/4
+   bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Send Filtered
 => SBACall(UARTSendBCD);
 
 => if T>SetTH then TCTRL:='0'; end if;               -- Calefactor Control

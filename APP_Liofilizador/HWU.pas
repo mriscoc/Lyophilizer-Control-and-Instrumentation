@@ -65,7 +65,7 @@ begin
         'C': begin
 //;
         end;
-        'D': for i := 0 to nChannels - 1 do
+        'D': for i := 1 to nChannels do
           begin
             if i+1<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i+1],0)/100;
             vTempx[i]:=Max(LoLimit,Min(UpLimit,vTempx[i]));
@@ -101,7 +101,7 @@ const
   offset=0;
   range=100;
 begin
-  for i:=0 to nChannels-1 do
+  for i:=1 to nChannels do
   begin
     vTempx[i]:=AOffset[i] + offset + (range)*(1/2-Cos(I/3+Time*500)/2);
     FYMax:=Max(FYMax,vTempx[i]);

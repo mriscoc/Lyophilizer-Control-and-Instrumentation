@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, TAIntervalSources, TAGraph, TASeries, TATransformations,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Spin, Buttons,
   ComCtrls, DBGrids, ActnList, IniPropStorage, DbCtrls, sqlite3conn, sqldb, db,
-  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types,
+  ueled, TATools, TADataTools, TADbSource, LazFileUtils, Types,lclintf,
   TACustomSource, TAGUIConnectorBGRA, fptimer;
 
 type
@@ -16,6 +16,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    B_Export: TBitBtn;
     BSendSetP: TBitBtn;
     ed_SetPointH: TFloatSpinEdit;
     ed_SetPointL: TFloatSpinEdit;
@@ -43,6 +44,7 @@ type
     ConfigPanel: TPanel;
     DataSource: TDataSource;
     Panel3: TPanel;
+    P_Table: TPanel;
     PrjDataS: TDataSource;
     Ed_PrjName: TDBEdit;
     DBGrid1: TDBGrid;
@@ -69,6 +71,7 @@ type
     L_Time: TStaticText;
     Ed_Uplimit: TSpinEdit;
     Ed_Lolimit: TSpinEdit;
+    SaveDialog: TSaveDialog;
     SpeedButton1: TSpeedButton;
     Ed_Sampletime: TSpinEdit;
     TabSheet1: TTabSheet;
@@ -85,6 +88,7 @@ type
     procedure BSendSetPClick(Sender: TObject);
     procedure B_ConnectClick(Sender: TObject);
     procedure B_EnableDBClick(Sender: TObject);
+    procedure B_ExportClick(Sender: TObject);
     procedure B_OpenDBClick(Sender: TObject);
     procedure B_SavePrjClick(Sender: TObject);
     procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
@@ -117,6 +121,7 @@ type
     function SaveConfigValues: boolean;
     procedure UpdateDsply;
     procedure ResetData;
+    procedure VDatasetAfterOpen(DataSet: TDataSet);
   public
     { public declarations }
   end;
@@ -131,8 +136,8 @@ implementation
 uses Ch_FrameU, CHConfig_FrameU, datamu, DataU, HWU, WaitU, VersionSupportU, Math;
 
 var
-  AChannels: Array [0..HWchannels-1] of TChFrame;
-  ASeries: Array [0..HWchannels-1] of TlineSeries;
+  AChannels: Array [1..HWchannels] of TChFrame;
+  ASeries: Array [1..HWchannels] of TlineSeries;
 
 { TMainForm }
 
@@ -203,9 +208,20 @@ begin
   If RegdataTimer.Enabled then DisableDB else EnableDB;
 end;
 
+procedure TMainForm.B_ExportClick(Sender: TObject);
+begin
+  SaveDialog.Filter:='Excel file|*.xlsx';
+  SaveDialog.DefaultExt:='.xlsx';
+  SaveDialog.InitialDir:=DBPath;
+  SaveDialog.FileName:=ExtractFileNameOnly(DBName);
+  if SaveDialog.Execute then DataM.DatasetToExcel(DataM.DataSet,SaveDialog.FileName);
+  if FileExists(SaveDialog.FileName) then OpenDocument(SaveDialog.FileName);
+end;
+
 procedure TMainForm.B_OpenDBClick(Sender: TObject);
 var chans:Integer;
 begin
+  DataM.VDataset.AfterOpen:=@VDatasetAfterOpen;
   Chans:=0;
   OpenDB.InitialDir:=DBPath;
   if OpenDB.Execute then
@@ -285,7 +301,7 @@ procedure TMainForm.GetData;
 var
   i: Integer;
 begin
-  for i:=0 to nChannels-1 do AData[i]:=HW.Temperatura[i];
+  for i:=1 to nChannels do AData[i]:=HW.Temperatura[i];
 end;
 
 procedure TMainForm.Ed_COMPortChange(Sender: TObject);
@@ -355,21 +371,21 @@ Var
   chcolor:TColor;
   CF:TChConfigFrame;
 begin
-  for i:=0 to nChannels-1 do
+  for i:=1 to nChannels do
   begin
     chcolor:=DefColor[i]; //Random($FFFFFF);
 //
     AChannels[i]:=TChFrame.Create(ChPanel);
     AChannels[i].Name:='Ch'+inttostr(i)+'_Frame';
     AChannels[i].Parent:=ChPanel;
-    AChannels[i].Title:='Ch'+inttostr(i+1);
+    AChannels[i].Title:='Ch'+inttostr(i);
     AChannels[i].Align:=alNone;
     AChannels[i].ColorUpd(chcolor);
 //
     CF:=TChConfigFrame.Create(ConfigPanel);
     CF.Name:='Ch'+inttostr(i)+'_Config';
     CF.Parent:=ConfigPanel;
-    CF.Title:='Offset Ch'+inttostr(i+1);
+    CF.Title:='Offset Ch'+inttostr(i);
     CF.Align:=alNone;
     CF.ColorUpd(chcolor);
     CF.Tag:=i;
@@ -384,12 +400,12 @@ var
 begin
   MainChart.LeftAxis.Range.UseMax:=true;
   MainChart.LeftAxis.Range.UseMin:=true;
-  for i:=0 to nChannels-1 do
+  for i:=1 to nChannels do
   begin
     dbs:=TDbChartSource.Create(MainChart);
     dbs.DataSource:=VDataSource;
     dbs.FieldX:='DateTime';
-    dbs.FieldY:='CH'+inttostr(i);
+//    dbs.FieldY:='CH'+inttostr(i);
     dbs.OnGetItem:=@DbChartGetItem;
     ASeries[i]:=TlineSeries.Create(MainChart);
     ASeries[i].LinePen.Color:=AChannels[i].Color;
@@ -398,10 +414,9 @@ begin
     MainChart.AddSeries(ASeries[i]);
     ASeries[i].ZPosition:=0;
   end;
-  ASeries[1].LinePen.Width:=2;
-  ASeries[3].LinePen.Width:=2;
+  ASeries[2].LinePen.Width:=2;
+  ASeries[4].LinePen.Width:=2;
 end;
-
 
 procedure TMainForm.DeleteChSeries;
 var
@@ -420,10 +435,21 @@ begin
     end;
 end;
 
+procedure TMainForm.VDatasetAfterOpen(DataSet: TDataSet);
+var
+  i:integer;
+begin
+  for i:=1 to nChannels do
+  if i<DataSet.FieldCount-1 then
+    TDbChartSource(ASeries[i].Source).FieldY:=DataSet.Fields[i+1].FieldName
+  else
+    TDbChartSource(ASeries[i].Source).FieldY:='';
+end;
+
 procedure TMainForm.UpdateDsply;
 var i:integer;
 begin
-  for i:=0 to nChannels-1 do AChannels[i].PutValue(AData[i]);
+  for i:=1 to nChannels do AChannels[i].PutValue(AData[i]);
   if RegdataTimer.Enabled then L_Time.Caption:=FormatDateTime('hh:nn:ss',Now-StartTime);
 end;
 
@@ -480,7 +506,7 @@ begin
         DBPath:=ConfigDir+'DBPath'+PathDelim;
         If Not ForceDirectoriesUTF8(DBPath) Then Exit;
       end;
-    for i:=0 to nChannels-1 do
+    for i:=1 to nChannels do
       AOffset[i]:=StrtoFloatDef(ReadString('AOffset'+inttostr(i),'0'),0);
   end;
   result:=true;
@@ -494,7 +520,7 @@ begin
   With IniStor do
   begin
     WriteString('DBPath',DBPath);
-    for i:=0 to nChannels-1 do
+    for i:=1 to nChannels do
       WriteString('AOffset'+inttostr(i),Format('%.2f',[AOffset[i]]));
   end;
   result:=true;
