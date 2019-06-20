@@ -1036,7 +1036,10 @@ object MainForm: TMainForm
     top = 48
   end
   object SaveDialog: TSaveDialog
+    Title = 'Export data as'
     DefaultExt = '.xlsx'
+    Filter = 'Excel files|*.xlsx'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 480
     top = 144
   end

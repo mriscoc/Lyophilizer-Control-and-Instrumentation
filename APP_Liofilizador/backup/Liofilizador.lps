@@ -3,7 +3,7 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="11"/>
-    <BuildModes Active="Debug"/>
+    <BuildModes Active="Release x32"/>
     <Units Count="29">
       <Unit0>
         <Filename Value="Liofilizador.lpr"/>
@@ -258,7 +258,7 @@
     <OtherDefines Count="1">
       <Define0 Value="DEBUG"/>
     </OtherDefines>
-    <JumpHistory Count="13" HistoryIndex="12">
+    <JumpHistory Count="12" HistoryIndex="11">
       <Position1>
         <Filename Value="mainformu.pas"/>
         <Caret Line="6" Column="26"/>
@@ -305,12 +305,8 @@
       </Position11>
       <Position12>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="256" Column="23" TopLine="342"/>
-      </Position12>
-      <Position13>
-        <Filename Value="mainformu.pas"/>
         <Caret Line="196" Column="51" TopLine="191"/>
-      </Position13>
+      </Position12>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
