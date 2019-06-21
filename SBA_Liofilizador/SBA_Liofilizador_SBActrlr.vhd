@@ -174,8 +174,9 @@ begin
   variable Idx     : natural;                   -- General purpose index
   variable T       : signed(15 downto 0);       -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
-  variable T0      : signed(21 downto 0);       -- Accumulator Filter Ch0
-  variable T1      : signed(21 downto 0);       -- Accumulator Filter Ch1
+  variable T0      : signed(19 downto 0);       -- Accumulator Filter Ch0
+  variable T1      : signed(19 downto 0);       -- Accumulator Filter Ch1
+  constant beta    : integer:=3;                -- EMA beta factor (srl 3 = 1/8)
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
@@ -378,27 +379,29 @@ begin
         When 049=> SBACall(UARTSendBCD);
         When 050=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
                 
--- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (3 bits)
--- T0(i) = beta*T + (1-beta)*T0(i-1)
-        When 051=> T0:= T + T0 - (T0 srl 3);                         -- Note T0(i) = 8*T0(i-1)
-        When 052=> T:=T0(18 downto 3);                               -- Restore from FixedPoint
-                   bin_in:=unsigned(T); SBAcall(Bin2BCD);
+-- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (1=8*0.125)
+-- T(i) = beta*T + (1-beta)*T(i-1)
+-- 8*T(i) = 8*0.125*T + 8*T(i-1) - 8*0.125*T(i-1) = T + 8*T(i-1) - T(i-1)
+-- Change var: T0(i)=8*T(i), T0(i-1)=8*T(i-1)
+-- T0(i) = T + T0(i-1) - T0(i-1)/8
+-- T(i) = T0(i)/8
+        When 051=> T0:= T + T0 - (T0 srl beta);                      -- EMA Filter (beta=1/8)
+        When 052=> T:=Resize(T0 srl beta,T'length);                  -- T(i) = T0(i)/8
+                   bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Filtered
         When 053=> SBACall(UARTSendBCD);
                 
-        When 054=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+        When 054=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
                 
         When 055=> SBAread(TC1R1);                                   -- Thermocuple temperature
         When 056=> T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
                 
         When 057=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
         When 058=> SBACall(UARTSendBCD);
-        When 059=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
+        When 059=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
                 
--- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (3 bits)
--- T1(i) = beta*T + (1-beta)*T1(i-1)
-        When 060=> T1:= T + T1 - (T1 srl 3);                         -- Note T1(i) = 8*T1(i-1)
-        When 061=> T:=T1(18 downto 3);                               -- Restore from FixedPoint
-                   bin_in:=unsigned(T); SBAcall(Bin2BCD);
+        When 060=> T1:= T + T1 - (T1 srl beta);                      -- EMA Filter (beta=1/8)
+        When 061=> T:=Resize(T1 srl beta,T'length);                  -- T(i) = T1(i)/8
+                   bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Filtered
         When 062=> SBACall(UARTSendBCD);
                 
         When 063=> if T>SetTH then TCTRL:='0'; end if;               -- Calefactor Control
