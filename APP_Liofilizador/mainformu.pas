@@ -176,7 +176,11 @@ end;
 procedure TMainForm.ACreateDBExecute(Sender: TObject);
 begin
   DBName:=FormatDateTime('YYYYMMDD-hhnnss',Now)+'.db';
-  if DataM.CreateDB(DBPath+DBName,nChannels) then DataM.ReOpenDataSets;
+  if DataM.CreateDB(DBPath+DBName,nChannels) then
+  begin
+    DataM.VDataset.AfterOpen:=@VDatasetAfterOpen;
+    DataM.ReOpenDataSets;
+  end;
 end;
 
 procedure TMainForm.AReconectHWExecute(Sender: TObject);

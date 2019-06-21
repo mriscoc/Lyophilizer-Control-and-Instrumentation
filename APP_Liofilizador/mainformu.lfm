@@ -1,11 +1,11 @@
 object MainForm: TMainForm
-  Left = 723
-  Height = 516
-  Top = 294
-  Width = 706
+  Left = 706
+  Height = 567
+  Top = 230
+  Width = 790
   Caption = 'Liofilizador'
-  ClientHeight = 516
-  ClientWidth = 706
+  ClientHeight = 567
+  ClientWidth = 790
   Color = clBtnFace
   Constraints.MinHeight = 430
   Constraints.MinWidth = 640
@@ -18,20 +18,20 @@ object MainForm: TMainForm
   LCLVersion = '2.0.3.0'
   object Data_Panel: TPanel
     Left = 122
-    Height = 516
+    Height = 567
     Top = 0
-    Width = 579
+    Width = 663
     Align = alClient
     BorderSpacing.Right = 5
     BevelOuter = bvNone
-    ClientHeight = 516
-    ClientWidth = 579
+    ClientHeight = 567
+    ClientWidth = 663
     TabOrder = 0
     object ChPanel: TPanel
       Left = 0
       Height = 120
       Top = 0
-      Width = 578
+      Width = 662
       Align = alTop
       AutoSize = True
       BorderSpacing.Right = 1
@@ -49,9 +49,9 @@ object MainForm: TMainForm
     end
     object PageControl1: TPageControl
       Left = 0
-      Height = 396
+      Height = 447
       Top = 120
-      Width = 579
+      Width = 663
       ActivePage = GraphSheet
       Align = alClient
       Images = ImageList1
@@ -60,13 +60,13 @@ object MainForm: TMainForm
       TabPosition = tpBottom
       object GraphSheet: TTabSheet
         Caption = 'Plot'
-        ClientHeight = 368
-        ClientWidth = 571
+        ClientHeight = 419
+        ClientWidth = 655
         object MainChart: TChart
           Left = 0
-          Height = 368
+          Height = 419
           Top = 0
-          Width = 571
+          Width = 655
           AntialiasingMode = amOn
           AxisList = <          
             item
@@ -428,12 +428,12 @@ object MainForm: TMainForm
   end
   object Control_Panel: TPanel
     Left = 0
-    Height = 516
+    Height = 567
     Top = 0
     Width = 122
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 516
+    ClientHeight = 567
     ClientWidth = 122
     Color = clGray
     Font.Color = clCream
@@ -520,7 +520,7 @@ object MainForm: TMainForm
     object Panel3: TPanel
       Left = 0
       Height = 396
-      Top = 120
+      Top = 171
       Width = 122
       Align = alBottom
       BevelOuter = bvNone
