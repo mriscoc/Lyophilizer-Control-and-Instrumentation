@@ -22,6 +22,7 @@
 ],
 "ipcores": [
 	"GPIO",
+	"HX711",
 	"PMODTC1",
 	"TIMER",
 	"UART"

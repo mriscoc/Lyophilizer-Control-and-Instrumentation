@@ -67,7 +67,7 @@ begin
         end;
         'D': for i := 1 to nChannels do
           begin
-            if i<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i],0)/100;
+            if i<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i],0)*AScale[i];
             vTempx[i]:=Max(LoLimit,Min(UpLimit,vTempx[i]));
             FYMax:=Max(FYMax,vTempx[i]);
             FYMin:=Min(FYMin,vTempx[i]);
@@ -97,13 +97,10 @@ end; {Destroy}
 procedure THW.GenSimData;
 var
   i: integer;
-const
-  offset=0;
-  range=100;
 begin
   for i:=1 to nChannels do
   begin
-    vTempx[i]:=AOffset[i] + offset + (range)*(1/2-Cos(I/3+Time*500)/2);
+    vTempx[i]:=AOffset[i] + AScale[i]*(1/2-Cos(I/3+Time*500)/2);
     FYMax:=Max(FYMax,vTempx[i]);
     FYMin:=Min(FYMin,vTempx[i]);
   end;

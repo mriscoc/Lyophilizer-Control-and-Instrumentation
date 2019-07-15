@@ -57,7 +57,7 @@ end SBA_Liofilizador_SBAcontroller;
 
 architecture SBA_Liofilizador_SBAcontroller_Arch of SBA_Liofilizador_SBAcontroller is
 
-  subtype STP_type is integer range 0 to 85;
+  subtype STP_type is integer range 0 to 88;
   type STPS_type is array (0 to 7) of STP_type;
   subtype ADR_type is integer range 0 to (2**ADR_O'length-1);
 
@@ -177,6 +177,7 @@ begin
   variable T0      : signed(19 downto 0);       -- Accumulator Filter Ch0
   variable T1      : signed(19 downto 0);       -- Accumulator Filter Ch1
   constant beta    : integer:=3;                -- EMA beta factor (srl 3 = 1/8)
+  variable W       : signed(23 downto 0);       -- Hx711 Weight variable
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
   constant RXRDY   : integer:=15;               -- RXRDY Flag is bit 15
   variable UARTFlg : std_logic;                 -- aux bit for UART flags
@@ -207,9 +208,9 @@ begin
   constant LoopMain: integer := 034;
   constant EndLoopMain: integer := 038;
   constant SendTemperatureData: integer := 039;
-  constant GetData: integer := 066;
-  constant SetConfig: integer := 070;
-  constant SendVersion: integer := 079;
+  constant GetData: integer := 069;
+  constant SetConfig: integer := 073;
+  constant SendVersion: integer := 082;
 -- /SBA: End Label constants ---------------------------------------------------
 
 begin
@@ -375,83 +376,90 @@ begin
         When 047=> T:=Resize(25*signed(dati(15 downto 4)),T'length); -- 25x8xT = 400xT
                    T:=Resize(T(15 downto 2),T'length);               -- /4 = 100xT
                 
-        When 048=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
-        When 049=> SBACall(UARTSendBCD);
-        When 050=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);
-                
 -- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (1=8*0.125)
 -- T(i) = beta*T + (1-beta)*T(i-1)
 -- 8*T(i) = 8*0.125*T + 8*T(i-1) - 8*0.125*T(i-1) = T + 8*T(i-1) - T(i-1)
 -- Change var: T0(i)=8*T(i), T0(i-1)=8*T(i-1)
 -- T0(i) = T + T0(i-1) - T0(i-1)/8
 -- T(i) = T0(i)/8
-        When 051=> T0:= T + T0 - (T0 srl beta);                      -- EMA Filter (beta=1/8)
-        When 052=> T:=Resize(T0 srl beta,T'length);                  -- T(i) = T0(i)/8
+        When 048=> T0:= T + T0 - (T0 srl beta);                      -- EMA Filter (beta=1/8)
+        When 049=> T:=Resize(T0 srl beta,T'length);                  -- T(i) = T0(i)/8
                    bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Filtered
-        When 053=> SBACall(UARTSendBCD);
+        When 050=> SBACall(UARTSendBCD);
                 
-        When 054=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
+        When 051=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
                 
-        When 055=> SBAread(TC1R1);                                   -- Thermocuple temperature
-        When 056=> T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
+        When 052=> SBAread(TC1R1);                                   -- Thermocuple temperature
+        When 053=> T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
                 
-        When 057=> bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Unfiltered
-        When 058=> SBACall(UARTSendBCD);
-        When 059=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
-                
-        When 060=> T1:= T + T1 - (T1 srl beta);                      -- EMA Filter (beta=1/8)
-        When 061=> T:=Resize(T1 srl beta,T'length);                  -- T(i) = T1(i)/8
+        When 054=> T1:= T + T1 - (T1 srl beta);                      -- EMA Filter (beta=1/8)
+        When 055=> T:=Resize(T1 srl beta,T'length);                  -- T(i) = T1(i)/8
                    bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Filtered
-        When 062=> SBACall(UARTSendBCD);
+        When 056=> SBACall(UARTSendBCD);
                 
-        When 063=> if T>SetTH then TCTRL:='0'; end if;               -- Calefactor Control
+        When 057=> if T>SetTH then TCTRL:='0'; end if;               -- Calefactor Control
                    if T<SetTL then TCTRL:='1'; end if;
                    L1:=TCTRL;
                 
-        When 064=> RSTmp:=x"0A"; SBAcall(UARTSendChar);              -- End of Frame
-        When 065=> SBAjump(LoopMain);
+        When 058=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
+                
+        When 059=> Clr(bin_in); SBAcall(Bin2BCD);
+        When 060=> SBAcall(UARTSendBCD);
+                
+        When 061=> RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
+                
+        When 062=> SBAread(HXR0);                                    -- Read Hx711 LSW
+        When 063=> R0:=unsigned(dati);
+        When 064=> SBAread(HXR1);                                    -- Read Hx711 MSW
+        When 065=> W:=signed(dati(7 downto 0) & R0)+654720;          -- Ajuste
+                   bin_in:=unsigned(W(21 downto 6));
+                   SBAcall(Bin2BCD);
+        When 066=> SBAcall(UARTSendBCD);
+                
+        When 067=> RSTmp:=x"0A"; SBAcall(UARTSendChar);              -- End of Frame
+        When 068=> SBAjump(LoopMain);
                 
 -- Process data frame
 -- /L:GetData
-        When 066=> SBACall(UARTGetChar);
-        When 067=> if (RsTmp/=chr2uns('#')) then SBAjump(LoopMain); end if;
-        When 068=> SBACall(UARTGetChar);
-        When 069=> Case RsTmp is
+        When 069=> SBACall(UARTGetChar);
+        When 070=> if (RsTmp/=chr2uns('#')) then SBAjump(LoopMain); end if;
+        When 071=> SBACall(UARTGetChar);
+        When 072=> Case RsTmp is
                      when x"56"  => SBAjump(SendVersion);            -- 'V'  Request Version
                      when x"43"  => SBAjump(SetConfig);              -- 'C'  Set Configuration
                      when OTHERS => SBAjump(LoopMain);
                    end case;
                 
 -- /L:SetConfig
-        When 070=> SBACall(UARTGetChar);                             -- Get Temperature Set point H
-        When 071=> R0(15 downto 12):=hex2uns(RSTmp)(3 downto 0);
+        When 073=> SBACall(UARTGetChar);                             -- Get Temperature Set point H
+        When 074=> R0(15 downto 12):=hex2uns(RSTmp)(3 downto 0);
                    SBACall(UARTGetChar);
-        When 072=> R0(11 downto  8):=hex2uns(RSTmp)(3 downto 0);
+        When 075=> R0(11 downto  8):=hex2uns(RSTmp)(3 downto 0);
                    SBACall(UARTGetChar);
-        When 073=> R0( 7 downto  4):=hex2uns(RSTmp)(3 downto 0);
+        When 076=> R0( 7 downto  4):=hex2uns(RSTmp)(3 downto 0);
                    SBACall(UARTGetChar);
-        When 074=> R0( 3 downto  0):=hex2uns(RSTmp)(3 downto 0);
+        When 077=> R0( 3 downto  0):=hex2uns(RSTmp)(3 downto 0);
                    SetTH:=signed(R0(15 downto 0));
                    SBACall(UARTGetChar);                             -- Get Temperature Set point L
-        When 075=> R0(15 downto 12):=hex2uns(RSTmp)(3 downto 0);
+        When 078=> R0(15 downto 12):=hex2uns(RSTmp)(3 downto 0);
                    SBACall(UARTGetChar);
-        When 076=> R0(11 downto  8):=hex2uns(RSTmp)(3 downto 0);
+        When 079=> R0(11 downto  8):=hex2uns(RSTmp)(3 downto 0);
                    SBACall(UARTGetChar);
-        When 077=> R0( 7 downto  4):=hex2uns(RSTmp)(3 downto 0);
+        When 080=> R0( 7 downto  4):=hex2uns(RSTmp)(3 downto 0);
                    SBACall(UARTGetChar);
-        When 078=> R0( 3 downto  0):=hex2uns(RSTmp)(3 downto 0);
+        When 081=> R0( 3 downto  0):=hex2uns(RSTmp)(3 downto 0);
                    SetTL:=signed(R0(15 downto 0));
                    SBAjump(LoopMain);
                 
 -- /L:SendVersion
-        When 079=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame "@#"
-        When 080=> RSTmp:=chr2uns('#'); SBAcall(UARTSendChar);
-        When 081=> RSTmp:=to_unsigned(1+vMsg'length,RSTmp'length);   -- Frame Size
+        When 082=> RSTmp:=chr2uns('@'); SBAcall(UARTSendChar);       -- Start of frame "@#"
+        When 083=> RSTmp:=chr2uns('#'); SBAcall(UARTSendChar);
+        When 084=> RSTmp:=to_unsigned(1+vMsg'length,RSTmp'length);   -- Frame Size
                    SBAcall(UARTSendChar);
-        When 082=> SBAcall(SendMsg);
-        When 083=> RSTmp:=x"0A"; SBAcall(UARTSendChar);              -- End of frame
+        When 085=> SBAcall(SendMsg);
+        When 086=> RSTmp:=x"0A"; SBAcall(UARTSendChar);              -- End of frame
                 
-        When 084=> SBAjump(LoopMain);
+        When 087=> SBAjump(LoopMain);
                 
                 
 -- /SBA: End User Program ------------------------------------------------------

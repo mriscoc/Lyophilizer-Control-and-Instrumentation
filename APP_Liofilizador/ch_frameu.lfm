@@ -10,8 +10,8 @@ object ChFrame: TChFrame
   Constraints.MinWidth = 120
   ParentColor = False
   TabOrder = 0
-  DesignLeft = 1271
-  DesignTop = 162
+  DesignLeft = 1586
+  DesignTop = 434
   object Panel_title: TPanel
     Left = 0
     Height = 14

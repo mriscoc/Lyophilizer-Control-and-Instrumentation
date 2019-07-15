@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 706
+  Left = 632
   Height = 567
-  Top = 230
+  Top = 221
   Width = 790
   Caption = 'Liofilizador'
   ClientHeight = 567
@@ -52,10 +52,10 @@ object MainForm: TMainForm
       Height = 447
       Top = 120
       Width = 663
-      ActivePage = GraphSheet
+      ActivePage = TabSheet3
       Align = alClient
       Images = ImageList1
-      TabIndex = 0
+      TabIndex = 2
       TabOrder = 1
       TabPosition = tpBottom
       object GraphSheet: TTabSheet
@@ -111,11 +111,16 @@ object MainForm: TMainForm
                 end>
               Title.LabelBrush.Style = bsClear
               ZPosition = 1
+            end          
+            item
+              Alignment = calRight
+              Marks.LabelBrush.Style = bsClear
+              Minors = <>
+              Title.LabelBrush.Style = bsClear
             end>
           BackColor = clWhite
           Foot.Brush.Color = clBtnFace
           Foot.Font.Color = clBlue
-          GUIConnector = ChartGUIConnectorBGRA1
           Legend.Alignment = laTopCenter
           Legend.ColumnCount = 8
           Legend.Font.Height = -11
@@ -230,13 +235,13 @@ object MainForm: TMainForm
       end
       object TabSheet3: TTabSheet
         Caption = 'Config'
-        ClientHeight = 368
-        ClientWidth = 571
+        ClientHeight = 419
+        ClientWidth = 655
         object ConfigPanel: TPanel
           Left = 0
           Height = 140
           Top = 0
-          Width = 571
+          Width = 655
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -253,13 +258,13 @@ object MainForm: TMainForm
         end
         object Panel1: TPanel
           Left = 0
-          Height = 228
+          Height = 279
           Top = 140
-          Width = 570
+          Width = 654
           Align = alClient
           BorderSpacing.Right = 1
-          ClientHeight = 228
-          ClientWidth = 570
+          ClientHeight = 279
+          ClientWidth = 654
           Color = clBtnFace
           ParentColor = False
           TabOrder = 1
@@ -311,7 +316,8 @@ object MainForm: TMainForm
             Height = 23
             Top = 78
             Width = 66
-            MinValue = -40
+            MaxValue = 1000
+            MinValue = -1000
             OnChange = Ed_LolimitChange
             TabOrder = 2
             Value = -40
@@ -354,9 +360,9 @@ object MainForm: TMainForm
           end
           object Ed_PrjDescrip: TDBMemo
             Left = 192
-            Height = 132
+            Height = 183
             Top = 64
-            Width = 370
+            Width = 454
             Anchors = [akTop, akLeft, akRight, akBottom]
             DataField = 'Description'
             DataSource = PrjDataS
@@ -366,7 +372,7 @@ object MainForm: TMainForm
             Left = 192
             Height = 23
             Top = 24
-            Width = 370
+            Width = 454
             DataField = 'Name'
             DataSource = PrjDataS
             Anchors = [akTop, akLeft, akRight]
@@ -386,7 +392,7 @@ object MainForm: TMainForm
             ParentShowHint = False
             ShowHint = True
             TabOrder = 5
-            Value = 3
+            Value = 10
           end
           object Label6: TLabel
             Left = 15
@@ -413,9 +419,9 @@ object MainForm: TMainForm
             ParentColor = False
           end
           object B_SavePrj: TButton
-            Left = 487
+            Left = 571
             Height = 25
-            Top = 200
+            Top = 251
             Width = 75
             Anchors = [akRight, akBottom]
             Caption = 'Save'

@@ -17,7 +17,7 @@ const
 
 type
   TAData=Array [1..HWchannels] of real;
-  TAOffset=Array [1..HWchannels] of real;
+  TAScOff=Array [1..HWchannels] of real;
   TAWord = Array of word;
   TAByte = Array of byte;
 
@@ -25,7 +25,8 @@ var
   DBPath,DBName:String;
   nChannels:integer=4;
   AData: TAData;
-  AOffset: TAOffset;       //  Compensación para la calibración
+  AOffset: TAScOff;        //  Compensación para la calibración
+  AScale: TAScOff;         //  Factor de escala
   StartTime: TDateTime;    //  Timestamp de Inicio de la toma de datos
   LoLimit,UpLimit:integer; //  Límites al valor de un dato
   Simulate:Boolean=false;  //  Modo simulación

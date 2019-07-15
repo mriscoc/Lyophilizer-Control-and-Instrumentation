@@ -59,6 +59,8 @@ package SBA_Liofilizador_SBAconfig is
   Constant TMRCHS     : integer := 7;
   Constant UART0      : integer := 8;
   Constant UART1      : integer := 9;
+  constant HXR0       : integer := 10;
+  constant HXR1       : integer := 11;
 
 
 --Strobe Lines
@@ -66,7 +68,7 @@ package SBA_Liofilizador_SBAconfig is
   Constant STB_PMODTC1: integer := 1;
   Constant STB_TIMER  : integer := 2;
   Constant STB_UART   : integer := 3;
-
+  constant STB_HX711  : integer := 4;
 
 -- System Type definitions
   Subtype ADDR_type is std_logic_vector(Adr_width-1 downto 0); -- Address Bus type

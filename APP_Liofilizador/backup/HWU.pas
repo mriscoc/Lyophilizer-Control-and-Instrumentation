@@ -67,7 +67,7 @@ begin
         end;
         'D': for i := 1 to nChannels do
           begin
-            if i+1<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i],0)/100;
+            if i<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i],0)/100;
             vTempx[i]:=Max(LoLimit,Min(UpLimit,vTempx[i]));
             FYMax:=Max(FYMax,vTempx[i]);
             FYMin:=Min(FYMin,vTempx[i]);

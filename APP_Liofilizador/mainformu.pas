@@ -155,8 +155,8 @@ begin
   ImageList1.GetBitmap(1,B_Connect.Glyph);
   B_EnableDB.Enabled:=true;
   MainTic.Enabled:=true;
-  ChartToolset1DataPointCrosshairTool1.Enabled:=false;
-  ChartToolset1DataPointHintTool1.Enabled:=false;
+  //ChartToolset1DataPointCrosshairTool1.Enabled:=false;
+  //ChartToolset1DataPointHintTool1.Enabled:=false;
 end;
 
 
@@ -389,11 +389,12 @@ begin
     CF:=TChConfigFrame.Create(ConfigPanel);
     CF.Name:='Ch'+inttostr(i)+'_Config';
     CF.Parent:=ConfigPanel;
-    CF.Title:='Offset Ch'+inttostr(i);
+    CF.Title:='Scale/Offset '+inttostr(i);
     CF.Align:=alNone;
     CF.ColorUpd(chcolor);
     CF.Tag:=i;
-    CF.Value:=AOffset[i];
+    CF.Offset:=AOffset[i];
+    CF.Scale:=AScale[i];
   end;
 end;
 
@@ -416,10 +417,12 @@ begin
     ASeries[i].Title:=AChannels[i].Title;
     ASeries[i].Source:=dbs;
     MainChart.AddSeries(ASeries[i]);
-    ASeries[i].ZPosition:=0;
+//    ASeries[i].ZPosition:=0;
   end;
-  ASeries[2].LinePen.Width:=2;
-  ASeries[4].LinePen.Width:=2;
+  //ASeries[2].LinePen.Width:=2;
+  //ASeries[4].LinePen.Width:=2;
+  ChartToolset1DataPointCrosshairTool1.Enabled:=true;
+  ChartToolset1DataPointHintTool1.Enabled:=true;
 end;
 
 procedure TMainForm.DeleteChSeries;
@@ -511,7 +514,10 @@ begin
         If Not ForceDirectoriesUTF8(DBPath) Then Exit;
       end;
     for i:=1 to nChannels do
+    begin
       AOffset[i]:=StrtoFloatDef(ReadString('AOffset'+inttostr(i),'0'),0);
+      AScale[i]:=StrtoFloatDef(ReadString('AScale'+inttostr(i),'1'),1);
+    end;
   end;
   result:=true;
 end;
@@ -525,7 +531,10 @@ begin
   begin
     WriteString('DBPath',DBPath);
     for i:=1 to nChannels do
+    begin
       WriteString('AOffset'+inttostr(i),Format('%.2f',[AOffset[i]]));
+      WriteString('AScale'+inttostr(i),Format('%.2f',[AScale[i]]));
+    end;
   end;
   result:=true;
 end;

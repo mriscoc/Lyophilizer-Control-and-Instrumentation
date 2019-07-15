@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Release x32"/>
-    <Units Count="29">
+    <Units Count="30">
       <Unit0>
         <Filename Value="Liofilizador.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -19,7 +19,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainFormU"/>
-        <CursorPos X="40" Y="182"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="374"/>
+        <CursorPos X="39" Y="391"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="2">
           <Item0 X="27" Y="317"/>
@@ -36,7 +38,7 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Ch_FrameU"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="59"/>
+        <TopLine Value="50"/>
         <CursorPos X="17" Y="68"/>
         <UsageCount Value="200"/>
       </Unit2>
@@ -44,12 +46,12 @@
         <Filename Value="datau.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="DataU"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="1"/>
         <TopLine Value="6"/>
-        <CursorPos X="3" Y="19"/>
+        <CursorPos X="10" Y="28"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
-          <Item0 Y="41" ID="7"/>
+          <Item0 Y="42" ID="7"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit3>
@@ -59,8 +61,8 @@
         <ComponentName Value="DataM"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="15" Y="34"/>
+        <EditorIndex Value="2"/>
+        <CursorPos Y="2"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -72,9 +74,9 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="CHConfig_FrameU"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="42"/>
-        <CursorPos X="25" Y="54"/>
-        <UsageCount Value="183"/>
+        <TopLine Value="65"/>
+        <CursorPos X="27" Y="84"/>
+        <UsageCount Value="190"/>
       </Unit5>
       <Unit6>
         <Filename Value="WaitU.pas"/>
@@ -85,7 +87,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="46"/>
         <CursorPos X="20" Y="71"/>
-        <UsageCount Value="169"/>
+        <UsageCount Value="176"/>
       </Unit6>
       <Unit7>
         <Filename Value="GREIC_CommOBJ.pas"/>
@@ -93,27 +95,24 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="24"/>
         <CursorPos X="13" Y="39"/>
-        <UsageCount Value="168"/>
+        <UsageCount Value="175"/>
       </Unit7>
       <Unit8>
         <Filename Value="HWU.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="54"/>
-        <CursorPos X="17" Y="70"/>
-        <UsageCount Value="168"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="76"/>
+        <CursorPos X="29" Y="103"/>
+        <UsageCount Value="175"/>
       </Unit8>
       <Unit9>
         <Filename Value="IOinterfaceU.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="IOInterfaceU"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="33"/>
         <CursorPos X="9" Y="58"/>
-        <UsageCount Value="168"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="175"/>
       </Unit9>
       <Unit10>
         <Filename Value="versionsupportu.pas"/>
@@ -121,7 +120,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="217"/>
         <CursorPos X="5" Y="85"/>
-        <UsageCount Value="168"/>
+        <UsageCount Value="175"/>
       </Unit10>
       <Unit11>
         <Filename Value="D:\lazarus\components\tachart\tagraph.pas"/>
@@ -129,26 +128,26 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="71"/>
         <CursorPos X="14" Y="90"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="57"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\packages\fcl-db\src\base\db.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3"/>
         <CursorPos X="35" Y="25"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\FValencia\MULTCNL\APP\MDA_DS v1.09\D11\HWU.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit13>
       <Unit14>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\inc\mathh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="73"/>
         <CursorPos X="14" Y="91"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
       </Unit14>
       <Unit15>
         <Filename Value="C:\lazarus\lcl\comctrls.pp"/>
@@ -156,7 +155,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1748"/>
         <CursorPos X="17" Y="1766"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
       </Unit15>
       <Unit16>
         <Filename Value="C:\lazarus\lcl\spin.pp"/>
@@ -164,14 +163,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="25"/>
         <CursorPos X="15" Y="43"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit16>
       <Unit17>
         <Filename Value="C:\lazarus\lcl\include\spinedit.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="115"/>
         <CursorPos X="3" Y="119"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\Libs\ueControls\source\ueknob.pas"/>
@@ -179,7 +178,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="658"/>
         <CursorPos X="3" Y="667"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\Libs\ueControls\source\uerotimage.pas"/>
@@ -187,28 +186,28 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="55"/>
         <CursorPos X="15" Y="71"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit19>
       <Unit20>
         <Filename Value="D:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1711"/>
         <CursorPos X="18" Y="1721"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit20>
       <Unit21>
         <Filename Value="D:\lazarus\fpc\3.0.4\source\rtl\win\wininc\struct.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="804"/>
         <CursorPos X="6" Y="821"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit21>
       <Unit22>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3036"/>
         <CursorPos X="6" Y="3074"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit22>
       <Unit23>
         <Filename Value="C:\fpcupdeluxe\lazarus\components\tachart\taseries.pas"/>
@@ -216,7 +215,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="221"/>
         <CursorPos X="24" Y="236"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit23>
       <Unit24>
         <Filename Value="C:\fpcupdeluxe\lazarus\lcl\graphics.pp"/>
@@ -224,36 +223,44 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="625"/>
         <CursorPos X="3" Y="617"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit24>
       <Unit25>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\rtl\objpas\objpas.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="8" Y="33"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit25>
       <Unit26>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\rtl\inc\systemh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="560"/>
         <CursorPos X="3" Y="576"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit26>
       <Unit27>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\packages\fcl-base\src\fptimer.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="152"/>
         <CursorPos Y="162"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit27>
       <Unit28>
         <Filename Value="D:\fpcup\fpcsrc\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3056"/>
         <CursorPos X="6" Y="3073"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit28>
+      <Unit29>
+        <Filename Value="C:\fpcupdeluxe\lazarus\components\tachart\tadbsource.pas"/>
+        <UnitName Value="TADbSource"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="170"/>
+        <CursorPos X="3" Y="189"/>
+        <UsageCount Value="9"/>
+      </Unit29>
     </Units>
     <OtherDefines Count="1">
       <Define0 Value="DEBUG"/>
@@ -261,95 +268,95 @@
     <JumpHistory Count="23" HistoryIndex="22">
       <Position1>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="6" Column="26"/>
+        <Caret Line="533" Column="61" TopLine="504"/>
       </Position1>
       <Position2>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="192" Column="34" TopLine="119"/>
+        <Caret Line="394" Column="34" TopLine="374"/>
       </Position2>
       <Position3>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="193" TopLine="168"/>
+        <Caret Line="3" Column="60"/>
       </Position3>
       <Position4>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="194" Column="10" TopLine="168"/>
+        <Caret Line="396" Column="23" TopLine="368"/>
       </Position4>
       <Position5>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="195" Column="13" TopLine="177"/>
+        <Caret Line="517" Column="52" TopLine="489"/>
       </Position5>
       <Position6>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="192" Column="58" TopLine="177"/>
+        <Caret Line="532" Column="63" TopLine="504"/>
       </Position6>
       <Position7>
-        <Filename Value="mainformu.pas"/>
-        <Caret Line="132" Column="12" TopLine="109"/>
+        <Filename Value="datau.pas"/>
+        <Caret Line="8" Column="8" TopLine="6"/>
       </Position7>
       <Position8>
-        <Filename Value="mainformu.pas"/>
-        <Caret Line="300" Column="80" TopLine="292"/>
+        <Filename Value="datau.pas"/>
+        <Caret Line="28" Column="10" TopLine="6"/>
       </Position8>
       <Position9>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="315" Column="12" TopLine="293"/>
+        <Caret Line="395" Column="22" TopLine="380"/>
       </Position9>
       <Position10>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="135" TopLine="120"/>
+        <Caret Line="396" Column="23" TopLine="380"/>
       </Position10>
       <Position11>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="251" Column="3" TopLine="249"/>
+        <Caret Line="518" Column="72" TopLine="489"/>
       </Position11>
       <Position12>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="196" Column="51" TopLine="191"/>
+        <Caret Line="533" Column="68" TopLine="504"/>
       </Position12>
       <Position13>
-        <Filename Value="HWU.pas"/>
-        <Caret Line="107" Column="24" TopLine="79"/>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="397" Column="25" TopLine="380"/>
       </Position13>
       <Position14>
-        <Filename Value="HWU.pas"/>
-        <Caret Line="24" Column="3" TopLine="7"/>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="517" Column="52" TopLine="489"/>
       </Position14>
       <Position15>
-        <Filename Value="HWU.pas"/>
-        <Caret Line="63" Column="38"/>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="532" Column="63" TopLine="504"/>
       </Position15>
       <Position16>
-        <Filename Value="HWU.pas"/>
-        <Caret Line="64" Column="18" TopLine="40"/>
+        <Filename Value="mainformu.pas"/>
+        <Caret Line="395" Column="14" TopLine="380"/>
       </Position16>
       <Position17>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="257" Column="41" TopLine="204"/>
+        <Caret Line="396" Column="23" TopLine="380"/>
       </Position17>
       <Position18>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="225" TopLine="204"/>
+        <Caret Line="519" Column="10" TopLine="489"/>
       </Position18>
       <Position19>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="208" Column="3" TopLine="204"/>
+        <Caret Line="534" Column="10" TopLine="506"/>
       </Position19>
       <Position20>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="117" Column="20" TopLine="101"/>
+        <Caret Line="535" Column="63" TopLine="507"/>
       </Position20>
       <Position21>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="466" TopLine="461"/>
+        <Caret Line="396" Column="23" TopLine="380"/>
       </Position21>
       <Position22>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="85" Column="15" TopLine="69"/>
+        <Caret Line="518" Column="52" TopLine="490"/>
       </Position22>
       <Position23>
         <Filename Value="mainformu.pas"/>
-        <Caret Line="178" Column="3" TopLine="175"/>
+        <Caret Line="535" Column="63" TopLine="507"/>
       </Position23>
     </JumpHistory>
     <RunParams>

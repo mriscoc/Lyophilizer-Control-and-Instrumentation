@@ -81,6 +81,8 @@ begin
      When TMRCHS              => STBi <= stb(STB_TIMER);    -- TMRCHS     = 7
      When UART0               => STBi <= stb(STB_UART);     -- UART0      = 8
      When UART1               => STBi <= stb(STB_UART);     -- UART1      = 9
+     When HXR0                => STBi <= stb(STB_HX711);    -- HX711 R0   = 10
+     When HXR1                => STBi <= stb(STB_HX711);    -- HX711 R1   = 11
      When OTHERS              => STBi <= (others =>'0');
   ------------------------------------------------------------------------------
   end case;
@@ -101,6 +103,8 @@ begin
      When TMRCHS              => DAT_O <= ADAT_I(STB_TIMER);    -- TMRCHS     = 7
      When UART0               => DAT_O <= ADAT_I(STB_UART);     -- UART0      = 8
      When UART1               => DAT_O <= ADAT_I(STB_UART);     -- UART1      = 9
+     When HXR0                => DAT_O <= ADAT_I(STB_HX711);    -- HX711 R0   = 10
+     When HXR1                => DAT_O <= ADAT_I(STB_HX711);    -- HX711 R1   = 11
      When OTHERS              => DAT_O <= (others =>'X');
   ------------------------------------------------------------------------------
   end case;

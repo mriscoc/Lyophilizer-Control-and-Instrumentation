@@ -9,19 +9,21 @@ object ChConfigFrame: TChConfigFrame
   Constraints.MinHeight = 140
   Constraints.MinWidth = 100
   TabOrder = 0
-  DesignLeft = 1348
-  DesignTop = 283
+  DesignLeft = 1588
+  DesignTop = 588
   object FloatSpinEdit1: TFloatSpinEdit
     AnchorSideLeft.Control = uEKnob1
-    AnchorSideLeft.Side = asrCenter
-    Left = 31
+    AnchorSideRight.Control = uEKnob1
+    AnchorSideRight.Side = asrBottom
+    Left = 64
     Height = 23
-    Top = 111
-    Width = 56
-    Increment = 0.01
-    MaxValue = 5
-    MinValue = -5
-    OnEditingDone = FloatSpinEdit1EditingDone
+    Top = 112
+    Width = 55
+    Anchors = [akTop, akRight]
+    Increment = 0.05
+    MaxValue = 50
+    MinValue = -50
+    OnChange = FloatSpinEdit1Change
     TabOrder = 0
     Value = 0
   end
@@ -33,7 +35,7 @@ object ChConfigFrame: TChConfigFrame
     Align = alTop
     BorderSpacing.Right = 1
     BevelOuter = bvNone
-    Caption = 'Offset Ch1 °C'
+    Caption = 'Scale/Offset Ch1'
     ClientHeight = 14
     ClientWidth = 119
     Color = clBlack
@@ -53,14 +55,15 @@ object ChConfigFrame: TChConfigFrame
   end
   object uEKnob1: TuEKnob
     AnchorSideLeft.Control = Panel_title
-    AnchorSideLeft.Side = asrCenter
-    Left = 14
+    AnchorSideRight.Control = Panel_title
+    AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 90
     Top = 18
-    Width = 90
+    Width = 119
     Debug = False
-    Max = 5
-    Min = -5
+    Max = 50
+    Min = -50
     Image.Data = {
       46120000424D4612000000000000360000002800000022000000220000000100
       2000000000001012000064000000640000000000000000000000000000000000
@@ -215,6 +218,7 @@ object ChConfigFrame: TChConfigFrame
     ValuesFont.Height = -11
     ValuesFont.Name = 'Sans'
     OnChange = uEKnob1Change
+    Anchors = [akTop, akLeft, akRight]
   end
   object Bevel1: TBevel
     Left = 118
@@ -223,5 +227,20 @@ object ChConfigFrame: TChConfigFrame
     Width = 2
     Align = alRight
     Shape = bsRightLine
+  end
+  object EdScale: TFloatSpinEdit
+    AnchorSideLeft.Control = uEKnob1
+    AnchorSideRight.Control = FloatSpinEdit1
+    Left = 0
+    Height = 23
+    Top = 112
+    Width = 64
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    Increment = 0.01
+    MinValue = -100
+    OnChange = EdScaleChange
+    TabOrder = 2
+    Value = 1
   end
 end

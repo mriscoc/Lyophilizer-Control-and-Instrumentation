@@ -5,8 +5,8 @@ unit CHConfig_FrameU;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Dialogs, Graphics, Spin, StdCtrls, ExtCtrls,
-  uEKnob;
+  Classes, SysUtils, FileUtil, Forms, Controls, Dialogs, Graphics, Spin,
+  StdCtrls, ExtCtrls, MaskEdit, uEKnob;
 
 type
 
@@ -14,23 +14,28 @@ type
 
   TChConfigFrame = class(TFrame)
     Bevel1: TBevel;
+    EdScale: TFloatSpinEdit;
     FloatSpinEdit1: TFloatSpinEdit;
     Panel_title: TPanel;
     Shape1: TShape;
     uEKnob1: TuEKnob;
-    procedure FloatSpinEdit1EditingDone(Sender: TObject);
+    procedure EdScaleChange(Sender: TObject);
+    procedure FloatSpinEdit1Change(Sender: TObject);
     procedure uEKnob1Change(Sender: TObject);
   private
+    FScale: real;
     FTitle: string;
-    FValue: real;
+    FOffset: real;
+    procedure SetScale(AValue: real);
     procedure SetTitle(AValue: string);
-    procedure SetValue(AValue: real);
+    procedure SetOffset(AValue: real);
     { private declarations }
   public
     { public declarations }
     procedure ColorUpd(Cl: TColor);
     property Title:string read FTitle write SetTitle;
-    property Value:real read FValue write SetValue;
+    property Offset:real read FOffset write SetOffset;
+    property Scale:real read FScale write SetScale;
   end;
 
 implementation
@@ -43,15 +48,23 @@ uses DataU;
 
 procedure TChConfigFrame.uEKnob1Change(Sender: TObject);
 begin
-  if FValue=uEKnob1.Position then Exit;
-  FValue:=uEKnob1.Position;
-  FloatSpinEdit1.Value:=FValue;
-  AOffset[Self.Tag]:=FValue;
+  if FOffset=uEKnob1.Position then Exit;
+  FOffset:=uEKnob1.Position;
+  FloatSpinEdit1.Value:=FOffset;
+  AOffset[Self.Tag]:=FOffset;
 end;
 
-procedure TChConfigFrame.FloatSpinEdit1EditingDone(Sender: TObject);
+procedure TChConfigFrame.FloatSpinEdit1Change(Sender: TObject);
 begin
+  if FloatSpinEdit1.Value = uEKnob1.Position then exit;
   uEKnob1.Position:=FloatSpinEdit1.Value;
+end;
+
+procedure TChConfigFrame.EdScaleChange(Sender: TObject);
+begin
+  if FScale=EdScale.Value then exit;
+  FScale:=EdScale.Value;
+  AScale[Self.Tag]:=FScale;
 end;
 
 procedure TChConfigFrame.SetTitle(AValue: string);
@@ -61,9 +74,16 @@ begin
   Panel_title.Caption:=AValue;
 end;
 
-procedure TChConfigFrame.SetValue(AValue: real);
+procedure TChConfigFrame.SetScale(AValue: real);
 begin
-  if FValue=AValue then Exit;
+  if FScale=AValue then Exit;
+  FScale:=AValue;
+  EdScale.Value:=FScale;
+end;
+
+procedure TChConfigFrame.SetOffset(AValue: real);
+begin
+  if FOffset=AValue then Exit;
   uEKnob1.Position:=AValue;
 end;
 

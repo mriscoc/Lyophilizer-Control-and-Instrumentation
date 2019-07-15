@@ -43,7 +43,9 @@ port (
   TCTRL     : out std_logic;
   TC1_nCS   : out std_logic;
   TC1_MISO  : in  std_logic;
-  TC1_SCK   : out std_logic
+  TC1_SCK   : out std_logic;
+  HX_MISO   : in  std_logic;
+  HX_SCK    : out std_logic
 );
 end SBA_Liofilizador_Top;
 
@@ -71,7 +73,7 @@ architecture SBA_Liofilizador_structural of SBA_Liofilizador_Top is
   Signal GPOe  : std_logic_vector(8 downto 0);
 -- Auxiliary IPCores signals
   Signal INT_TIMER  : std_logic;
-
+  signal INT_HX711  : std_logic;
 --------------------------------------------------------------------------------
 
 begin
@@ -147,6 +149,25 @@ begin
     SCK   => TC1_SCK
   );
 
+  HX711: entity work.HX711
+  generic map(
+    debug   => debug,
+    sysfreq => sysfreq
+  )
+  port map(
+    -------------
+    RST_I => RSTi,
+    CLK_I => CLKi,
+    STB_I => STBi(STB_HX711),
+    ADR_I => ADRi,
+    WE_I  => WEi,
+    DAT_O => ADATi(STB_HX711),
+    INT_O => INT_HX711,
+    -------------
+    MISO  => HX_MISO,
+    SCK   => HX_SCK
+  );
+
   TIMER: entity work.TIMER
   generic map(
     chans   => 1
@@ -199,6 +220,7 @@ begin
 -------------------------------
  ACKi  <= '1';                  -- If None Slave IPCore use ACK then ACKi must be '1'
  INTi  <= INT_TIMER;            -- Interrupts;
+     --or INT_HX711;
 
 end SBA_Liofilizador_structural;
 
