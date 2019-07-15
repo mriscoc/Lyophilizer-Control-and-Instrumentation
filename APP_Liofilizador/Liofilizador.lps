@@ -19,9 +19,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainFormU"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="174"/>
-        <CursorPos X="26" Y="182"/>
+        <CursorPos X="40" Y="182"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="2">
           <Item0 X="27" Y="317"/>
@@ -62,7 +60,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="18"/>
         <CursorPos X="15" Y="34"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -101,8 +98,9 @@
       <Unit8>
         <Filename Value="HWU.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="46"/>
+        <TopLine Value="54"/>
         <CursorPos X="17" Y="70"/>
         <UsageCount Value="168"/>
         <Loaded Value="True"/>
