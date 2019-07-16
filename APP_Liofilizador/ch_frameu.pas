@@ -5,7 +5,7 @@ unit Ch_FrameU;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, TAGraph, TASeries, TASources, TAGUIConnectorBGRA,
+  Classes, SysUtils, FileUtil, TAGraph, TASeries, TASources,
   Forms, Controls, StdCtrls, ExtCtrls, Graphics;
 
 type
@@ -73,6 +73,8 @@ end;
 
 procedure TChFrame.PutValue(val: real);
 begin
+  Ch_Chart.BeginUpdateBounds;
+  Ch_Serie.BeginUpdate;
   Ch_Serie.Add(val);
   if Ch_Serie.Count >= maxpoints then
   begin
@@ -86,6 +88,8 @@ begin
   Ch_Chart.LeftAxis.Range.Max := YMax + 1;
   Ch_Chart.LeftAxis.Range.Min := YMin - 1;
   l_maxmin.caption:=Format('%5.1f'#$0d#$0a'%5.1f',[YMax,YMin]);
+  Ch_Serie.EndUpdate;
+  Ch_Chart.EndUpdateBounds;
 end;
 
 end.

@@ -411,8 +411,8 @@ begin
         When 062=> SBAread(HXR0);                                    -- Read Hx711 LSW
         When 063=> R0:=unsigned(dati);
         When 064=> SBAread(HXR1);                                    -- Read Hx711 MSW
-        When 065=> W:=signed(dati(7 downto 0) & R0)+654720;          -- Ajuste
-                   bin_in:=unsigned(W(21 downto 6));
+        When 065=> W:=-619264 - signed(dati(7 downto 0) & R0);       -- Ajuste
+                   bin_in:=unsigned(W(23 downto 8));
                    SBAcall(Bin2BCD);
         When 066=> SBAcall(UARTSendBCD);
                 

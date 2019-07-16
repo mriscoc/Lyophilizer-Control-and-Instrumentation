@@ -1,13 +1,13 @@
 object MainForm: TMainForm
-  Left = 632
-  Height = 567
-  Top = 221
+  Left = 842
+  Height = 562
+  Top = 288
   Width = 790
   Caption = 'Liofilizador'
-  ClientHeight = 567
+  ClientHeight = 562
   ClientWidth = 790
   Color = clBtnFace
-  Constraints.MinHeight = 430
+  Constraints.MinHeight = 520
   Constraints.MinWidth = 640
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
@@ -18,13 +18,13 @@ object MainForm: TMainForm
   LCLVersion = '2.0.3.0'
   object Data_Panel: TPanel
     Left = 122
-    Height = 567
+    Height = 562
     Top = 0
     Width = 663
     Align = alClient
     BorderSpacing.Right = 5
     BevelOuter = bvNone
-    ClientHeight = 567
+    ClientHeight = 562
     ClientWidth = 663
     TabOrder = 0
     object ChPanel: TPanel
@@ -49,22 +49,22 @@ object MainForm: TMainForm
     end
     object PageControl1: TPageControl
       Left = 0
-      Height = 447
+      Height = 442
       Top = 120
       Width = 663
-      ActivePage = TabSheet3
+      ActivePage = GraphSheet
       Align = alClient
       Images = ImageList1
-      TabIndex = 2
+      TabIndex = 0
       TabOrder = 1
       TabPosition = tpBottom
       object GraphSheet: TTabSheet
         Caption = 'Plot'
-        ClientHeight = 419
+        ClientHeight = 414
         ClientWidth = 655
         object MainChart: TChart
           Left = 0
-          Height = 419
+          Height = 264
           Top = 0
           Width = 655
           AntialiasingMode = amOn
@@ -111,12 +111,6 @@ object MainForm: TMainForm
                 end>
               Title.LabelBrush.Style = bsClear
               ZPosition = 1
-            end          
-            item
-              Alignment = calRight
-              Marks.LabelBrush.Style = bsClear
-              Minors = <>
-              Title.LabelBrush.Style = bsClear
             end>
           BackColor = clWhite
           Foot.Brush.Color = clBtnFace
@@ -153,16 +147,86 @@ object MainForm: TMainForm
             Position = 23
           end
         end
+        object WeightChart: TChart
+          Left = 0
+          Height = 150
+          Top = 264
+          Width = 655
+          AntialiasingMode = amOn
+          AxisList = <          
+            item
+              Grid.Color = clSilver
+              Grid.Style = psSolid
+              Marks.LabelFont.Color = clNavy
+              Marks.LabelFont.Height = -11
+              Marks.LabelBrush.Style = bsClear
+              Minors = <              
+                item
+                  Grid.Color = clSilver
+                  Intervals.Count = 2
+                  Intervals.MinLength = 5
+                  Intervals.Options = [aipUseCount, aipUseMinLength]
+                  Visible = False
+                  Marks.LabelBrush.Style = bsClear
+                end>
+              Title.LabelFont.Orientation = 900
+              Title.LabelBrush.Style = bsClear
+              ZPosition = 1
+            end          
+            item
+              Grid.Color = clSilver
+              Grid.Style = psSolid
+              Alignment = calBottom
+              MarginsForMarks = False
+              Marks.LabelFont.Color = clNavy
+              Marks.LabelFont.Height = -11
+              Marks.Format = '%2:s'
+              Marks.LabelBrush.Style = bsClear
+              Marks.OverlapPolicy = opHideNeighbour
+              Marks.Source = TimeSource
+              Marks.Style = smsLabel
+              Minors = <              
+                item
+                  Grid.Color = clSilver
+                  Intervals.Count = 4
+                  Intervals.MinLength = 5
+                  Intervals.Options = [aipUseCount, aipUseMinLength]
+                  Visible = False
+                  Marks.LabelBrush.Style = bsClear
+                end>
+              Title.LabelBrush.Style = bsClear
+              ZPosition = 1
+            end>
+          BackColor = clWhite
+          Foot.Brush.Color = clBtnFace
+          Foot.Font.Color = clBlue
+          Legend.Alignment = laTopCenter
+          Legend.ColumnCount = 8
+          Legend.Font.Height = -11
+          Legend.Frame.Color = clNavy
+          Legend.SymbolWidth = 10
+          ReticuleMode = rmCross
+          Title.Brush.Color = clBtnFace
+          Title.Font.Color = clBlue
+          Title.Text.Strings = (
+            'TAChart'
+          )
+          Toolset = ChartToolset1
+          Align = alBottom
+          DoubleBuffered = True
+          ParentShowHint = False
+          ShowHint = True
+        end
       end
       object TabSheet1: TTabSheet
         Caption = 'Data Table'
-        ClientHeight = 368
-        ClientWidth = 571
+        ClientHeight = 419
+        ClientWidth = 655
         object DBGrid1: TDBGrid
           Left = 0
-          Height = 336
+          Height = 387
           Top = 32
-          Width = 571
+          Width = 655
           Align = alClient
           AlternateColor = clCream
           AutoAdvance = aaNone
@@ -180,11 +244,11 @@ object MainForm: TMainForm
           Left = 0
           Height = 32
           Top = 0
-          Width = 571
+          Width = 655
           Align = alTop
           BevelOuter = bvNone
           ClientHeight = 32
-          ClientWidth = 571
+          ClientWidth = 655
           TabOrder = 1
           object B_Export: TBitBtn
             Left = 0
@@ -434,12 +498,12 @@ object MainForm: TMainForm
   end
   object Control_Panel: TPanel
     Left = 0
-    Height = 567
+    Height = 562
     Top = 0
     Width = 122
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 567
+    ClientHeight = 562
     ClientWidth = 122
     Color = clGray
     Font.Color = clCream
@@ -526,7 +590,7 @@ object MainForm: TMainForm
     object Panel3: TPanel
       Left = 0
       Height = 396
-      Top = 171
+      Top = 166
       Width = 122
       Align = alBottom
       BevelOuter = bvNone

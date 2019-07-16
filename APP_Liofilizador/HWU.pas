@@ -19,6 +19,8 @@ Type
 
 THW = Class(TIOInterface)
 private
+  FWmax: real;
+  FWmin: real;
   FYmax: real;
   FYmin: real;
   vTempx : TAData;
@@ -31,6 +33,8 @@ public
   property Temperatura: TAData read vTempx;
   property Ymax:real read FYmax;
   property Ymin:real read FYmin;
+  property Wmax:real read FWmax;
+  property Wmin:real read FWmin;
 End;
 
 Var
@@ -69,8 +73,14 @@ begin
           begin
             if i<StrBuf.Count then vTempx[i]:=AOffset[i]+StrtoIntDef(StrBuf[i],0)*AScale[i];
             vTempx[i]:=Max(LoLimit,Min(UpLimit,vTempx[i]));
-            FYMax:=Max(FYMax,vTempx[i]);
-            FYMin:=Min(FYMin,vTempx[i]);
+            if i<nChannels then
+            begin
+              FYMax:=Max(FYMax,vTempx[i]);
+              FYMin:=Min(FYMin,vTempx[i]);
+            end else begin
+              FWMax:=Max(FWMax,vTempx[i]);
+              FWMin:=Min(FWMin,vTempx[i]);
+            end;
           end;
       end;
       if assigned(StrBuf) then FreeAndNil(StrBuf);
@@ -83,6 +93,8 @@ begin
   SetLength(vState,nChannels);
   FYmax:=MinFloat;
   FYmin:=MaxFloat;
+  FWmax:=MinFloat;
+  FWmin:=MaxFloat;
   inherited Create();
 end;
 
@@ -103,6 +115,8 @@ begin
     vTempx[i]:=AOffset[i] + AScale[i]*(1/2-Cos(I/3+Time*500)/2);
     FYMax:=Max(FYMax,vTempx[i]);
     FYMin:=Min(FYMin,vTempx[i]);
+    FWmax:=FYMax;
+    FWmin:=FYMin;
   end;
 end;
 

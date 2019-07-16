@@ -51,7 +51,7 @@ port(
 end HX711;
 
 architecture  HX711_Arch of  HX711 is
-type tstate is (IniSt, DataSt, EndSt, WaitSt); -- SPI Communication States
+type tstate is (IniSt, DataSt, EndSt); -- SPI Communication States
 
 signal state    : tstate;
 signal streami  : std_logic_vector (23 downto 0);  -- Serial input register
@@ -65,11 +65,11 @@ begin
 
 -- SPI Clock generator of 500 kHz:
 
-SCK1: if (sysfreq>250E3) generate
+SCK1: if (sysfreq>50E3) generate
   CLK_Div : entity work.ClkDiv
   Generic map (
     infreq=>sysfreq,
-    outfreq=>250E3
+    outfreq=>50E3
     )
   Port Map(
     RST_I => RST_I,
@@ -78,7 +78,7 @@ SCK1: if (sysfreq>250E3) generate
   );
 end generate;
 
-SCK2: if (sysfreq<=250E3) generate
+SCK2: if (sysfreq<=50E3) generate
   SCKi <= CLK_I;
 end generate;
 
@@ -99,12 +99,10 @@ SPIState:process (SCKi, RST_I)
                         state <= EndSt;
                       end if;
 
-        when EndSt => state <= WaitSt;
+        when EndSt => state <= IniSt;
                       RDREG <= streami;
 
-        when WaitSt=> if (SCKN = 30) then
-                        state <= IniSt;
-                      end if;
+        when others=> state <= IniSt;
 
       end case;
     end if;

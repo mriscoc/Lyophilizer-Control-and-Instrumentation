@@ -24,6 +24,7 @@ type
     Label9: TLabel;
     LineSetTH: TConstantLine;
     LineSetTL: TConstantLine;
+    WeightChart: TChart;
     MainTic: TFPTimer;
     ACreateDB: TAction;
     AReconectHW: TAction;
@@ -195,6 +196,7 @@ begin
   DisableDB;
   DataM.ClearAll;
   MainChart.Invalidate;
+  WeightChart.Invalidate;
 end;
 
 procedure TMainForm.BSendSetPClick(Sender: TObject);
@@ -366,6 +368,8 @@ begin
     DataM.VDataSet.Refresh;
     MainChart.LeftAxis.Range.Max := HW.YMax + 2;
     MainChart.LeftAxis.Range.Min := HW.YMin - 2;
+    WeightChart.LeftAxis.Range.Max := HW.WMax + 1;
+    WeightChart.LeftAxis.Range.Min := HW.WMin - 1;
   end;
 end;
 
@@ -402,21 +406,25 @@ procedure TMainForm.CreateChSeries;
 var
   i:integer;
   dbs:TDbChartSource;
+  Aowner:TChart;
 begin
   MainChart.LeftAxis.Range.UseMax:=true;
   MainChart.LeftAxis.Range.UseMin:=true;
+  WeightChart.LeftAxis.Range.UseMax:=true;
+  WeightChart.LeftAxis.Range.UseMin:=true;
   for i:=1 to nChannels do
   begin
-    dbs:=TDbChartSource.Create(MainChart);
+    if i<nChannels then Aowner:=MainChart else Aowner:=WeightChart;
+    dbs:=TDbChartSource.Create(Aowner);
     dbs.DataSource:=VDataSource;
     dbs.FieldX:='DateTime';
 //    dbs.FieldY:='CH'+inttostr(i);
     dbs.OnGetItem:=@DbChartGetItem;
-    ASeries[i]:=TlineSeries.Create(MainChart);
+    ASeries[i]:=TlineSeries.Create(Aowner);
     ASeries[i].LinePen.Color:=AChannels[i].Color;
     ASeries[i].Title:=AChannels[i].Title;
     ASeries[i].Source:=dbs;
-    MainChart.AddSeries(ASeries[i]);
+    Aowner.AddSeries(ASeries[i]);
 //    ASeries[i].ZPosition:=0;
   end;
   //ASeries[2].LinePen.Width:=2;
@@ -426,20 +434,27 @@ begin
 end;
 
 procedure TMainForm.DeleteChSeries;
-var
-  MySeries: TlineSeries;
-  i: integer;
-  dbs:TDbChartSource;
+
+  procedure RemoveFromChart(Chart:TChart);
+  var
+    MySeries: TlineSeries;
+    i: integer;
+    dbs:TDbChartSource;
+  begin
+    while Chart.SeriesCount > 0 do
+      for i := Chart.SeriesCount-1 downto 0 do
+      begin
+        MySeries := TlineSeries(Chart.Series.Items[i]);
+        Chart.RemoveSeries(Chart.Series.Items[i]);
+        dbs:=TDbChartSource(MySeries.Source);
+        FreeAndNil(MySeries);
+        FreeAndNil(dbs);
+      end;
+  end;
+
 begin
-  while MainChart.SeriesCount > 0 do
-    for i := MainChart.SeriesCount-1 downto 0 do
-    begin
-      MySeries := TlineSeries(MainChart.Series.Items[i]);
-      MainChart.RemoveSeries(MainChart.Series.Items[i]);
-      dbs:=TDbChartSource(MySeries.Source);
-      FreeAndNil(MySeries);
-      FreeAndNil(dbs);
-    end;
+  RemoveFromChart(MainChart);
+  RemoveFromChart(WeightChart);
 end;
 
 procedure TMainForm.VDatasetAfterOpen(DataSet: TDataSet);

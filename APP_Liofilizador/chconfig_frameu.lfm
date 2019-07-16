@@ -21,8 +21,8 @@ object ChConfigFrame: TChConfigFrame
     Width = 55
     Anchors = [akTop, akRight]
     Increment = 0.05
-    MaxValue = 50
-    MinValue = -50
+    MaxValue = 10
+    MinValue = -10
     OnChange = FloatSpinEdit1Change
     TabOrder = 0
     Value = 0
@@ -62,8 +62,8 @@ object ChConfigFrame: TChConfigFrame
     Top = 18
     Width = 119
     Debug = False
-    Max = 50
-    Min = -50
+    Max = 10
+    Min = -10
     Image.Data = {
       46120000424D4612000000000000360000002800000022000000220000000100
       2000000000001012000064000000640000000000000000000000000000000000

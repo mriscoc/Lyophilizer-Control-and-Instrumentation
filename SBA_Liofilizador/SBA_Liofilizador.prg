@@ -197,8 +197,8 @@
 => SBAread(HXR0);                                    -- Read Hx711 LSW
 => R0:=unsigned(dati);
 => SBAread(HXR1);                                    -- Read Hx711 MSW
-=> W:=signed(dati(7 downto 0) & R0)+654720;          -- Ajuste
-   bin_in:=unsigned(W(21 downto 6));
+=> W:=-636160 - signed(dati(7 downto 0) & R0);       -- Ajuste
+   bin_in:=unsigned(W(23 downto 8));
    SBAcall(Bin2BCD);
 => SBAcall(UARTSendBCD);
 
