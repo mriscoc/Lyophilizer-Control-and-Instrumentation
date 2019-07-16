@@ -16,6 +16,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    B_TaraCh4: TBitBtn;
     B_Export: TBitBtn;
     BSendSetP: TBitBtn;
     ed_SetPointH: TFloatSpinEdit;
@@ -92,6 +93,7 @@ type
     procedure B_ExportClick(Sender: TObject);
     procedure B_OpenDBClick(Sender: TObject);
     procedure B_SavePrjClick(Sender: TObject);
+    procedure B_TaraCh4Click(Sender: TObject);
     procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
     procedure DbChartGetItem(ASender: TDbChartSource; var AItem: TChartDataItem);
@@ -138,6 +140,7 @@ uses Ch_FrameU, CHConfig_FrameU, datamu, DataU, HWU, WaitU, VersionSupportU, Mat
 
 var
   AChannels: Array [1..HWchannels] of TChFrame;
+  ACF: Array [1..HWchannels] of TChConfigFrame;
   ASeries: Array [1..HWchannels] of TlineSeries;
 
 { TMainForm }
@@ -248,6 +251,17 @@ begin
     DataM.PrjDataset.FieldByName('DateTime').AsDateTime:=Now;
     DataM.PrjDataset.Post;
   end;
+end;
+
+procedure TMainForm.B_TaraCh4Click(Sender: TObject);
+var i:integer;
+begin
+  ACF[nChannels].Offset:=0;
+  For i:=0 to 100 do begin
+    sleep(10);
+    Application.ProcessMessages;
+  end;
+  ACF[nChannels].Offset:=-1 * AData[nChannels];
 end;
 
 procedure TMainForm.ChartToolset1DataPointHintTool1Hint(
@@ -377,7 +391,7 @@ procedure TMainForm.CreateChFrames;
 Var
   i:integer;
   chcolor:TColor;
-  CF:TChConfigFrame;
+
 begin
   for i:=1 to nChannels do
   begin
@@ -390,15 +404,15 @@ begin
     AChannels[i].Align:=alNone;
     AChannels[i].ColorUpd(chcolor);
 //
-    CF:=TChConfigFrame.Create(ConfigPanel);
-    CF.Name:='Ch'+inttostr(i)+'_Config';
-    CF.Parent:=ConfigPanel;
-    CF.Title:='Scale/Offset '+inttostr(i);
-    CF.Align:=alNone;
-    CF.ColorUpd(chcolor);
-    CF.Tag:=i;
-    CF.Offset:=AOffset[i];
-    CF.Scale:=AScale[i];
+    ACF[i]:=TChConfigFrame.Create(ConfigPanel);
+    ACF[i].Name:='Ch'+inttostr(i)+'_Config';
+    ACF[i].Parent:=ConfigPanel;
+    ACF[i].Title:='Scale/Offset '+inttostr(i);
+    ACF[i].Align:=alNone;
+    ACF[i].ColorUpd(chcolor);
+    ACF[i].Tag:=i;
+    ACF[i].Offset:=AOffset[i];
+    ACF[i].Scale:=AScale[i];
   end;
 end;
 
@@ -547,8 +561,8 @@ begin
     WriteString('DBPath',DBPath);
     for i:=1 to nChannels do
     begin
-      WriteString('AOffset'+inttostr(i),Format('%.2f',[AOffset[i]]));
-      WriteString('AScale'+inttostr(i),Format('%.2f',[AScale[i]]));
+      WriteString('AOffset'+inttostr(i),Format('%.3f',[AOffset[i]]));
+      WriteString('AScale'+inttostr(i),Format('%.3f',[AScale[i]]));
     end;
   end;
   result:=true;

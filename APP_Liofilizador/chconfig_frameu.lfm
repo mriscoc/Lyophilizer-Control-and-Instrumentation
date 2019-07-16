@@ -19,6 +19,7 @@ object ChConfigFrame: TChConfigFrame
     Height = 23
     Top = 112
     Width = 55
+    Alignment = taRightJustify
     Anchors = [akTop, akRight]
     Increment = 0.05
     MaxValue = 10
@@ -237,10 +238,11 @@ object ChConfigFrame: TChConfigFrame
     Width = 64
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
+    DecimalPlaces = 3
     Increment = 0.01
     MinValue = -100
     OnChange = EdScaleChange
     TabOrder = 2
-    Value = 1
+    Value = 0.01
   end
 end
