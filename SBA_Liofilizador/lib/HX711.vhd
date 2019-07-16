@@ -95,7 +95,7 @@ SPIState:process (SCKi, RST_I)
                         state <= DataSt;
                       end if;
 
-        when DataSt=> if (SCKN = 23) then
+        when DataSt=> if (SCKN > 22) then
                         state <= EndSt;
                       end if;
 

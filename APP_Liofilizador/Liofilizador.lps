@@ -3,8 +3,8 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="11"/>
-    <BuildModes Active="Debug x64"/>
-    <Units Count="30">
+    <BuildModes Active="Release x32"/>
+    <Units Count="25">
       <Unit0>
         <Filename Value="Liofilizador.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -74,7 +74,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="65"/>
         <CursorPos X="27" Y="84"/>
-        <UsageCount Value="196"/>
+        <UsageCount Value="205"/>
       </Unit5>
       <Unit6>
         <Filename Value="WaitU.pas"/>
@@ -85,7 +85,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="46"/>
         <CursorPos X="20" Y="71"/>
-        <UsageCount Value="182"/>
+        <UsageCount Value="191"/>
       </Unit6>
       <Unit7>
         <Filename Value="GREIC_CommOBJ.pas"/>
@@ -93,7 +93,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="24"/>
         <CursorPos X="13" Y="39"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="190"/>
       </Unit7>
       <Unit8>
         <Filename Value="HWU.pas"/>
@@ -101,7 +101,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="77"/>
         <CursorPos X="11" Y="119"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="190"/>
       </Unit8>
       <Unit9>
         <Filename Value="IOinterfaceU.pas"/>
@@ -110,7 +110,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="33"/>
         <CursorPos X="9" Y="58"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="190"/>
       </Unit9>
       <Unit10>
         <Filename Value="versionsupportu.pas"/>
@@ -118,7 +118,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="217"/>
         <CursorPos X="5" Y="85"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="190"/>
       </Unit10>
       <Unit11>
         <Filename Value="D:\lazarus\components\tachart\tagraph.pas"/>
@@ -126,26 +126,26 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="71"/>
         <CursorPos X="14" Y="90"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="55"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\packages\fcl-db\src\base\db.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3"/>
         <CursorPos X="35" Y="25"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\FValencia\MULTCNL\APP\MDA_DS v1.09\D11\HWU.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit13>
       <Unit14>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\inc\mathh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="73"/>
         <CursorPos X="14" Y="91"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit14>
       <Unit15>
         <Filename Value="C:\lazarus\lcl\comctrls.pp"/>
@@ -153,112 +153,74 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1748"/>
         <CursorPos X="17" Y="1766"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit15>
       <Unit16>
-        <Filename Value="C:\lazarus\lcl\spin.pp"/>
-        <UnitName Value="Spin"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="25"/>
-        <CursorPos X="15" Y="43"/>
-        <UsageCount Value="0"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="C:\lazarus\lcl\include\spinedit.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="115"/>
-        <CursorPos X="3" Y="119"/>
-        <UsageCount Value="0"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\Libs\ueControls\source\ueknob.pas"/>
-        <UnitName Value="uEKnob"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="658"/>
-        <CursorPos X="3" Y="667"/>
-        <UsageCount Value="0"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\Libs\ueControls\source\uerotimage.pas"/>
-        <UnitName Value="uERotImage"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="55"/>
-        <CursorPos X="15" Y="71"/>
-        <UsageCount Value="0"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="D:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1711"/>
-        <CursorPos X="18" Y="1721"/>
-        <UsageCount Value="0"/>
-      </Unit20>
-      <Unit21>
         <Filename Value="D:\lazarus\fpc\3.0.4\source\rtl\win\wininc\struct.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="804"/>
         <CursorPos X="6" Y="821"/>
-        <UsageCount Value="1"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="0"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3036"/>
         <CursorPos X="6" Y="3074"/>
-        <UsageCount Value="13"/>
-      </Unit22>
-      <Unit23>
+        <UsageCount Value="12"/>
+      </Unit17>
+      <Unit18>
         <Filename Value="C:\fpcupdeluxe\lazarus\components\tachart\taseries.pas"/>
         <UnitName Value="TASeries"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="221"/>
         <CursorPos X="24" Y="236"/>
-        <UsageCount Value="8"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="7"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="C:\fpcupdeluxe\lazarus\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="625"/>
         <CursorPos X="3" Y="617"/>
-        <UsageCount Value="8"/>
-      </Unit24>
-      <Unit25>
+        <UsageCount Value="7"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\rtl\objpas\objpas.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="8" Y="33"/>
-        <UsageCount Value="8"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="7"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\rtl\inc\systemh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="560"/>
         <CursorPos X="3" Y="576"/>
-        <UsageCount Value="8"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="7"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="C:\fpcupdeluxe\fpcsrc\packages\fcl-base\src\fptimer.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="152"/>
         <CursorPos Y="162"/>
-        <UsageCount Value="8"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="7"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="D:\fpcup\fpcsrc\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3056"/>
         <CursorPos X="6" Y="3073"/>
-        <UsageCount Value="9"/>
-      </Unit28>
-      <Unit29>
+        <UsageCount Value="8"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="C:\fpcupdeluxe\lazarus\components\tachart\tadbsource.pas"/>
         <UnitName Value="TADbSource"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="170"/>
         <CursorPos X="3" Y="189"/>
-        <UsageCount Value="8"/>
-      </Unit29>
+        <UsageCount Value="7"/>
+      </Unit24>
     </Units>
     <OtherDefines Count="1">
       <Define0 Value="DEBUG"/>
