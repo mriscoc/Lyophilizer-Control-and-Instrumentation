@@ -15,13 +15,16 @@ END ADFMAX31856_test;
 
 ARCHITECTURE ADFMAX31856_arch OF ADFMAX31856_test IS
 
-SIGNAL ADR_I : STD_LOGIC_VECTOR(15 DOWNTO 0) := (others=>'0');
-SIGNAL CLK_I : STD_LOGIC;
-SIGNAL DAT_O : STD_LOGIC_VECTOR(15 DOWNTO 0);
-SIGNAL DAT_I : STD_LOGIC_VECTOR(15 DOWNTO 0);
-SIGNAL RST_I : STD_LOGIC := '1';
-SIGNAL STB_I : STD_LOGIC := '0';
-SIGNAL WE_I : STD_LOGIC  := '0';
+-- Master SBA signals
+SIGNAL RSTi  : STD_LOGIC := '1';
+SIGNAL CLKi  : STD_LOGIC;
+SIGNAL STBi  : STD_LOGIC := '0';
+SIGNAL WEi   : STD_LOGIC := '0';
+SIGNAL ADRi  : STD_LOGIC_VECTOR(15 DOWNTO 0) := (others=>'0');
+SIGNAL DATIi : STD_LOGIC_VECTOR(15 DOWNTO 0);
+SIGNAL DATOi : STD_LOGIC_VECTOR(15 DOWNTO 0);
+signal INTi  : std_logic;
+
 
 SIGNAL nCS   : std_logic;        -- chipselect active low
 SIGNAL MISO  : std_logic:='1';   -- Master In Slave Out
@@ -30,6 +33,12 @@ SIGNAL SCK   : std_logic;        -- SPI Clock
 
 CONSTANT freq : positive := 50E6;
 CONSTANT CLKPERIOD : time := (real(1000000000)/real(freq)) * 1 ns;
+
+-- Results
+signal RESULT : STD_LOGIC_VECTOR(15 DOWNTO 0) := (others=>'0');
+
+-- Utility constants
+constant SPIDATA : std_logic_vector(15 downto 0) := x"1234";
 
 COMPONENT ADFMAX31856
 generic(
@@ -58,13 +67,13 @@ BEGIN
 	i1 : ADFMAX31856
     PORT MAP (
 -- list connections between master ports and signals
-	ADR_I => ADR_I,
-	CLK_I => CLK_I,
-	DAT_O => DAT_O,
-    DAT_I => DAT_I,
-	RST_I => RST_I,
-	STB_I => STB_I,
-	WE_I  => WE_I,
+	RST_I => RSTi,
+	CLK_I => CLKi,
+	STB_I => STBi,
+	WE_I  => WEi,
+	ADR_I => ADRi,
+	DAT_O => DATIi,
+    DAT_I => DATOi,
  --
     nCS  => nCS,
     MISO => MISO,
@@ -75,31 +84,63 @@ BEGIN
 reset : PROCESS
 BEGIN
   report "CLK PERIOD: " & time'image(CLKPERIOD);
-  RST_I<='1';
+  RSTi<='1';
   WAIT FOR 4 * CLKPERIOD;
-  RST_I<='0';
+  RSTi<='0';
   WAIT;
 END PROCESS reset;
 
 
 clkproc : PROCESS
 BEGIN
-  CLK_I <= '0';
+  CLKi <= '0';
   WAIT FOR CLKPERIOD/2;
-  CLK_I <= '1';
+  CLKi <= '1';
   WAIT FOR CLKPERIOD/2;
 END PROCESS clkproc;
 
 control : PROCESS
 BEGIN
-  wait for 200 ms;                               -- Power-Up Time
-  STB_I <= '1';                                  -- Select Core
-  WE_I  <= '0';                                  -- Enable read from bus
-  ADR_I(0 downto 0) <= "0";                      -- Select channel 0
-  wait for 250 us;
-  ADR_I(0 downto 0) <= "1";                      -- Select channel 1
+  wait for 2 us;                                -- Power-Up Time
+  STBi <= '1';                                   -- Select Core
+  WEi  <= '1';                                   -- Enable write from bus
+  ADRi(0) <= '0';                                -- Select REG0
+  DATOi <= x"4321";
+  wait until rising_edge(CLKi);
+  STBi <= '0';                                   -- deselect Core
+  wait for 2 us;                                 -- Acquisition time
+  wait until rising_edge(CLKi);
+  STBi <= '1';                                   -- Select Core
+  WEi  <= '0';                                   -- Enable read from bus
+  ADRi(0) <= '0';                                -- Select REG0
+  wait until rising_edge(CLKi);
+  RESULT <= DATIi;
+  STBi <= '0';                                   -- deselect Core
+  wait for 2 us;
+  wait until rising_edge(CLKi);
+  STBi <= '1';                                   -- Select Core
+  ADRi(0) <= '1';                                -- Select REG1
+  wait until rising_edge(CLKi);
+  RESULT <= DATIi(7 downto 0) & RESULT(7 downto 0);
+  STBi <= '0';                                   -- deselect Core
   WAIT;
 END PROCESS control;
+
+
+MAX_spi: PROCESS
+BEGIN
+  MISO <= '1';
+  wait until RSTi='0';
+  wait for 1 us;
+  MISO <= '0';
+  for i in 7 downto 0 loop                       -- x"34"
+    wait until rising_edge(SCK);
+    MISO <= SPIDATA(i);
+  end loop;
+  --wait until rising_edge(SCK);
+  --MISO <= '1';
+  wait;
+END PROCESS MAX_spi;
 
 
 END ADFMAX31856_arch;

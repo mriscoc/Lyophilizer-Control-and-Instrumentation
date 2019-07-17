@@ -159,8 +159,8 @@ begin
   ImageList1.GetBitmap(1,B_Connect.Glyph);
   B_EnableDB.Enabled:=true;
   MainTic.Enabled:=true;
-  //ChartToolset1DataPointCrosshairTool1.Enabled:=false;
-  //ChartToolset1DataPointHintTool1.Enabled:=false;
+  ChartToolset1DataPointCrosshairTool1.Enabled:=false;
+  ChartToolset1DataPointHintTool1.Enabled:=false;
 end;
 
 
@@ -256,12 +256,14 @@ end;
 procedure TMainForm.B_TaraCh4Click(Sender: TObject);
 var i:integer;
 begin
+  B_TaraCh4.Enabled:=false;
   ACF[nChannels].Offset:=0;
   For i:=0 to 100 do begin
     sleep(10);
     Application.ProcessMessages;
   end;
   ACF[nChannels].Offset:=-1 * AData[nChannels];
+  B_TaraCh4.Enabled:=true;
 end;
 
 procedure TMainForm.ChartToolset1DataPointHintTool1Hint(
@@ -400,7 +402,7 @@ begin
     AChannels[i]:=TChFrame.Create(ChPanel);
     AChannels[i].Name:='Ch'+inttostr(i)+'_Frame';
     AChannels[i].Parent:=ChPanel;
-    AChannels[i].Title:='Ch'+inttostr(i);
+    AChannels[i].Title:=ALabel[i];
     AChannels[i].Align:=alNone;
     AChannels[i].ColorUpd(chcolor);
 //
@@ -432,17 +434,15 @@ begin
     dbs:=TDbChartSource.Create(Aowner);
     dbs.DataSource:=VDataSource;
     dbs.FieldX:='DateTime';
-//    dbs.FieldY:='CH'+inttostr(i);
     dbs.OnGetItem:=@DbChartGetItem;
     ASeries[i]:=TlineSeries.Create(Aowner);
     ASeries[i].LinePen.Color:=AChannels[i].Color;
     ASeries[i].Title:=AChannels[i].Title;
     ASeries[i].Source:=dbs;
+    ASeries[i].LinePen.Width:=2;
     Aowner.AddSeries(ASeries[i]);
-//    ASeries[i].ZPosition:=0;
+    ASeries[i].ZPosition:=0;
   end;
-  //ASeries[2].LinePen.Width:=2;
-  //ASeries[4].LinePen.Width:=2;
   ChartToolset1DataPointCrosshairTool1.Enabled:=true;
   ChartToolset1DataPointHintTool1.Enabled:=true;
 end;
@@ -500,6 +500,7 @@ begin
   if not DataM.DataSet.Active then ACreateDBExecute(nil);
   if DataM.DataSet.Active then
   begin
+    RegdataTimer.Interval:=Ed_Sampletime.Value*1000;
     RegdataTimer.Enabled:=true;
     LED_DB.Color := clLime;
     B_EnableDB.Caption:='Stop Acq.';
@@ -547,6 +548,10 @@ begin
       AOffset[i]:=StrtoFloatDef(ReadString('AOffset'+inttostr(i),'0'),0);
       AScale[i]:=StrtoFloatDef(ReadString('AScale'+inttostr(i),'1'),1);
     end;
+    ALabel[1]:=ReadString('ALabel'+inttostr(i),'T1 (°C)');
+    ALabel[2]:=ReadString('ALabel'+inttostr(i),'T2 (°C)');
+    ALabel[3]:=ReadString('ALabel'+inttostr(i),'T3 (°C)');
+    ALabel[4]:=ReadString('ALabel'+inttostr(i),'Peso (g)');
   end;
   result:=true;
 end;

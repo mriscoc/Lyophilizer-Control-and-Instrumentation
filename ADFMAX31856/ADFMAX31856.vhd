@@ -52,17 +52,19 @@ port(
 end ADFMAX31856;
 
 architecture  ADFMAX31856_Arch of  ADFMAX31856 is
-type tstate is (IniSt, AddrSt, DataSt, EndSt); -- SPI Communication States
+type tstate is (IniSt, DataSt, EndSt);             -- SPI Communication States
 
 signal state    : tstate;
-signal streami  : std_logic_vector (7 downto 0);   -- Serial input register
-signal streamo  : std_logic_vector (15 downto 0);  -- Serial output register
-signal RDREG    : std_logic_vector (7 downto 0);   -- Read Data register
-signal WDREG    : std_logic_vector (7 downto 0);   -- Write Data register
-signal WAREG    : std_logic_vector (7 downto 0);   -- Write Address register
-signal SCKN     : unsigned (4 downto 0);           -- SCK bit counter
+signal streami  : std_logic_vector(7 downto 0);    -- Serial input register
+signal streamo  : std_logic_vector(7 downto 0);    -- Serial output register
+signal SPIRD    : std_logic_vector(7 downto 0);    -- SPI Read Data register
+signal SPIWR    : std_logic_vector(7 downto 0);    -- SPI Write Data register
+--signal DREG     : std_logic_vector(7 downto 0);
+--signal AREG     : std_logic_vector(7 downto 0);
+
 signal SCKi     : std_logic;                       -- SCK SPI Clock
 signal CSi      : std_logic;                       -- nCS SPI Chip select
+signal SPItr    : std_logic;                       -- SPI transaction
 
 begin
 
@@ -87,77 +89,67 @@ end generate;
 
 -- SPI BUS Proccess
   
-SPIState:process (CLK_I, RST_I)
+SPIState:process (SCKi, RST_I)
+variable SCKN : integer range 0 to 15;             -- SCK bit counter
   begin
     if (RST_I='1') then
-      state <= IniSt;
-      CSi   <= '1';
-      RDREG <= (others => '0');
+      State  <= IniSt;
+      streami<= (others =>'0');
+      streamo<= (others =>'0');
+      SPIRD  <= (others =>'0');
+      SCKN   := 0;
     elsif falling_edge(SCKi) then
       case State is
-        when IniSt =>
-          if (STB_I='1') then
-            CSi <= '0';
-            state <= AddrSt;
-          else
-            CSi <= '1';
-            state <= IniSt;
-          end if;
-
-        when AddrSt=> if (SCKN = 8) then
-                        state <= DataSt;
+        when IniSt => if (SPItr='1') then
+                        streami<= (others =>'0');
+                        streamo<= SPIWR;
+                        state  <= DataSt;
+                        SCKN   := 0;
                       end if;
-
-        when DataSt=> if (SCKN = 31) then
+        when DataSt=> streami <= streami(streami'high-1 downto 0) & MISO;
+                      streamo <= streamo(streamo'high-1 downto 0) & '0';
+                      if (SCKN < 7) then
+                        SCKN := SCKN+1;
+                      else
                         state <= EndSt;
                       end if;
-
-        when EndSt => CSi <='1';
-                      RDREG <= streami(7 downto 0);
+        when EndSt => SPIRD <= streami;
                       state <= IniSt;
       end case;
     end if;
   end process SPIState;
 
-SPIbitcounter:process(SCKi, CSi)
-  begin
-    if (CSi='1') then
-      SCKN  <= (others => '0');
-    elsif falling_edge(SCKi) then
-      SCKN <= SCKN+1;
-    end if;
-  end process SPIbitcounter;
 
-
-SPIDataProcess:process(SCKi, CSi)
+Transaction:process(CLK_I, RST_I)
   begin
-    if (CSi='1') then
-      streami <= (others =>'0');
-      streamo <= WAREG & WDREG;
-    elsif rising_edge(SCKi) then
-      streami <= streami(streami'high-1 downto 0) & MISO;
-      streamo <= streamo(streamo'high-1 downto 0) & '0';
+    if (RST_I='1') then
+      SPItr <= '0';
+    elsif rising_edge(CLK_I) then
+      if (STB_I='1' and WE_I='1') then
+        SPItr <= '1';
+      elsif (State=DataSt) then
+        SPItr <= '0';
+      end if;
     end if;
-  end process SPIDataProcess;
+   end process Transaction;
+
 
 SBAprocess:process(CLK_I, RST_I)
   begin
     if RST_I='1' then
-      WDREG <= (others => '0');
-      WAREG <= (others => '0');
+      SPIWR <= (others => '0');
     elsif rising_edge(CLK_I) then
       if (STB_I='1' and WE_I='1') then
-        WAREG <= DAT_I(15 downto 8);
-        WDREG <= DAT_I(7 downto 0);
+        SPIWR <= DAT_I(7 downto 0);
       end if;
     end if;
   end process SBAprocess;
 
 -- Interface signals
-  nCS   <= CSi;
-  SCK   <= SCKi When CSi='0' else '1';
+  nCS   <= '1' When State=IniSt else '0';
+  SCK   <= SCKi When State=DataSt else '0';
   MOSI  <= streamo(streamo'high);
 
-  DAT_O <= std_logic_vector(resize(signed(RDREG(7 downto 0)),DAT_O'length));
+  DAT_O <= std_logic_vector(resize(signed(SPIRD(7 downto 0)),DAT_O'length));
 
 end  ADFMAX31856_Arch;

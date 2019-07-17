@@ -18,6 +18,7 @@ const
 type
   TAData=Array [1..HWchannels] of real;
   TAScOff=Array [1..HWchannels] of real;
+  TALabels=Array [1..HWchannels] of string;
   TAWord = Array of word;
   TAByte = Array of byte;
 
@@ -27,6 +28,7 @@ var
   AData: TAData;
   AOffset: TAScOff;        //  Compensación para la calibración
   AScale: TAScOff;         //  Factor de escala
+  ALabel: TALabels;        //  Etiquetas
   StartTime: TDateTime;    //  Timestamp de Inicio de la toma de datos
   LoLimit,UpLimit:integer; //  Límites al valor de un dato
   Simulate:Boolean=false;  //  Modo simulación

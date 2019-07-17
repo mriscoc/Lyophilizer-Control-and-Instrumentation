@@ -112,11 +112,16 @@ var
 begin
   for i:=1 to nChannels do
   begin
-    vTempx[i]:=AOffset[i] + AScale[i]*(1/2-Cos(I/3+Time*500)/2);
-    FYMax:=Max(FYMax,vTempx[i]);
-    FYMin:=Min(FYMin,vTempx[i]);
-    FWmax:=FYMax;
-    FWmin:=FYMin;
+    vTempx[i]:=AOffset[i] + AScale[i]*(1/2-Cos(I/3+Time*5000)/2)*1000 + 0.5;
+    if i<nChannels then
+    begin
+      FYMax:=Max(FYMax,vTempx[i]);
+      FYMin:=Min(FYMin,vTempx[i]);
+    end else
+    begin
+      FWMax:=Max(FWMax,vTempx[i]);
+      FWMin:=Min(FWMin,vTempx[i]);
+    end;
   end;
 end;
 

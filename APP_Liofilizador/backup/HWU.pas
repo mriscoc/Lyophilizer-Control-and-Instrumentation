@@ -93,6 +93,8 @@ begin
   SetLength(vState,nChannels);
   FYmax:=MinFloat;
   FYmin:=MaxFloat;
+  FWmax:=MinFloat;
+  FWmin:=MaxFloat;
   inherited Create();
 end;
 
@@ -110,9 +112,11 @@ var
 begin
   for i:=1 to nChannels do
   begin
-    vTempx[i]:=AOffset[i] + AScale[i]*(1/2-Cos(I/3+Time*500)/2);
+    vTempx[i]:=AOffset[i] + AScale[i]*(1/2-Cos(I/3+Time*5000)/2)*1000 + 0.5;
     FYMax:=Max(FYMax,vTempx[i]);
     FYMin:=Min(FYMin,vTempx[i]);
+    FWmax:=FYMax;
+    FWmin:=FYMin;
   end;
 end;
 

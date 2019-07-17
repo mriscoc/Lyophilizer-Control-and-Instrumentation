@@ -17,9 +17,9 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MinorVersionNr Value="8"/>
-      <RevisionNr Value="1"/>
-      <BuildNr Value="9"/>
+      <MinorVersionNr Value="9"/>
+      <RevisionNr Value="3"/>
+      <BuildNr Value="14"/>
       <Attributes pvaPrivateBuild="True"/>
       <StringTable CompanyName="FC-UNI" FileDescription="Aplicación de control de liofilizador" InternalName="APP_Liofilizador"/>
     </VersionInfo>
