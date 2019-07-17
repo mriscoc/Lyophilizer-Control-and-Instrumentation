@@ -56,11 +56,9 @@ type tstate is (IniSt, DataSt, EndSt);             -- SPI Communication States
 
 signal state    : tstate;
 signal streami  : std_logic_vector(7 downto 0);    -- Serial input register
-signal streamo  : std_logic_vector(7 downto 0);    -- Serial output register
+signal streamo  : std_logic_vector(15 downto 0);   -- Serial output register
 signal SPIRD    : std_logic_vector(7 downto 0);    -- SPI Read Data register
-signal SPIWR    : std_logic_vector(7 downto 0);    -- SPI Write Data register
---signal DREG     : std_logic_vector(7 downto 0);
---signal AREG     : std_logic_vector(7 downto 0);
+signal SPIWR    : std_logic_vector(15 downto 0);   -- SPI Write Data register
 
 signal SCKi     : std_logic;                       -- SCK SPI Clock
 signal CSi      : std_logic;                       -- nCS SPI Chip select
@@ -108,7 +106,7 @@ variable SCKN : integer range 0 to 15;             -- SCK bit counter
                       end if;
         when DataSt=> streami <= streami(streami'high-1 downto 0) & MISO;
                       streamo <= streamo(streamo'high-1 downto 0) & '0';
-                      if (SCKN < 7) then
+                      if (SCKN < 15) then
                         SCKN := SCKN+1;
                       else
                         state <= EndSt;
@@ -140,7 +138,7 @@ SBAprocess:process(CLK_I, RST_I)
       SPIWR <= (others => '0');
     elsif rising_edge(CLK_I) then
       if (STB_I='1' and WE_I='1') then
-        SPIWR <= DAT_I(7 downto 0);
+        SPIWR <= DAT_I;
       end if;
     end if;
   end process SBAprocess;
@@ -150,6 +148,6 @@ SBAprocess:process(CLK_I, RST_I)
   SCK   <= SCKi When State=DataSt else '0';
   MOSI  <= streamo(streamo'high);
 
-  DAT_O <= std_logic_vector(resize(signed(SPIRD(7 downto 0)),DAT_O'length));
+  DAT_O <= x"00" & std_logic_vector(SPIRD);
 
 end  ADFMAX31856_Arch;

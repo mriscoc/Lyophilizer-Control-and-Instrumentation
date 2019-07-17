@@ -18,7 +18,7 @@ add wave -noupdate /adfmax31856_test/i1/SPIState/SCKN
 add wave -noupdate -radix hexadecimal /adfmax31856_test/i1/DAT_O
 add wave -noupdate -radix hexadecimal /adfmax31856_test/RESULT
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1454499 ps} 0}
+WaveRestoreCursors {{Cursor 1} {3673407 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 244
 configure wave -valuecolwidth 40
@@ -34,4 +34,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {10500 ns}
+WaveRestoreZoom {0 ps} {21 us}

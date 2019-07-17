@@ -22,7 +22,7 @@ SIGNAL STBi  : STD_LOGIC := '0';
 SIGNAL WEi   : STD_LOGIC := '0';
 SIGNAL ADRi  : STD_LOGIC_VECTOR(15 DOWNTO 0) := (others=>'0');
 SIGNAL DATIi : STD_LOGIC_VECTOR(15 DOWNTO 0);
-SIGNAL DATOi : STD_LOGIC_VECTOR(15 DOWNTO 0);
+SIGNAL DATOi : STD_LOGIC_VECTOR(15 DOWNTO 0) := (others=>'0');
 signal INTi  : std_logic;
 
 
@@ -104,11 +104,10 @@ BEGIN
   wait for 2 us;                                -- Power-Up Time
   STBi <= '1';                                   -- Select Core
   WEi  <= '1';                                   -- Enable write from bus
-  ADRi(0) <= '0';                                -- Select REG0
   DATOi <= x"4321";
   wait until rising_edge(CLKi);
   STBi <= '0';                                   -- deselect Core
-  wait for 2 us;                                 -- Acquisition time
+  wait for 4 us;                                 -- Acquisition time
   wait until rising_edge(CLKi);
   STBi <= '1';                                   -- Select Core
   WEi  <= '0';                                   -- Enable read from bus
@@ -116,9 +115,16 @@ BEGIN
   wait until rising_edge(CLKi);
   RESULT <= DATIi;
   STBi <= '0';                                   -- deselect Core
-  wait for 2 us;
+  wait for 1 us;
+  STBi <= '1';                                   -- Select Core
+  WEi  <= '1';                                   -- Enable write from bus
+  DATOi <= x"8765";
+  wait until rising_edge(CLKi);
+  STBi <= '0';                                   -- deselect Core
+  wait for 4 us;                                 -- Acquisition time
   wait until rising_edge(CLKi);
   STBi <= '1';                                   -- Select Core
+  WEi  <= '0';                                   -- Enable read from bus
   ADRi(0) <= '1';                                -- Select REG1
   wait until rising_edge(CLKi);
   RESULT <= DATIi(7 downto 0) & RESULT(7 downto 0);
@@ -131,14 +137,25 @@ MAX_spi: PROCESS
 BEGIN
   MISO <= '1';
   wait until RSTi='0';
-  wait for 1 us;
-  MISO <= '0';
+  wait until nCS='0';
+  for i in 7 downto 0 loop                       -- x"00"
+    wait until rising_edge(SCK);
+    MISO <= '0';
+  end loop;
   for i in 7 downto 0 loop                       -- x"34"
     wait until rising_edge(SCK);
     MISO <= SPIDATA(i);
   end loop;
-  --wait until rising_edge(SCK);
-  --MISO <= '1';
+  wait for 1 us;
+  wait until nCS='0';
+  for i in 7 downto 0 loop                       -- x"00"
+    wait until rising_edge(SCK);
+    MISO <= '0';
+  end loop;
+  for i in 15 downto 8 loop                      -- x"12"
+    wait until rising_edge(SCK);
+    MISO <= SPIDATA(i);
+  end loop;
   wait;
 END PROCESS MAX_spi;
 
