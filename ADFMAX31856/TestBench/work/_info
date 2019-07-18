@@ -9,24 +9,24 @@ z2
 cModel Technology
 dC:/intelFPGA/18.1
 Eadfmax31856
-Z0 w1563404637
+Z0 w1563433424
 Z1 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
-Z4 dX:/TestBench
-Z5 8X:/ADFMAX31856.vhd
-Z6 FX:/ADFMAX31856.vhd
+Z4 dD:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/TestBench
+Z5 8D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.vhd
+Z6 FD:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.vhd
 l0
 L32
-VC:L?A`G2KM[[G0F9M7[_]3
-!s100 0i@;b4[TiYnSolAmKdaSE1
+Ve[ZeXVVM0c6TdPO0R1Nm53
+!s100 al:fFRh8h49E78j<D6M9i1
 Z7 OV;C;10.5b;63
 32
-Z8 !s110 1563404804
+Z8 !s110 1563433567
 !i10b 1
-Z9 !s108 1563404804.000000
-Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|X:/ADFMAX31856.vhd|
-Z11 !s107 X:/ADFMAX31856.vhd|
+Z9 !s108 1563433567.000000
+Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.vhd|
+Z11 !s107 D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.vhd|
 !i113 1
 Z12 o-work work -2002 -explicit
 Z13 tExplicit 1 CvgOpt 0
@@ -35,11 +35,11 @@ Z14 DEx4 work 6 clkdiv 0 22 XFo5I9L`Gi3amN09E_MUS1
 R1
 R2
 R3
-DEx4 work 11 adfmax31856 0 22 C:L?A`G2KM[[G0F9M7[_]3
-l67
+DEx4 work 11 adfmax31856 0 22 e[ZeXVVM0c6TdPO0R1Nm53
+l71
 L54
-VQaH330O@8dcWIeKI6TTk90
-!s100 hgEh]m5imigkn7TId2Coo0
+Va3L2B6BC6hnPJS^DVi6^[3
+!s100 >hi<k_SIf<@:9Cik?C?=H3
 R7
 32
 R8
@@ -51,13 +51,13 @@ R11
 R12
 R13
 Eadfmax31856_test
-Z15 w1563404799
+Z15 w1563433523
 R1
 R2
 R3
 R4
-Z16 8X:/ADFMAX31856.tb.vhd
-Z17 FX:/ADFMAX31856.tb.vhd
+Z16 8D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.tb.vhd
+Z17 FD:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.tb.vhd
 l0
 L13
 V^XkiMNn@4OVPdOT4BZhiQ1
@@ -66,9 +66,9 @@ R7
 32
 R8
 !i10b 1
-Z18 !s108 1563404803.000000
-Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|X:/ADFMAX31856.tb.vhd|
-Z20 !s107 X:/ADFMAX31856.tb.vhd|
+Z18 !s108 1563433566.000000
+Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.tb.vhd|
+Z20 !s107 D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/ADFMAX31856.tb.vhd|
 !i113 1
 R12
 R13
@@ -79,8 +79,8 @@ R3
 DEx4 work 16 adfmax31856_test 0 22 ^XkiMNn@4OVPdOT4BZhiQ1
 l66
 L16
-V;X8c8jn>LN_WRQAIkg`eU2
-!s100 bDcPU3[MjC;TMg;N_jXDj1
+V[ke=J98N^=EWB9h7gGLhF3
+!s100 YLNHDHU>k2WMZczK4BiXL3
 R7
 32
 R8
@@ -92,24 +92,24 @@ R20
 R12
 R13
 Eclkdiv
-Z21 w1557200320
+Z21 w1563413409
 R1
 R2
 R3
 R4
-Z22 8X:/CLKDIV.vhd
-Z23 FX:/CLKDIV.vhd
+Z22 8D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/CLKDIV.vhd
+Z23 FD:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/CLKDIV.vhd
 l0
 L80
 VXFo5I9L`Gi3amN09E_MUS1
 !s100 iLULS@0<f8_QhfgSCMMFN0
 R7
 32
-Z24 !s110 1563404805
+R8
 !i10b 1
-Z25 !s108 1563404805.000000
-Z26 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|X:/CLKDIV.vhd|
-Z27 !s107 X:/CLKDIV.vhd|
+R9
+Z24 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/CLKDIV.vhd|
+Z25 !s107 D:/Users/Miguel/Documents/Trabajos/for_GIT/Liofilizador/ADFMAX31856/CLKDIV.vhd|
 !i113 1
 R12
 R13
@@ -120,15 +120,15 @@ R3
 R14
 l100
 L93
-Z28 VhPB`lhNK8N?zf0_G@bY1I0
-Z29 !s100 9IBnk263L5dO:Y2Sam^611
+Z26 VhPB`lhNK8N?zf0_G@bY1I0
+Z27 !s100 9IBnk263L5dO:Y2Sam^611
 R7
 32
-R24
+R8
 !i10b 1
+R9
+R24
 R25
-R26
-R27
 !i113 1
 R12
 R13
