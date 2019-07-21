@@ -70,11 +70,11 @@ begin
 
 -- SPI Clock generator:
 
-SCK1: if (sysfreq>5E6) generate
+SCK1: if (sysfreq>2E6) generate
   CLK_Div : entity work.ClkDiv
   Generic map (
     infreq=>sysfreq,
-    outfreq=>5E6
+    outfreq=>2E6
     )
   Port Map(
     RST_I => RST_I,
@@ -83,7 +83,7 @@ SCK1: if (sysfreq>5E6) generate
   );
 end generate;
 
-SCK2: if (sysfreq<=5E6) generate
+SCK2: if (sysfreq<=2E6) generate
   SCKi <= CLK_I;
 end generate;
 

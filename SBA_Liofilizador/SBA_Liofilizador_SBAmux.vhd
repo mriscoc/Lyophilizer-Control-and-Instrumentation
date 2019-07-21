@@ -83,6 +83,7 @@ begin
      When UART1               => STBi <= stb(STB_UART);     -- UART1      = 9
      When HXR0                => STBi <= stb(STB_HX711);    -- HX711 R0   = 10
      When HXR1                => STBi <= stb(STB_HX711);    -- HX711 R1   = 11
+     when ADFMAX              => STBi <= stb(STB_ADFMAX);   -- ADFMAX     = 12
      When OTHERS              => STBi <= (others =>'0');
   ------------------------------------------------------------------------------
   end case;
@@ -94,17 +95,18 @@ begin
   ADRi := to_integer(unsigned(ADR_I));
   case ADRi is
   ------------------------------------------------------------------------------
-     When GPIO                => DAT_O <= ADAT_I(STB_GPIO);     -- GPIO       = 0
-     When TC1R0               => DAT_O <= ADAT_I(STB_PMODTC1);  -- TC1R0      = 2
-     When TC1R1               => DAT_O <= ADAT_I(STB_PMODTC1);  -- TC1R1      = 3
-     When TMRDATL             => DAT_O <= ADAT_I(STB_TIMER);    -- TMRDATL    = 4
-     When TMRDATH             => DAT_O <= ADAT_I(STB_TIMER);    -- TMRDATH    = 5
-     When TMRCFG              => DAT_O <= ADAT_I(STB_TIMER);    -- TMRCFG     = 6
-     When TMRCHS              => DAT_O <= ADAT_I(STB_TIMER);    -- TMRCHS     = 7
-     When UART0               => DAT_O <= ADAT_I(STB_UART);     -- UART0      = 8
-     When UART1               => DAT_O <= ADAT_I(STB_UART);     -- UART1      = 9
-     When HXR0                => DAT_O <= ADAT_I(STB_HX711);    -- HX711 R0   = 10
-     When HXR1                => DAT_O <= ADAT_I(STB_HX711);    -- HX711 R1   = 11
+     When GPIO                => DAT_O <= ADAT_I(STB_GPIO);     -- GPIO     = 0
+     When TC1R0               => DAT_O <= ADAT_I(STB_PMODTC1);  -- TC1R0    = 2
+     When TC1R1               => DAT_O <= ADAT_I(STB_PMODTC1);  -- TC1R1    = 3
+     When TMRDATL             => DAT_O <= ADAT_I(STB_TIMER);    -- TMRDATL  = 4
+     When TMRDATH             => DAT_O <= ADAT_I(STB_TIMER);    -- TMRDATH  = 5
+     When TMRCFG              => DAT_O <= ADAT_I(STB_TIMER);    -- TMRCFG   = 6
+     When TMRCHS              => DAT_O <= ADAT_I(STB_TIMER);    -- TMRCHS   = 7
+     When UART0               => DAT_O <= ADAT_I(STB_UART);     -- UART0    = 8
+     When UART1               => DAT_O <= ADAT_I(STB_UART);     -- UART1    = 9
+     When HXR0                => DAT_O <= ADAT_I(STB_HX711);    -- HX711 R0 = 10
+     When HXR1                => DAT_O <= ADAT_I(STB_HX711);    -- HX711 R1 = 11
+     when ADFMAX              => DAT_O <= ADAT_I(STB_ADFMAX);   -- ADFMAX   = 12
      When OTHERS              => DAT_O <= (others =>'X');
   ------------------------------------------------------------------------------
   end case;

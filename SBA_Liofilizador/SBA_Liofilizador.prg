@@ -14,8 +14,9 @@
   variable Idx     : natural;                   -- General purpose index
   variable T       : signed(15 downto 0);       -- Temperature register
   variable Sign    : std_logic;                 -- Sign bit
-  variable T0      : signed(19 downto 0);       -- Accumulator Filter Ch0
   variable T1      : signed(19 downto 0);       -- Accumulator Filter Ch1
+  variable T2      : signed(19 downto 0);       -- Accumulator Filter Ch2
+  variable T3      : signed(19 downto 0);       -- Accumulator Filter Ch3
   constant beta    : integer:=3;                -- EMA beta factor (srl 3 = 1/8)
   variable W       : signed(23 downto 0);       -- Hx711 Weight variable
   constant TXRDY   : integer:=14;               -- TXRDY Flag is bit 14
@@ -28,6 +29,9 @@
   variable DOUT    : unsigned(8 downto 0);      -- GPIO Data out
   alias    LB      : std_logic is DOUT(0);      -- Breath LED0
   alias    L1      : std_logic is DOUT(1);      -- LED1
+  alias    LLO     : std_logic is DOUT(2);      -- LED low temperature
+  alias    LOK     : std_logic is DOUT(3);      -- LED temperature ok
+  alias    LHI     : std_logic is DOUT(4);      -- LED high temperature
   alias    TCTRL   : std_logic is DOUT(8);      -- Temperature Control
   type tarrchar is array (natural range <>) of character;
   constant vMsg    : tarrchar (0 to 18):="Liofilizador v0.2.3";
@@ -116,7 +120,7 @@
 
 -- /L:Init
 => counter:=0; timerf:='0';
-   T0:=(others=>'0');T1:=(others=>'0');
+   T3:=(others=>'0');T2:=(others=>'0');T1:=(others=>'0');
    DOUT:=(others=>'0');
    TCTRL:='0';
    SetTH:=to_signed(-38,SetTH'length);
@@ -127,6 +131,7 @@
 => SBAwrite(TMRCFG,"0X11");     -- Disable output, Enable timer interrupt
 => SBAinte(true);               -- Enable interrupts
 => SBAcall(SendMsg);
+=> SBAwrite(ADFMAX,x"8003");    -- Continous mode, K type thermocuple
 
 -- /L:LoopMain
 => if (timerf='1') then
@@ -165,11 +170,11 @@
 -- EMA Filter / Discrete IIR LPF, beta=0.125, FixedPoint mul=8 (1=8*0.125)
 -- T(i) = beta*T + (1-beta)*T(i-1)
 -- 8*T(i) = 8*0.125*T + 8*T(i-1) - 8*0.125*T(i-1) = T + 8*T(i-1) - T(i-1)
--- Change var: T0(i)=8*T(i), T0(i-1)=8*T(i-1)
--- T0(i) = T + T0(i-1) - T0(i-1)/8
--- T(i) = T0(i)/8
-=> T0:= T + T0 - (T0 srl beta);                      -- EMA Filter (beta=1/8)
-=> T:=Resize(T0 srl beta,T'length);                  -- T(i) = T0(i)/8
+-- Change var: T1(i)=8*T(i), T1(i-1)=8*T(i-1)
+-- T1(i) = T + T1(i-1) - T1(i-1)/8
+-- T(i) = T1(i)/8
+=> T1:= T + T1 - (T1 srl beta);                      -- EMA Filter (beta=1/8)
+=> T:=Resize(T1 srl beta,T'length);                  -- T(i) = T1(i)/8
    bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Filtered
 => SBACall(UARTSendBCD);
 
@@ -178,18 +183,35 @@
 => SBAread(TC1R1);                                   -- Thermocuple temperature
 => T:=Resize(25*signed(dati(15 downto 2)),T'length); -- 25x4xT=100xT
 
-=> T1:= T + T1 - (T1 srl beta);                      -- EMA Filter (beta=1/8)
-=> T:=Resize(T1 srl beta,T'length);                  -- T(i) = T1(i)/8
+=> T2:= T + T2 - (T2 srl beta);                      -- EMA Filter (beta=1/8)
+=> T:=Resize(T2 srl beta,T'length);                  -- T(i) = T2(i)/8
    bin_in:=unsigned(T); SBAcall(Bin2BCD);            -- Filtered
 => SBACall(UARTSendBCD);
 
-=> if T>SetTH then TCTRL:='0'; end if;               -- Calefactor Control
-   if T<SetTL then TCTRL:='1'; end if;
+=> LHI := '0';
+   LOK := '1';
+   LLO := '0';
+   if T>SetTH then
+   begin
+     TCTRL:='0';                                     -- Calefactor Control
+     LHI := '1';
+     LOK := '0';
+   end if;
+   if T<SetTL then
+     TCTRL:='1';
+     LOK := '0';
+     LLO := '1';
+   end if;
    L1:=TCTRL;
 
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
 
-=> Clr(bin_in); SBAcall(Bin2BCD);
+=> SBAread(ADFMAX);
+=> T:=signed(dati);
+
+=> T3:= T + T3 - (T3 srl beta);                      -- EMA Filter (beta=1/8)
+=> T:=Resize(T3 srl beta,T'length);                  -- T(i) = T1(i)/8
+=> bin_in:=unsigned(T); SBAcall(Bin2BCD);
 => SBAcall(UARTSendBCD);
 
 => RSTmp:=chr2uns(';'); SBAcall(UARTSendChar);       -- Value separator
@@ -197,7 +219,7 @@
 => SBAread(HXR0);                                    -- Read Hx711 LSW
 => R0:=unsigned(dati);
 => SBAread(HXR1);                                    -- Read Hx711 MSW
-=> W:=-636160 - signed(dati(7 downto 0) & R0);       -- Ajuste
+=> W:=-619264 - signed(dati(7 downto 0) & R0);       -- Ajuste
    bin_in:=unsigned(W(23 downto 8));
    SBAcall(Bin2BCD);
 => SBAcall(UARTSendBCD);

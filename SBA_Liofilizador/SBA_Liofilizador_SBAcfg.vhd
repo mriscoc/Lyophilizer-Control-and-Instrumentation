@@ -61,6 +61,7 @@ package SBA_Liofilizador_SBAconfig is
   Constant UART1      : integer := 9;
   constant HXR0       : integer := 10;
   constant HXR1       : integer := 11;
+  constant ADFMAX     : integer := 12;
 
 
 --Strobe Lines
@@ -69,6 +70,7 @@ package SBA_Liofilizador_SBAconfig is
   Constant STB_TIMER  : integer := 2;
   Constant STB_UART   : integer := 3;
   constant STB_HX711  : integer := 4;
+  constant STB_ADFMAX : integer := 5;
 
 -- System Type definitions
   Subtype ADDR_type is std_logic_vector(Adr_width-1 downto 0); -- Address Bus type

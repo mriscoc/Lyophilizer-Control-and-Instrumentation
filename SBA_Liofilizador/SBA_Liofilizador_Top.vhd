@@ -34,18 +34,22 @@ use work.SBA_Liofilizador_SBAconfig.all;
 
 entity SBA_Liofilizador_Top is
 port (
-  CLK_I     : in  std_logic;
-  nRST      : in  std_logic;
-  RXRS      : in  std_logic;
-  TXRS      : out std_logic;
-  BTN       : in  std_logic;
-  LEDS      : out std_logic_vector(7 downto 0);
-  TCTRL     : out std_logic;
-  TC1_nCS   : out std_logic;
-  TC1_MISO  : in  std_logic;
-  TC1_SCK   : out std_logic;
-  HX_MISO   : in  std_logic;
-  HX_SCK    : out std_logic
+  CLK_I      : in  std_logic;
+  nRST       : in  std_logic;
+  RXRS       : in  std_logic;
+  TXRS       : out std_logic;
+  BTN        : in  std_logic;
+  LEDS       : out std_logic_vector(7 downto 0);
+  TCTRL      : out std_logic;
+  TC1_nCS    : out std_logic;
+  TC1_MISO   : in  std_logic;
+  TC1_SCK    : out std_logic;
+  HX_MISO    : in  std_logic;
+  HX_SCK     : out std_logic;
+  ADFMAX_nCS : out std_logic;
+  ADFMAX_MISO: in  std_logic;
+  ADFMAX_MOSI: out std_logic;
+  ADFMAX_SCK : out std_logic
 );
 end SBA_Liofilizador_Top;
 
@@ -74,6 +78,7 @@ architecture SBA_Liofilizador_structural of SBA_Liofilizador_Top is
 -- Auxiliary IPCores signals
   Signal INT_TIMER  : std_logic;
   signal INT_HX711  : std_logic;
+  signal INT_ADFMAX : std_logic;
 --------------------------------------------------------------------------------
 
 begin
@@ -166,6 +171,27 @@ begin
     -------------
     MISO  => HX_MISO,
     SCK   => HX_SCK
+  );
+
+  ADFMAX: entity work.ADFMAX31856
+  generic map(
+    debug   => debug,
+    sysfreq => sysfreq
+  )
+  port map(
+    -------------
+    RST_I => RSTi,
+    CLK_I => CLKi,
+    STB_I => STBi(STB_ADFMAX),
+    WE_I  => WEi,
+    DAT_I => DATOi,
+    DAT_O => ADATi(STB_ADFMAX),
+    INT_O => INT_ADFMAX,
+    -------------
+    nCS   => ADFMAX_nCS,
+    MISO  => ADFMAX_MISO,
+    MOSI  => ADFMAX_MOSI,
+    SCK   => ADFMAX_SCK
   );
 
   TIMER: entity work.TIMER

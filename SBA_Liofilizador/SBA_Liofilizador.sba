@@ -21,6 +21,7 @@
 	{"portname": "TC1_SCK", "dir": "out", "bus": 0}
 ],
 "ipcores": [
+	"ADFMAX31856",
 	"GPIO",
 	"HX711",
 	"PMODTC1",
