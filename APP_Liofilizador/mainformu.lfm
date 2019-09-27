@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 910
+  Left = 904
   Height = 520
-  Top = 302
+  Top = 277
   Width = 800
   Caption = 'Liofilizador'
   ClientHeight = 520
